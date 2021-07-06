@@ -1,6 +1,6 @@
 # Node 추가
 ## Terraform 작업
-1. Terraform 파일 수정
+1. Terraform 파일 수정 (실습용 Console서버)
 ```
 cd ~/terraform-course/Project
 vi vars.tf # "instance_count"를 4로 변경
@@ -31,7 +31,6 @@ vm02
 vm01
 vm02
 vm03
-vm04
 
 [kube-node]
 vm01
@@ -54,7 +53,7 @@ ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
   cluster.yml
 ```
 
-3. instance 추가확인
+3. instance 추가확인 [vm01 instance]
 ```
 kubectl get nodes
 ```
@@ -62,16 +61,16 @@ kubectl get nodes
 
 # Node 제거
 ## Terraform 작업
-1. Terraform 파일 수정
+1. Terraform 파일 수정(실습용 Console서버)
 ```
 cd ~/terraform-course/Project
 vi vars.tf # "instance_count"를 3으로 변경
-terraform apply -auto-aprove
+terraform apply -auto-approve
 
 ```
 2. Hosts파일 셋팅
 ```
-vi doSetHosts.sh   # vm04제거 (필수아님)
+sudo vi /etc/hosts   # vm04제거 (필수아님)
 ```
 
 ## Kubespray 셋팅

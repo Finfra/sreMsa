@@ -1,9 +1,11 @@
 # Kubernetes Deploy Workshop
+* kubernetesBasic.md파일을 참고 하세요.
+
 ## 1. Deployment를 출력하시오.
 ```
 kubectl ~
 ```
-## 2. httpd이미지를 사용하는 h1 Deploy를 생성하시오 (80번 포트 Open)
+## 2. httpd 이미지를 사용하는 h1 Deploy를 생성하시오 (80번 포트 Open)
 ```
 kubectl ~
 ```

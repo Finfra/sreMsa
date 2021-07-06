@@ -17,8 +17,10 @@ sudo apt-get install helm
 
 
 ## First Helm Chart
-* 기본 helm chart생성
+* 기본 helm chart생성 (vm01에서 실행.)
 ```
+mkdir helmx
+cd helmx/
 helm create mychart
 helm install --dry-run --debug --generate-name ./mychart
 

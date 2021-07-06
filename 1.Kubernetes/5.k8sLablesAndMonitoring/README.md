@@ -23,6 +23,8 @@ kubectl ~
 ```
 
 ## 4. ubuntu이미지가 잘 못 만들어진 원인은?
+* kubernetes에서 사용하는 pod들은 기본적으로 detach(-d)방식으로 동작.
+
 
 ## 5. 아래의 yml파일을 가지고 다시 생성하시오.
 ```
@@ -48,12 +50,12 @@ kubectl ~
 ```
 
 
-## 6. pods의 Label이 app=ubuntu인 모든 파드를 출력하시오.
+## 6. pods의 Label이 server=ubuntu인 모든 파드를 출력하시오.
 ```
 kubectl ~
 ```
 
-## 7. n1,h1 pods의 label을 server=web, app=ubuntu  이라고 지정하시오.
+## 7. n1,h1 pods의 label을 server=ubuntu, app=web  이라고 지정하시오.
 ```
 kubectl ~
 kubectl ~
@@ -417,7 +419,7 @@ kubectl apply -f u1.yml
 kubectl get pods -l server=ubuntu
 ```
 
-## 7. n1,h1 pods의 label을 server=web, app=ubuntu  이라고 지정하시오.
+## 7. n1,h1 pods의 label을 server=ubuntu, app=web  이라고 지정하시오.
 ```
 kubectl label po/n1 app=web server=ubuntu
 kubectl label po/h1 app=web server=ubuntu

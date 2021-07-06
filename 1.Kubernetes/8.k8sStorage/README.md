@@ -1,12 +1,11 @@
-
 ## NFS 사용예
 ### nfs-common 설치(실습용 Console서버)
 ```
 for i in vm01 vm02 vm03;do
   ssh $i sudo apt -y install nfs-common
 done
-
 ```
+
 ### vm01 에서 NFS server작업
 ```
 apt update &&  apt-get install -y nfs-kernel-server
@@ -19,9 +18,9 @@ exportfs -ra
 exportfs
 ```
 
-### vm02,vm03 NFS Client 작업
+### vm01, vm02,vm03 NFS Client 작업
+* 안해도 상관 없음...단지 각 노드에서 접근이 가능함을 보여주는 예
 ```
-apt-get update && apt -y install nfs-common
 mount  vm01:/share  /mnt
 ```
 
@@ -55,6 +54,14 @@ kubectl apply -f nfspod.yml
 kubectl get pods nfsnginx
 kubectl describe po/nfsnginx
 ```
+
+## 확인
+```
+echo "hi"> /share/index.html
+kubectl  exec -it nfsnginx bash
+curl localhost/index.html
+```
+
 
 ### Persistent Volume와 Persistent Volume claim을 통한 NFS를 사용하는 Deploy생성
 * 주의 : 각 노드에서 "sudo apt -y install nfs-common" 명령 필수
