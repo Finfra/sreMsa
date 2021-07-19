@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScappleDocument Version="1.2" ID="DD9D0DED-1590-4E68-A298-470F432FF5ED">
+    <Notes>
+        <Note ID="18" FontSize="12.0" Position="423.636719,215.871552" Width="40.0" Shadow="Yes">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1"></Border>
+                <Fill>1.0 1.0 1.0</Fill>
+            </Appearance>
+            <String>vm01</String>
+            <ConnectedNoteIDs>19, 22</ConnectedNoteIDs>
+            <PointsToNoteIDs>19</PointsToNoteIDs>
+        </Note>
+        <Note ID="19" FontSize="12.0" Position="63.0,226.441864" Width="124.0" Shadow="Yes">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1"></Border>
+                <Fill>1.0 1.0 1.0</Fill>
+            </Appearance>
+            <String>실습용 Console서버</String>
+            <ConnectedNoteIDs>18, 20-21</ConnectedNoteIDs>
+            <PointsToNoteIDs>20-21</PointsToNoteIDs>
+        </Note>
+        <Note ID="20" FontSize="12.0" Position="133.285156,11.519989" Width="70.0" Shadow="Yes">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1"></Border>
+                <Fill>1.0 1.0 1.0</Fill>
+            </Appearance>
+            <String>DockerHUb</String>
+            <ConnectedNoteIDs>19, 22</ConnectedNoteIDs>
+            <PointsToNoteIDs>22</PointsToNoteIDs>
+        </Note>
+        <Note ID="21" FontSize="12.0" Position="285.078613,93.576454" Width="52.0" Shadow="Yes">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1"></Border>
+                <Fill>1.0 1.0 1.0</Fill>
+            </Appearance>
+            <String>Github</String>
+            <ConnectedNoteIDs>19, 22</ConnectedNoteIDs>
+            <PointsToNoteIDs>22</PointsToNoteIDs>
+        </Note>
+        <Note ID="22" FontSize="12.0" Position="509.091064,84.072464" Width="52.0" Shadow="Yes">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1"></Border>
+                <Fill>1.0 1.0 1.0</Fill>
+            </Appearance>
+            <String>ArgoCD</String>
+            <ConnectedNoteIDs>18, 20-21</ConnectedNoteIDs>
+            <PointsToNoteIDs>18</PointsToNoteIDs>
+        </Note>
+        <Note ID="23" FontSize="12.0" Position="439.491241,232.166031" Width="40.0" Shadow="Yes">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1"></Border>
+                <Fill>1.0 1.0 1.0</Fill>
+            </Appearance>
+            <String>vm02</String>
+        </Note>
+        <Note ID="24" FontSize="12.0" Position="453.345215,248.943207" Width="40.0" Shadow="Yes">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <Border Weight="1"></Border>
+                <Fill>1.0 1.0 1.0</Fill>
+            </Appearance>
+            <String>vm03</String>
+        </Note>
+    </Notes>
+    <BackgroundShapes></BackgroundShapes>
+    <Labels>
+        <Label IDs="19,21">3.SourceCodePush</Label>
+        <Label IDs="19,20">1.docker image push</Label>
+        <Label IDs="18,22">5.CD</Label>
+        <Label IDs="20,22">5.CD</Label>
+        <Label IDs="21,22">4.ArgoCD Setting</Label>
+        <Label IDs="18,19">2.yaml파일 원본 전송</Label>
+    </Labels>
+    <AutoFit>18-24</AutoFit>
+    <NoteStyles>
+        <Style Name="Bubble (Blue)" ID="1CD5BA8C-D324-4C94-866E-936C70A804D1" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.561855 0.71062 0.779401</BorderColor>
+            <FillColor>0.702319 0.888276 0.974252</FillColor>
+        </Style>
+        <Style Name="Bubble (Green)" ID="2124FEF4-957A-4EA8-BD50-5EDE109BDAA9" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.572684 0.758969 0.558154</BorderColor>
+            <FillColor>0.715855 0.948712 0.697692</FillColor>
+        </Style>
+        <Style Name="Bubble (Pink)" ID="F5BCEBDA-7DB7-4C2D-86D6-9AAC6EB84B7B" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.794796 0.560965 0.58607</BorderColor>
+            <FillColor>0.957566 0.766747 0.999616</FillColor>
+        </Style>
+        <Style Name="Bubble (Red)" ID="8BBFE475-F3B0-46B3-842B-94FE5DFDF398" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.794796 0.560965 0.58607</BorderColor>
+            <FillColor>0.993495 0.701207 0.732587</FillColor>
+        </Style>
+        <Style Name="Bubble (Yellow)" ID="B74B1A87-B887-4473-8538-8112E52BC990" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.798177 0.714184 0.522055</BorderColor>
+            <FillColor>0.997722 0.89273 0.652569</FillColor>
+        </Style>
+        <Style Name="Red Text" ID="38A7677B-F8AE-4642-B4DE-74C643E61A7E" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="Yes" AffectNoteBody="No" AffectFade="No">
+            <TextColor>0.985948 0.0 0.026951</TextColor>
+        </Style>
+        <Style Name="Title Text" ID="916F1FFE-CC6E-46C5-BCA2-9B5A1F46398E" AffectFontStyle="Yes" AffectAlignment="Yes" AffectTextColor="No" AffectNoteBody="No" AffectFade="No">
+            <FontSize>28.0</FontSize>
+            <IsBold>Yes</IsBold>
+        </Style>
+    </NoteStyles>
+    <UISettings>
+        <BackgroundColor>0.999999 0.999974 0.999991</BackgroundColor>
+        <DefaultFont>D2Coding</DefaultFont>
+        <DefaultTextColor>0.0 0.0 0.0</DefaultTextColor>
+        <NoteXPadding>8.0</NoteXPadding>
+    </UISettings>
+    <PrintSettings PaperSize="595.0,842.0" LeftMargin="72.0" RightMargin="72.0" TopMargin="90.0" BottomMargin="90.0" PaperType="iso-a4" Orientation="Portrait" HorizontalPagination="Clip" VerticalPagination="Auto" ScaleFactor="1.0" HorizontallyCentered="Yes" VerticallyCentered="Yes" Collates="Yes" PagesAcross="1" PagesDown="1"></PrintSettings>
+</ScappleDocument>
