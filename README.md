@@ -24,7 +24,7 @@ git checkout 202107
 ### Lab1-4. Kubepray를 통한 K8s 구성 
 ### Lab1-5. K8s 작동 테스트
 
-# Lab2. Kubernetes
+# [Lab2. Kubernetes](./Lab2.Kubernetes/)
 * Kubernetes 기본 기능 실습
 ## Lab2-1. 개념이해를 위한 쿠버네티스 학습 시뮬레이터 사용 실습
 ## Lab2-2. 노드 관리 실습
@@ -35,19 +35,19 @@ git checkout 202107
 ## Lab2-7. Kubernetes 스토리지
 ## Lab2-8. Container Deploy(CI/CD에서 사용할 Java 동작 OS) 실습
 
-# Lab3. Istio
+# [Lab3. Istio](./Lab3.Istio/)
 * Istio를 통한 Service Mesh 구현 실습
 ## Lab3-1. Istio 셋팅 실습
 ## Lab3-2. Istio Traffic 관리 실습
 ## Lab3-3. 인증, 권한 부여 및 서비스 통신 암호화를 관리 실습
 ## Lab3-4. Istio를 통한 K8s 클러스터 접근 실습(외부에서 내부로 접근)
 
-# Lab4. Argo CD
+# [Lab4. Argo CD](./Lab4.ArgoCd/)
 * Argo CD를 통한 GitOps 구현 실습
 ## Lab4-1. Argo CD install
 ## Lab4-1. Argo CD를 통한 Canary배포 실습
 
-# Lab5. zipkin
+# [Lab5. zipkin](./Lab5.Zipkin/)
 * ZipKin을 통한 MSA Monitoring 실습
 ## Lab5-1. zipkin/jaeger 셋팅 실습
 ## Lab5-2. Zipkin을 이용한 MSA 환경에서 분산 트렌젝션의 추적
