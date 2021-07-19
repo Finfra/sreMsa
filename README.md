@@ -15,7 +15,7 @@ git checkout 202107
 
 
 
-# Lab1. 사전 실습 환경 세팅
+# [Lab1. 사전 실습 환경 세팅](/Lab1.Kubespray/)
 ## Lab1-1~3. Terraform으로 EC2 인스턴스 생성
 ### Lab1-1. 실습용 Terraform Instance 구성 
 ### Lab1-2. IAM Key생성 

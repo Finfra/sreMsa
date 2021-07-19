@@ -1,4 +1,4 @@
-# Agenda
+# Lab2. Kubernetes
 | Folder | Contents                                                                                                    |
 |-|-                                                                                                                   |
 | 1.installWithKubespray               | Kubespray로 Ansible기반 Kubernetes 설치하기                                   |
