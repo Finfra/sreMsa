@@ -1,3 +1,20 @@
+# Usage
+```
+cd
+git clone https://github.com/Finfra/sreMsa
+cd sreMsa
+```
+
+## 주의) 202107이전에 수업들었던 분들은 아래 방식으로 사용하세요.
+```
+cd
+git clone https://github.com/Finfra/sreMsa
+cd sreMsa
+git checkout 202107
+```
+
+
+
 # Lab1. 사전 실습 환경 세팅
 ## Lab1-1~3. Terraform으로 EC2 인스턴스 생성
 ### Lab1-1. 실습용 Terraform Instance 구성 
