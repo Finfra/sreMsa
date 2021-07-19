@@ -112,7 +112,17 @@ ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
   cluster.yml
 ```
 
-3. instance 추가확인
+3. instance 확인
+```
+kubectl get nodes
+```
+
+4. Kubernetes단에서 노드 제거
+```
+kubectl delete node vm04
+```
+
+5. instance 제거 확인
 ```
 kubectl get nodes
 ```

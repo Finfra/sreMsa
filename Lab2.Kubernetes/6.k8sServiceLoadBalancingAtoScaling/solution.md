@@ -1,7 +1,4 @@
-# Kubernetes 서비스, 로드발렌싱, AutoScaling
-* ./Lab1.Kubespray/1.KubernetesBasic/README.md 파일을 참고 하여 문제를 푸세요.
-*  답은 Solution.md 파일에 있습니다.
-
+# Solution
 ## 1. Deployment를 출력하시오.
 ```
 kubectl get deploy
@@ -24,19 +21,23 @@ kubectl get deployments
 kubectl get pods -o wide
 kubectl describe deployments/h1
 ```
+* kubectl get deployment h1 -o yaml > h1.yaml
+
 
 ## 5. replicasets을 확인하시오.
 ```
-kubectl ~
+kubectl get rs
 ```
 
 ## 6. replicasets의 최대 확장 갯수를 10으로 지정하시오.
 ```
-kubectl ~
+kubectl autoscale rs h1-5f56cfdc48 --max=10
 ```
+* kubectl get rs h1-5f56cfdc48 -o yaml >h1rs.yaml
 
 
 ## 7. replicasets의 최대 확장 갯수를 확인하시오.
 ```
 kubectl describe horizontalpodautoscalers.autoscaling h1-5f56cfdc48
 ```
+* kubectl get horizontalpodautoscalers.autoscaling h1-5f56cfdc48 -o yaml > h1rsMax.yaml

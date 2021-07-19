@@ -2,6 +2,7 @@
 
 1. Hosts파일 셋팅
 ```
+cd ~/Lab1.Kubespray/Lab3.InstanceForKubernetes
 bash doSetHosts.sh
 ```
 

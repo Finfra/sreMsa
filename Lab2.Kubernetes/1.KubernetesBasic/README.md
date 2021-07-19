@@ -18,6 +18,7 @@ sudo chmod 777 /var/run/docker.sock
 ```
 docker
 ```
+
 2. Docker image검색
 ```
 docker search nginx
@@ -76,6 +77,7 @@ docker images
 2. https://hub.docker.com 에 로그인하고 dockerhub계정을 확인합니다.
 3. Git Clone
 ```
+cd
 git clone https://github.com/Finfra/dockers
 cd dockers/ubuntu_basic
 cat Dockerfile
@@ -161,8 +163,6 @@ kubectl delete services/nginx
 
 
 # Node Scale In, out 등
-## Replication set 4개로 늘리기
-
 ## Replication set 4개로 늘리기
 ```
 kubectl scale deployment nginx --replicas=4
