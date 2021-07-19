@@ -1,12 +1,11 @@
 # Lab1. 사전 실습 환경 세팅
-## Lab1-1. Terraform으로 EC2 인스턴스 생성
-### Lab1-1-1. 실습용 ConsInstance 구성 
-### Lab1-1-2. IAM Key생성 
-### Lab1-1-3. Terraform으로 K8s용으로 사용할 Instance 생성
-
-## Lab1-2. Ansible+Terraform Provisiong(Kubespray)
-### Lab1-2-1. Kubepray를 통한 K8s 구성 
-### Lab1-2-1. K8s 작동 테스트
+## Lab1-1~3. Terraform으로 EC2 인스턴스 생성
+### Lab1-1. 실습용 Terraform Instance 구성 
+### Lab1-2. IAM Key생성 
+### Lab1-3. Terraform으로 K8s용으로 사용할 Instance 생성
+## Lab1-4~5. Ansible+Terraform Provisiong(Kubespray)
+### Lab1-4. Kubepray를 통한 K8s 구성 
+### Lab1-5. K8s 작동 테스트
 
 # Lab2. Kubernetes
 * Kubernetes 기본 기능 실습
