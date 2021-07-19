@@ -10,6 +10,10 @@ curl https://raw.githubusercontent.com/Finfra/sreMsa/main/Lab1.Kubespray/Lab1.In
 
 # Step3. 설치 확인
 ```
-terraform -version 
+terraform -version
 ansible --version
 ```
+
+# cf) 현재 폴더에 있는 스크립트에 대해.
+* 현재 폴더에 있는 스크립트는 강사용 스크립트로써 여러 인스턴스를 한번에 Terraform으로 Ansible과 Terraform을 설치하는 스크립트 입니다.
+* Terraform 사용자는 사용하셔도 무방합니다.
