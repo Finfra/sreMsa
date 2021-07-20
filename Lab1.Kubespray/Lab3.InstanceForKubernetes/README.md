@@ -1,6 +1,18 @@
 # Kubernetes Install With Kubespray
+1. OS key 생성 [있으면 생략]
+```
+ssh-keygen -f ~/.ssh/id_rsa -N ''
+```
+* cf) 설치 대상 host에 Public-key 배포
+    ssh-copy-id root@10.0.2.10
+    
+2. Terrform 으로 host 셋팅
+```
+terraform apply -auto-aprove
+```
 
-1. Hosts파일 셋팅
+
+3. Hosts파일 셋팅
 ```
 cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes
 bash doSetHosts.sh
@@ -13,20 +25,13 @@ bash doSetHosts.sh
 54.75.118.154  vm03
 ```
 
-2. git Clone
+4. git Clone
 ```
 cd
 git clone https://github.com/kubernetes-sigs/kubespray
 ```
 
-3. OS key 생성 [있으면 생략]
-```
-ssh-keygen -f ~/.ssh/id_rsa -N ''
-```
-* cf) 설치 대상 host에 Public-key 배포
-    ssh-copy-id root@10.0.2.10
-
-4. inventory파일 생성
+5. inventory파일 생성
 ```
 cd kubespray
 cat > inventory/inventory.ini  <<EOF
@@ -56,7 +61,7 @@ kube-node
 EOF
 ```
 
-5. kubesparyInstall.sh 실행
+6. kubesparyInstall.sh 실행
 ```
  wget https://gist.githubusercontent.com/nowage/a169b11372bf6a708bcb475d606471e2/raw/daa0fef590005ed5a70641e996c3c7f5a1a81972/k8sInstallByKubesray.sh
 bash k8sInstallByKubesray.sh
