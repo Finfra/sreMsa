@@ -24,7 +24,7 @@ sudo apt update
 
 
 apt -y install docker.io ansible unzip mysql-client
-usermod -G docker
+usermod -G docker ubuntu
 
 
 # install pip
