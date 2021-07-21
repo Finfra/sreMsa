@@ -1,4 +1,15 @@
 # Kubernetes Install With Kubespray
+0. 변수 셋팅 파일 생성 후 실행
+* 아래와 같은 내용을 ~/.bashrc에 추가하고 실행해 줍니다.  
+```
+vi ~/.bashrc
+    export TF_VAR_AWS_ACCESS_KEY="xxxxxxx"
+    export TF_VAR_AWS_SECRET_KEY="xxxxxxxxxxxxxxx"
+    export TF_VAR_AWS_REGION="eu-west-1"
+
+bash ~/.bashrc
+```
+
 1. OS key 생성 [있으면 생략]
 ```
 ssh-keygen -f ~/.ssh/id_rsa -N ''
