@@ -48,6 +48,7 @@ echo external access : "$GATEWAY_URL/productpage"
 ```
 
 * productpage에 100번 접근하기
+  - 실패하지 않았음을 확인하고, 향후 4.Dashboard에서 트레픽을 확인합니다. 
 ```
 for i in $(seq 1 100); do curl -s -o /dev/null "http://$GATEWAY_URL/productpage"; done
 ```
