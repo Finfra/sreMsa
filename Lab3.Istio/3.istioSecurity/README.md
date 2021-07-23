@@ -1,4 +1,6 @@
 # Mutual TLS Migration
+* Istio를 통해 설치된 TLS를 지원하는 노드들과 Istio를 통해 설치되지 않는 TLS를 지원하지 않는 노들을 설치합니다. 또한, 초기 TLS를 지원하는 모든 노드들의 TLS기능을 끄고 모두 통신이 가능한지 확인 후 Istio를 통해 설치된 노드들의 TLS를 켜서 TLS를 지원하지 않는 노드들의 통신이 불가능함을 확인하여 Istio의 TLS보안기능이 잘 작동함을 확인합니다. 
+
 * https://istio.io/latest/docs/concepts/security/
 ![security overview](https://istio.io/latest/docs/concepts/security/overview.svg)
 * https://github.com/mrha99/istio-security
