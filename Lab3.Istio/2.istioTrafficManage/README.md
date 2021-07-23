@@ -1,4 +1,5 @@
 # Istio Traffic 관리 실습
+* 사이드카와 함께 배포되는 컨테이너들을 배포하고 외부에서 들어오는 트래픽이 잘 작동하는지 확인하는 예제입니다. 
 ## Deploy the sample application
 * 1. Bookinfo sample application
 ```
