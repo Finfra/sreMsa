@@ -1,4 +1,5 @@
 # Argo CD Deploy
+* Github에 Kubernetes 프로비저닝 스크립트를 업로드하고, ArgoCd를 통해 배포하는 것을 연습합니다.
 ## Git 리포지토리에서 응용 프로그램 만들기 via argocd cli
 ```
 argocd app create guestbook --repo https://github.com/argoproj/argocd-example-apps.git --path guestbook --dest-server https://kubernetes.default.svc --dest-namespace default
@@ -23,7 +24,7 @@ kubectl get applications.argoproj.io -n  argocd
 argocd app --help
 argocd app  history  guestbook
 argocd app sync guestbook
-argocd app  history  guestbook 
+argocd app  history  guestbook
 ```
 
 * 브라우저로 guestbook확인 하기위해 NodePort로 변환
@@ -55,7 +56,7 @@ kubectl get svc -n argocd|grep argocd-server
 kubectl create namespace prj2
 ```
 * 5. Argo CD Web UI 접속 후 좌측 상단의 "+ NEW APP" 버튼 클릭
-  - Path에 helm-guestbook 입력 주의 
+  - Path에 helm-guestbook 입력 주의
 
 ## Git 소스 변경후 Deploy실습
 * 1. Fork뜬 자신의 UI의 소스 수정(github UI에서 수정 가능하나 가급적 clone떠서 작업할 것)

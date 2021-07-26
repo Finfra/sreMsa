@@ -1,4 +1,5 @@
 # Argo CD Get Started
+* GitOps 툴 중의 하나인 ArgoCd를 설치하고 간단한 테스트를 진행합니다. 
 * ArgoCd Home : https://argoproj.github.io/argo-cd/
 * ArgoCd Get Started :  https://argoproj.github.io/argo-cd/getting_started/
 

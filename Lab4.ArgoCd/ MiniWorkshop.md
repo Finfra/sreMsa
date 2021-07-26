@@ -1,19 +1,22 @@
-# 1. GitRepository생성.
+# ArgoCd Mini Workshop
+* Git Repository생성부터 Docker Container생성과 ArgoCd배포까지 일련의 작업들을 진행해 봅니다.
+
+## 1. GitRepository생성.
 * cf) git clone https://github.com/xxxxxx/MyMSA
 
-# 2. Pc나 실습서버에 Clone
+## 2. Pc나 실습서버에 Clone
 ```
 git clone https://github.com/xxxxxx/MyMSA
 ```
 
-# 3. Docker Image만들기.
-## Sample docker build  구하기.
+## 3. Docker Image만들기.
+### Sample docker build  구하기.
 ```
 cd
 git clone https://github.com/nowage/dockers
 ```
 
-# 4. MyDocker Image만들기.
+## 4. MyDocker Image만들기.
 ```
 cd
 cp -r dockers/nginx2/ MyMSA/mynginx
@@ -23,7 +26,7 @@ docker images |grep myn
 ```
 * MyMSA/mynginx/README.md에 usage 업데이트
 
-# 5. Docker image push
+## 5. Docker image push
 ```
 docker run -d --name n1 -p 8888:80 nowage/mynginx:0.1
 curl localhost:8888
@@ -33,7 +36,7 @@ docker login
 docker push xxxxxx/mynginx:0.1
 ```
 
-# 6. yaml artifact 만들기.
+## 6. yaml artifact 만들기.
 ```
 kubectl create deploy  --image=nowage/mynginx:0.1 n1
 kubectl expose deploy n1 --type="NodePort" --port 80
@@ -54,22 +57,22 @@ scp vm01:/home/ubuntu/n1*.yaml ./
 
 ```
 
-# 7. github로 push
+## 7. github로 push
 ```
 git add -A
 git commit -m "initial commit"
-# git config --global user.name "Steve J. South(NamJungGu) "
-# git config --global user.email "nowage@gmail.com"
+## git config --global user.name "Steve J. South(NamJungGu) "
+## git config --global user.email "nowage@gmail.com"
 git commit -m "initial commit"
 git push
 ```
 
-# 8. Namespace생성
+## 8. Namespace생성
 * vm01
 ```
 kubectl create namespace n1
 ```
 
-# 9. argocd UI접근해서
+## 9. argocd UI접근해서
 * Create new
 * Sync

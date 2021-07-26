@@ -1,4 +1,5 @@
 # Istio 설치
+* Kubernetes의 트래픽 관리와 보안기능을 제공하는 Istio설치를 진행합니다.
 * [Getting Started](https://istio.io/latest/docs/setup/getting-started/)
 ## Istio Download and Setting
 ```

@@ -1,4 +1,5 @@
 # zipkin 셋팅 실습
+* Zipkin Server단 설치를 진행합니다.
 * Quick Start : https://zipkin.io/pages/quickstart
 ## 1. Docker로 실행
 ```
