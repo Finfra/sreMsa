@@ -23,7 +23,7 @@ sudo apt update
 
 
 
-apt -y install docker.io ansible unzip mysql-client
+apt -y install docker.io unzip mysql-client
 usermod -G docker ubuntu
 
 
@@ -35,10 +35,6 @@ python3.8 get-pip.py
 
 python3.8 -m pip install --user --upgrade pip
 
-# install awscli and ebcli
-python3.8 -m pip install  awscli
-python3.8 -m pip install  awsebcli
-
 [[ -f /usr/bin/python ]]&&rm /usr/bin/python
 ln -s /usr/bin/python3.8 /usr/bin/python
 [[ -f /usr/bin/pip ]]&&rm /usr/bin/pip
@@ -47,10 +43,14 @@ ln -s /usr/local/bin/pip3.8 /usr/bin/pip
 ln -s /usr/local/bin/pip3.8 /usr/bin/pip3
 
 
-pip3.8 install ansible
+python3.8 -m pip install ansible
+
+# install awscli and ebcli
+python3.8 -m pip install  awscli
+python3.8 -m pip install  awsebcli
 
 
-# complete -C aws_completer aws
+complete -C aws_completer aws
 
 # for Language Setting
 cat <<EOF>> /etc/bash.bashrc

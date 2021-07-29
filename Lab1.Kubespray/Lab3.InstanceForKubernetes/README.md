@@ -1,6 +1,6 @@
 # Kubernetes Install With Kubespray
 0. 변수 셋팅 파일 생성 후 실행
-* 아래와 같은 내용을 ~/.bashrc에 추가하고 실행해 줍니다.  
+* 아래와 같은 내용을 ~/.bashrc에 추가하고 실행해 줍니다.
 ```
 vi ~/.bashrc
     export TF_VAR_AWS_ACCESS_KEY="xxxxxxx"
@@ -16,9 +16,12 @@ ssh-keygen -f ~/.ssh/id_rsa -N ''
 ```
 * cf) 설치 대상 host에 Public-key 배포
     ssh-copy-id root@10.0.2.10
-    
+
 2. Terrform 으로 host 셋팅
 ```
+cd
+git clone https://github.com/Finfra/sreMsa
+cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes
 terraform apply -auto-aprove
 ```
 
@@ -83,6 +86,7 @@ cat > k8sInstallByKubesray.sh <<EOF
 if [ ! -f requirements.txt ]; then
     echo "go to kubespray install folder"
 else
+    sudo python3 -m pip install ansible==3.4.0
     sudo pip3 install -r requirements.txt
     sudo pip3  install ansible netaddr jinja2
     ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
@@ -90,7 +94,8 @@ else
       cluster.yml
 fi
 EOF
-bash k8sInstallByKuberspray.sh
+
+bash k8sInstallByKubespray.sh
 ```
 
 # Admin
