@@ -3,7 +3,7 @@
 * Quick Start : https://zipkin.io/pages/quickstart
 ## 1. Docker로 실행
 ```
-docker run -d -p 9411:9411 openzipkin/zipkin
+docker run -d -p 9411:9411 --rm --name zipkin openzipkin/zipkin
 ```
 
 ## 2. 접근
