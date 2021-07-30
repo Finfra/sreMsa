@@ -9,11 +9,12 @@ kubectl get applications.argoproj.io -n  argocd
 * 실패 이유는? 실패가 아님 동기화가 안된 것임.
 
 ## 애플리케이션 동기화 (배포) via argocd cli
+* ArgoCd의 Cli 인터페이스로 App을 동기화하고 확인하는 예제 입니다.
 ```
 argocd app sync guestbook
 kubectl get applications.argoproj.io -n  argocd
 ```
-* 동기화
+* 1. 동기화
 ```
 argocd app sync guestbook
 kubectl get applications.argoproj.io -n  argocd
@@ -40,7 +41,9 @@ argocd app sync guestbook
 kubectl get svc
 ```
 
-## Git 리포지토리에서 응용 프로그램 만들기 via UI
+## Git 레포지토리에서 응용 프로그램 만들기 via Web UI
+* 웹 UI를 통해서도 App을 배포하고 동기화 할 수 있습니다. 본 예제는 Argo CD의 Web UI를 통해 배포 셋을 만드는 예입니다.
+
 * 0. Argo CD Web UI 접근
 ```
 kubectl get svc -n argocd|grep argocd-server
@@ -59,6 +62,8 @@ kubectl create namespace prj2
   - Path에 helm-guestbook 입력 주의
 
 ## Git 소스 변경후 Deploy실습
+* 본 예제는 위해서 Argo CD의 Web UI를 통해 만들어진 배포 셋을 통해 배포를 진행하는 예입니다.
+
 * 1. Fork뜬 자신의 UI의 소스 수정(github UI에서 수정 가능하나 가급적 clone떠서 작업할 것)
     https://github.com/깃-아이디/argocd-example-apps/blob/master/helm-guestbook/values.yaml
       replicaCount: 1 ==> replicaCount: 2 로 수정
