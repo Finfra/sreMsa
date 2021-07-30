@@ -1,46 +1,53 @@
 # Zipkin을 이용한 MSA 환경에서 분산 트렌젝션의 추적
-## Spring Boot 실습
-* Zipkin으로 로그를 전달할 Spring Boot를 동작 시킬 Docker Container를 만들고 테스트해 봅니다.
-1. 실습용 Console서버에 Spring Boot를 동작시킬 Dokcer Container를 생성하고 간단한 Spring Boot 예제를 실행
+* Zipkin에 로그를 저장하는 Spring Boot를 실행하고 Zipkin에 로그가 저장되는지 확인합니다.
+
+1. 실습용 Console서버에 접속하여 maven을 설치합니다.
 ```
-mkdir ~/df
-chmod 777 ~/df
-docker run -it --name m1 --rm -v  ~/df:/home/developer/df -p 8080:8080 openkbs/jdk-mvn-py3
-#docker exec -it m1 bash
-  cd df
-  git clone https://github.com/spring-guides/gs-spring-boot
-    # http://vm01:8080/actuator/health
-    cd ~/df/gs-spring-boot/complete
-    ./gradlew bootRun
-    # 터미널 창을 닫지 않고 그대로 둡니다.
+sudo apt install openjdk-11-jre-headless
+sudo apt install maven
 ```
 
-![](img/s1.png)
 
-2. Spring Boot 작동 테스트를 위해 두번째 터미널로 실습용 Console서버에 접속합니다.
+2. 소스코드 준비
+* https://github.com/openzipkin/brave-example 에서 clone을 받습니다.
 ```
-curl localhost:8080
-```
-
-![](img/s2.png)
-
-3. 위 1번 접속 절차에서 접속 터미널에서 Ctl+c를 눌러 Spring Boot를 종료해 줍니다.
-
-
-
-## Spring Boot 기반 App에서 Zipkin으로 정보 전달 (fail)
-1.
-```
-docker exec -it m1 bash
-  cd df
-  git clone https://github.com/openzipkin/brave-example
-  cd ~/df/brave-example/webmvc4-boot
-  vi ./src/main/java/brave/example/TracingAutoConfiguration.java
-      # zipkin 주소 수정
-  mvn clean spring-boot:run
+cd
+git clone https://github.com/openzipkin/brave-example
 ```
 
-2. dd
+3. Front End Server를 시작합니다.
 ```
-curl 127.0.0.1:9000/api
+cd brave-example/webmvc4-boot/
+mvn compile exec:java -Dexec.mainClass=brave.example.Frontend
 ```
+
+4. Front End Server에 접근합니다.
+  - http://console:8081/
+  - backend Server가 없어서 정상 작동하고 있지 않음.
+
+![](img/4.png)
+
+
+5. Zipkin 서버에 접속하여 + 버튼 클릭
+
+![](img/5.png)
+
+6. ServiceName 클릭
+
+![](img/6.png)
+
+7. frontend 클릭
+
+![](img/7.png)
+
+8. Run Query 버튼 클릭
+
+![](img/8.png)
+
+9. 아래의 Show 버튼 클릭
+
+![](img/9.png)
+
+10. 문제 원인 파악
+
+![](img/10.png)
