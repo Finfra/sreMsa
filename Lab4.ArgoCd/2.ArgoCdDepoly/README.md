@@ -58,7 +58,7 @@ kubectl create namespace prj2
 * 5. Argo CD Web UI 접속 후 좌측 상단의 "+ NEW APP" 버튼 클릭
   - Application Name : guestbook2
   - Project : default
-  - SYNC POLICY : Manual
+  - SYNC POLICY : Autmatic
   - PRUNE PROPAGATION POLICY : background
   - Repository URL : https://github.com/xxxx/argocd-example-apps   ← xxx는 본인의 github 계정
   - Path : helm-guestbook
