@@ -10,10 +10,6 @@ kubectl get applications.argoproj.io -n  argocd
 
 ## 애플리케이션 동기화 (배포) via argocd cli
 * ArgoCd의 Cli 인터페이스로 App을 동기화하고 확인하는 예제 입니다.
-```
-argocd app sync guestbook
-kubectl get applications.argoproj.io -n  argocd
-```
 * 1. 동기화
 ```
 argocd app sync guestbook
@@ -32,7 +28,7 @@ argocd app  history  guestbook
 ```
 kubectl patch svc  guestbook-ui  -p '{"spec": {"type": "NodePort"}}'
 ```
-  - http://vm01:포트입력
+  - http://vm01:포트입력  # 포트 번호는 argocd app sync guestbook명령의 결과의 URL확인
 
 * service 제거후 sync
 ```
@@ -41,6 +37,7 @@ argocd app sync guestbook
 kubectl get svc
 ```
 
+
 ## Git 레포지토리에서 응용 프로그램 만들기 via Web UI
 * 웹 UI를 통해서도 App을 배포하고 동기화 할 수 있습니다. 본 예제는 Argo CD의 Web UI를 통해 배포 셋을 만드는 예입니다.
 
@@ -48,7 +45,7 @@ kubectl get svc
 ```
 kubectl get svc -n argocd|grep argocd-server
 ```
-  - 브라우저에서 접속후 로그인 [  argocd cli 로그인 할때 정보와 같음. ]
+  - 브라우저에서 접속후 로그인 [  argocd cli 로그인 할때 정보와 같음. 비번 변경했으면 변경한 비번 사용 ]
 
 * 1. github 사이트에 로그인
 * 2. https://github.com/argoproj/argocd-example-apps.git 접속해서 Fork뜨기.
@@ -59,7 +56,15 @@ kubectl get svc -n argocd|grep argocd-server
 kubectl create namespace prj2
 ```
 * 5. Argo CD Web UI 접속 후 좌측 상단의 "+ NEW APP" 버튼 클릭
-  - Path에 helm-guestbook 입력 주의
+  - Application Name : guestbook2
+  - Project : default
+  - SYNC POLICY : Manual
+  - PRUNE PROPAGATION POLICY : background
+  - Repository URL : https://github.com/xxxx/argocd-example-apps   ← xxx는 본인의 github 계정
+  - Path : helm-guestbook
+  - Cluster URL : https://kubernetes.default.svc 선택
+  - Namespace : prj2
+  - Create 버튼 클릭
 
 ## Git 소스 변경후 Deploy실습
 * 본 예제는 위해서 Argo CD의 Web UI를 통해 만들어진 배포 셋을 통해 배포를 진행하는 예입니다.

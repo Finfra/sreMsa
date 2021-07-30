@@ -1,5 +1,5 @@
 # Argo CD Get Started
-* GitOps 툴 중의 하나인 ArgoCd를 설치하고 간단한 테스트를 진행합니다. 
+* GitOps 툴 중의 하나인 ArgoCd를 설치하고 간단한 테스트를 진행합니다.
 * ArgoCd Home : https://argoproj.github.io/argo-cd/
 * ArgoCd Get Started :  https://argoproj.github.io/argo-cd/getting_started/
 
@@ -9,7 +9,7 @@
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
-* 확인
+* 확인 :  아래 명령을 계속 실행하면서 Available이 모두 1이 되도록 기다립니다.
 ```
 kubectl get all -n argocd
 ```
@@ -41,7 +41,7 @@ echo $Pass
 ```
 kubectl get svc argocd-server -n argocd
 cat /etc/hosts |grep vm01
-argocd login vm01.cluster.local:31168  # Username: admin
+argocd login vm01.cluster.local:31168 # 포트번호는 위 kubectl g Uset svc명령에서 확인 가능, uername: admin
                                       # echo $Pass 쳐보면 나옴
 argocd account update-password   # 비번수정
 ```
@@ -51,10 +51,9 @@ argocd account update-password   # 비번수정
 kubectl get svc argocd-server -n argocd
 ```
 
-- 실습용 Console서버에서도 로그인 가능함.
+- 실습용 Console서버에서도 로그인 가능함.[argocd 설치 필요]
 ```
 argocd login vm01:30360
-
 ```
 
 ## 5. 앱을 배포 할 클러스터 등록 (Optional)
