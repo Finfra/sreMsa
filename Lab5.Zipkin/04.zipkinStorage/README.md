@@ -148,3 +148,8 @@ mvn compile exec:java -Dexec.mainClass=brave.example.Frontend
 12. zipkin이 저장한 로그 확인
 
 ![](img/13.png)
+
+13. 실습용 Console서버에 접속하여 Zipkin을 종료해 줍니다.
+```
+ps -ef|grep java|grep -v grep|awk '{printf $2}'
+```
