@@ -23,7 +23,8 @@ sudo chmod +x /usr/local/bin/argocd
 
 ```
 
-## 3. Access The Argo CD API Server 구동 [vm01, 필수 아님]
+## 3. Access The Argo CD API Server 구동
+* vm01에서 실행 Panding되면 ctl+c
 ```
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 kubectl port-forward svc/argocd-server -n argocd 8080:443
@@ -41,7 +42,7 @@ echo $Pass
 ```
 kubectl get svc argocd-server -n argocd
 cat /etc/hosts |grep vm01
-argocd login vm01.cluster.local:31168 # 포트번호는 위 kubectl g Uset svc명령에서 확인 가능, uername: admin
+argocd login vm01.cluster.local:31168 # 포트번호는 위 kubectl ge Uset svc명령에서 확인 가능, uername: admin
                                       # echo $Pass 쳐보면 나옴
 argocd account update-password   # 비번수정
 ```
