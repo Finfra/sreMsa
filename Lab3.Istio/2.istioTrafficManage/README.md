@@ -1,9 +1,9 @@
 # Istio Traffic 관리 실습
-* 사이드카와 함께 배포되는 컨테이너들을 배포하고 외부에서 들어오는 트래픽이 잘 작동하는지 확인하는 예제입니다. 
+* 사이드카와 함께 배포되는 컨테이너들을 배포하고 외부에서 들어오는 트래픽이 잘 작동하는지 확인하는 예제입니다.
 ## Deploy the sample application
 * 1. Bookinfo sample application
 ```
-cd ~/cd istio-1.*
+cd ~/istio-1.*
 cat samples/bookinfo/platform/kube/bookinfo.yaml
 kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
 ```
@@ -49,7 +49,7 @@ echo external access : "$GATEWAY_URL/productpage"
 ```
 
 * productpage에 100번 접근하기
-  - 실패하지 않았음을 확인하고, 향후 4.Dashboard에서 트레픽을 확인합니다. 
+  - 실패하지 않았음을 확인하고, 향후 4.Dashboard에서 트레픽을 확인합니다.
 ```
-for i in $(seq 1 100); do curl -s -o /dev/null "http://$GATEWAY_URL/productpage"; done
+for i in $(seq 1 100); do curl -s -o /dev/null "$GATEWAY_URL/productpage"; done
 ```

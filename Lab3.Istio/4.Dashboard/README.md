@@ -1,5 +1,5 @@
 # Istio를 통한 K8s 클러스터 접근 실습(외부에서 내부로 접근)
-* Istio의 DashBoard 기능을 통해 외부에서 접근하는 트레픽에 대한 플로우를 확인합니다. 
+* Istio의 DashBoard 기능을 통해 외부에서 접근하는 트레픽에 대한 플로우를 확인합니다.
 ## Dashboard start
 ```
 kubectl get namespace
@@ -81,22 +81,4 @@ for i in $(seq 1000);do curl -s -o /dev/null vm01:$NodePort/xxx; done
 sleep 60 # istio Web UI에서 작동 확인
 for i in $(seq 1000);do curl -s -o /dev/null vm01:$NodePort; done
 sleep 60 # istio Web UI에서 작동 확인
-```
-
-### Resource제거
-```
-kubectl delete -f h1_inj.yaml
-kubectl delete svc/h1 -n prj1
-kubectl delete namespace prj1
-```
-
-
-## istio 삭제
-```
-
-kubectl delete -f samples/addons
-istioctl manifest generate --set profile=demo | kubectl delete --ignore-not-found=true -f -
-kubectl delete namespace istio-system
-kubectl label namespace default istio-injection-
-
 ```
