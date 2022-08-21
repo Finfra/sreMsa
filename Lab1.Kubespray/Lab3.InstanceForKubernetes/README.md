@@ -88,7 +88,7 @@ else
     sudo pip3 install -r requirements.txt
     sudo pip3  install ansible netaddr jinja2
     ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
-      -i inventory/inventory.ini  \
+      -i inventory/inventory.ini \
       cluster.yml
 fi
 EOF
