@@ -5,7 +5,7 @@
 vi ~/.bashrc
     export TF_VAR_AWS_ACCESS_KEY="xxxxxxx"
     export TF_VAR_AWS_SECRET_KEY="xxxxxxxxxxxxxxx"
-    export TF_VAR_AWS_REGION="eu-west-1"
+    export TF_VAR_AWS_REGION="ap-northeast-2"
 
 bash ~/.bashrc
 ```
@@ -22,12 +22,15 @@ ssh-keygen -f ~/.ssh/id_rsa -N ''
 cd
 git clone https://github.com/Finfra/sreMsa
 cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes
+terraform init
 terraform apply -auto-aprove
 ```
 
 
 3. Hosts파일 셋팅
 ```
+aws configure
+  # security setting
 cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes
 bash doSetHosts.sh
 ```
@@ -48,7 +51,7 @@ git clone https://github.com/kubernetes-sigs/kubespray
 5. inventory파일 생성
 ```
 cd kubespray
-cat > inventory/inventory.ini  <<EOF
+cat > inventory/inventory.ini <<EOF
 [all]
 vm01 etcd_member_name=etcd1
 vm02 etcd_member_name=etcd2
@@ -77,7 +80,7 @@ EOF
 
 6. kubesparyInstall.sh 실행
 ```
- wget https://gist.githubusercontent.com/nowage/a169b11372bf6a708bcb475d606471e2/raw/daa0fef590005ed5a70641e996c3c7f5a1a81972/k8sInstallByKubesray.sh
+wget https://gist.githubusercontent.com/nowage/ce734b2ce0ad647f1c6124b126c191db/raw/4b05e6a486590e882625f73565d5739839ed872a/k8sInstallByKubesray.sh
 bash k8sInstallByKubesray.sh
 ```
 * ==
