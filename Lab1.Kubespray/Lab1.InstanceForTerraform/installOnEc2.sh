@@ -1,7 +1,7 @@
 
 # Version Setting
-TERRAFORM_VERSION="0.15.4"
-PACKER_VERSION="1.7.2"
+TERRAFORM_VERSION="1.2.7"
+PACKER_VERSION="1.8.3"
 
 # System Variable Setting
 
