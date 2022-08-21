@@ -13,6 +13,13 @@ cd sreMsa
 git checkout 202107
 ```
 
+## 주의) 202107~202207에 수업들었던 분들은 아래 방식으로 사용하세요.
+```
+cd
+git clone https://github.com/Finfra/sreMsa
+cd sreMsa
+git checkout 202207
+```
 
 
 # [Lab1. 사전 실습 환경 세팅](./Lab1.Kubespray/)
