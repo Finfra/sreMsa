@@ -1,10 +1,3 @@
-ssh -i ~/kubernetes/cx ubuntu@3.36.132.116
-AKIA4PNAES3IHPISDHEG PKFYd6OJM7WWLXaNRZVjTt8VSfXsiMyhSDQlS1MB
-
-vagrant plugin install vagrant-vbguest
-
-
-
 # Install
 1. Install Virtualbox
 2. Install Vagrant
