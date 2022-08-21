@@ -99,7 +99,7 @@ bash k8sInstallByKubesray.sh
 # Admin
 ## Shutdown All Instance
 ```
-for i in $(seq 3); do ssh vm0$i sudo sh -c 'shutdown -h now'; done
+for i in $(seq 3); do ssh ubuntu@vm0$i sudo sh -c 'shutdown -h now'; done
 ```
 ## Startup all Instance
 ```
