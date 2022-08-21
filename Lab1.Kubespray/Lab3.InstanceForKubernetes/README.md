@@ -93,7 +93,7 @@ else
 fi
 EOF
 
-bash k8sInstallByKubespray.sh
+bash k8sInstallByKubesray.sh
 ```
 
 # Admin
