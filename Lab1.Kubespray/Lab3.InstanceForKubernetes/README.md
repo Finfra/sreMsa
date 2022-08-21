@@ -80,16 +80,11 @@ EOF
 
 6. kubesparyInstall.sh 실행
 ```
-wget https://gist.githubusercontent.com/nowage/ce734b2ce0ad647f1c6124b126c191db/raw/4b05e6a486590e882625f73565d5739839ed872a/k8sInstallByKubesray.sh
-bash k8sInstallByKubesray.sh
-```
-* ==
-```
 cat > k8sInstallByKubesray.sh <<EOF
 if [ ! -f requirements.txt ]; then
     echo "go to kubespray install folder"
 else
-    sudo python3 -m pip install ansible==3.4.0
+    sudo python3 -m pip install  ansible-core==2.12
     sudo pip3 install -r requirements.txt
     sudo pip3  install ansible netaddr jinja2
     ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
