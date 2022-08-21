@@ -43,7 +43,7 @@ ln -s /usr/local/bin/pip3.8 /usr/bin/pip
 ln -s /usr/local/bin/pip3.8 /usr/bin/pip3
 
 
-python3.8 -m pip install ansible
+python3.8 -m pip install  ansible-core==2.12
 
 # install awscli and ebcli
 python3.8 -m pip install  awscli
