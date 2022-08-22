@@ -7,7 +7,7 @@ vi ~/.bashrc
     export TF_VAR_AWS_SECRET_KEY="xxxxxxxxxxxxxxx"
     export TF_VAR_AWS_REGION="ap-northeast-2"
 
-bash ~/.bashrc
+. ~/.bashrc
 ```
 
 1. OS key 생성 [있으면 생략]
