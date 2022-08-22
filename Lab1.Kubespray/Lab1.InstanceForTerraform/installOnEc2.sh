@@ -28,26 +28,26 @@ usermod -G docker ubuntu
 
 
 # install pip
-apt -y install  python3.8
-apt -y install python3.8-distutils
+apt -y install  python3.10
+apt -y install python3.10-distutils
 wget https://bootstrap.pypa.io/get-pip.py
-python3.8 get-pip.py
+python3.10 get-pip.py
 
-python3.8 -m pip install --user --upgrade pip
+python3.10 -m pip install --user --upgrade pip
 
 [[ -f /usr/bin/python ]]&&rm /usr/bin/python
-ln -s /usr/bin/python3.8 /usr/bin/python
+ln -s /usr/bin/python3.10 /usr/bin/python
 [[ -f /usr/bin/pip ]]&&rm /usr/bin/pip
-ln -s /usr/local/bin/pip3.8 /usr/bin/pip
+ln -s /usr/local/bin/pip3.10 /usr/bin/pip
 [[ -f /usr/bin/pip3 ]]&&rm /usr/bin/pip3
-ln -s /usr/local/bin/pip3.8 /usr/bin/pip3
+ln -s /usr/local/bin/pip3.10 /usr/bin/pip3
 
 
-python3.8 -m pip install  ansible-core==2.12
+python3.10 -m pip install  ansible-core==2.12
 
 # install awscli and ebcli
-python3.8 -m pip install  awscli
-python3.8 -m pip install  awsebcli
+python3.10 -m pip install  awscli
+python3.10 -m pip install  awsebcli
 
 
 complete -C aws_completer aws
