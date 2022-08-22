@@ -41,7 +41,12 @@ kubectl get nodes
 
 * 설치 중 실패시 다시 시작하는 방법
 ```
+# Linux or Mac
 vagrant destroy --force && vagrant up
+
+# Windows 
+vagrant destroy --force
+vagrant up
 ```
 
 * 사용 후 지우기. 
