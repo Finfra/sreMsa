@@ -39,6 +39,11 @@ kubectl get nodes
 9. 사용
     - → 열심히 실습합니다!
 
+* 설치 중 실패시 다시 시작하는 방법
+```
+vagrant destroy --force && vagrant up
+```
+
 * 사용 후 지우기. 
 ```
 vagrant destroy -f
