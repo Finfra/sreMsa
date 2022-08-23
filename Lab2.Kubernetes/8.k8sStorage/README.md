@@ -2,7 +2,7 @@
 ### nfs-common 설치(실습용 Console서버)
 ```
 for i in vm01 vm02 vm03;do
-  ssh $i sudo apt -y install nfs-common
+  ssh ubuntu@$i sudo apt -y install nfs-common
 done
 ```
 
