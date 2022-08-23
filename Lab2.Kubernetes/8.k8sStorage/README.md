@@ -58,8 +58,7 @@ kubectl describe po/nfsnginx
 ## 확인
 ```
 echo "hi"> /share/index.html
-kubectl  exec -it nfsnginx bash
-curl localhost/index.html
+kubectl  exec -it nfsnginx -- curl 127.0.0.1
 ```
 
 
