@@ -28,6 +28,7 @@ usermod -G docker ubuntu
 
 
 # install pip
+add-apt-repository ppa:deadsnakes/ppa
 apt -y install  python3.10
 apt -y install python3.10-distutils
 wget https://bootstrap.pypa.io/get-pip.py
@@ -43,7 +44,8 @@ ln -s /usr/local/bin/pip3.10 /usr/bin/pip
 ln -s /usr/local/bin/pip3.10 /usr/bin/pip3
 
 
-python3.10 -m pip install  ansible-core==2.12
+
+python3.10 -m pip install  ansible-core==2.12.0
 
 # install awscli and ebcli
 python3.10 -m pip install  awscli
