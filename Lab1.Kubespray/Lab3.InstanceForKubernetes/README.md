@@ -84,9 +84,9 @@ cat > k8sInstallByKubesray.sh <<EOF
 if [ ! -f requirements.txt ]; then
     echo "go to kubespray install folder"
 else
-    sudo python3 -m pip install  ansible-core==2.12
-    sudo pip3 install -r requirements.txt
-    sudo pip3  install ansible netaddr jinja2
+    sudo python3.10 -m pip install  ansible-core==2.12
+    sudo pip3.10 install -r requirements.txt
+    sudo pip3.10  install ansible netaddr jinja2
     ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
       -i inventory/inventory.ini \
       cluster.yml
