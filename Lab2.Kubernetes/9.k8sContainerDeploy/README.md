@@ -69,7 +69,6 @@ kubectl get pods
 ```
 
 
-* confer : https://docs.bitnami.com/tutorials/create-your-first-helm-chart/
 
 
 
