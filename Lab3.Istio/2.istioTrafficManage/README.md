@@ -6,6 +6,7 @@
 cd ~/istio-1.*
 cat samples/bookinfo/platform/kube/bookinfo.yaml
 kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
+# rollback : kubectl delete -f samples/bookinfo/platform/kube/bookinfo.yaml
 ```
   - https://istio.io/latest/docs/examples/bookinfo/
   - bookinfo no istio
