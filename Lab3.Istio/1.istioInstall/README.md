@@ -3,6 +3,7 @@
 * [Getting Started](https://istio.io/latest/docs/setup/getting-started/)
 ## Istio Download and Setting
 ```
+kubectl config set-context --current --namespace=default
 cd
 curl -L https://git.io/getLatestIstio | sh -
 cd istio-1.*
