@@ -7,6 +7,7 @@
 2. 죄측의 Users메뉴를 선택하여 https://us-east-1.console.aws.amazon.com/iamv2/home#/users 에 접근합니다.
 3. 우측 상단의 "Add users" 버튼을 큭릭하여 유저를 생성합니다.
 4. "User name" 항목에 "terraform"이라고 입력합니다.(유저명은 어떤 것을 선택하던 상관 없습니다.)
+  - AWS 자격 증명 유형 선택에서 "액세스 키 – 프로그래밍 방식 액세스"선택
 5. 생성된 "terraform"유저를 선택 하여 Summary화면으로 들어 옵니다.
 6. "Add permissions"버튼 클릭합니다.
 7. "Attach existing policies directly"를 클릭합니다.
