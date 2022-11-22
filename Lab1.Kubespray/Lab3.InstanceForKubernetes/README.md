@@ -2,6 +2,7 @@
 0. 변수 셋팅 파일 생성 후 실행
 * 아래와 같은 내용을 ~/.bashrc에 추가하고 실행해 줍니다.
 ```
+su - ubuntu
 echo '
 export TF_VAR_AWS_ACCESS_KEY="xxxxxxx"
 export TF_VAR_AWS_SECRET_KEY="xxxxxxxxxxxxxxx"
