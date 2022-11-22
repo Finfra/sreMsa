@@ -9,4 +9,4 @@ done
 apt-get update
 apt-get -y install net-tools
 
-echo "sudo -i" >> /home/ubuntu/.bashrc
+#echo "sudo -i" >> /home/ubuntu/.bashrc
