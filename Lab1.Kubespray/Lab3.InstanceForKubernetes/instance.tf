@@ -12,6 +12,10 @@ resource "aws_instance" "vm0" {
   instance_type = var.instance_type
   key_name      = aws_key_pair.prj_key.key_name
   vpc_security_group_ids = [aws_security_group.allow-ssh.id]
+  root_block_device{
+    volume_size   = 100
+  }
+  
   provisioner "file" {
     source      = "script.sh"
     destination = "/tmp/script.sh"
