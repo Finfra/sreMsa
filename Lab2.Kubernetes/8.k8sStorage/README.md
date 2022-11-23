@@ -122,9 +122,9 @@ EOF
 kubectl create -f nfspod.yml
 
 kubectl get po nfsnginx
-kubectl exec -it  nfsnginx -- curl 127.0.0.1
+kubectl exec -it  nfsnginx -- curl 127.0.0.1/index.html
 
 echo "<h1>hello</h1>" >/share/index.html
-kubectl exec -it  nfsnginx -- curl 127.0.0.1
+kubectl exec -it  nfsnginx -- curl 127.0.0.1/index.html
 
 ```
