@@ -96,6 +96,7 @@ spec:
   resources:
     requests:
       storage: 20Gi
+  volumeName: pv      
 EOF
 kubectl create -f claim-pvc.yml
 
