@@ -85,4 +85,7 @@ kubectl ~
 * cf)
 ```
 kubectl get pods |awk 'NR>1{print $1}'|xargs -i{} kubectl delete po/{}
+# or
+kubectl get pods -o json|jq .items[].metadata.name |xargs -i{} kubectl delete po/{}
+
 ```
