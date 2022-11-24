@@ -23,4 +23,5 @@ istioctl install --set profile=demo -y
 * 나중에 애플리케이션을 배포 할 때 Istio가 Envoy 사이드카 프록시를 자동으로 삽입하도록 지시하는 네임 스페이스 레이블을 추가합니다.
 ```
 kubectl label namespace default istio-injection=enabled
+kubectl get ns --show-labels
 ```
