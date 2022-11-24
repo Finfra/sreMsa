@@ -31,7 +31,7 @@ unzip aws-java-sdk.zip
 
 ## Amazon Elasticsearch Service 셋팅
 1. Amazon Elasticsearch Service 접속
-  - https://ap-northeast-2.console.aws.amazon.com/es 에 접속
+  - https://ap-northeast-2.console.aws.amazon.com/esv3/home?region=ap-northeast-2#opensearch/dashboard 에 접속
 2. "Create a new domain" 버튼 클릭
 
 ![](img/a2.png)
