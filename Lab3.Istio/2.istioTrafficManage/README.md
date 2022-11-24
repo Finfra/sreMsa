@@ -10,8 +10,10 @@ kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
 ```
   - https://istio.io/latest/docs/examples/bookinfo/
   - bookinfo no istio
+  ---
   ![bookinfo no istio](https://istio.io/latest/docs/examples/bookinfo/noistio.svg)
   - bookinfo with istio
+  ---
   ![bookinfo with istio](https://istio.io/latest/docs/examples/bookinfo/withistio.svg)
 
 * 2. service와 pods확인
