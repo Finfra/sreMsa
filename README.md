@@ -1,5 +1,7 @@
 # Usage
 ```
+git config --global core.autocrlf false
+git config --global core.eol lf
 cd
 git clone https://github.com/Finfra/sreMsa
 cd sreMsa
