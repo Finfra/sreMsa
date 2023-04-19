@@ -9,6 +9,8 @@ done
 ### vm01 에서 NFS server작업
 ```
 apt update &&  apt-get install -y nfs-kernel-server
+```
+```
 mkdir -m 1777 /share
 touch /share/hello.txt
 cat <<EOF>  /etc/exports
