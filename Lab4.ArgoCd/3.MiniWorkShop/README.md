@@ -37,6 +37,10 @@ docker rm -f n1
 
 docker login
 docker push xxxxxx/mynginx:0.1
+
+git login
+git commit -m 'initial commit'
+git push
 ```
 
 ## 6. yaml artifact 만들기.
