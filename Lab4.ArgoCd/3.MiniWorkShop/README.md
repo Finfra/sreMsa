@@ -43,7 +43,6 @@ git add -A
 git config --global user.email "nowage@gmail.com"
 git config --global user.name "Namjunggu"
 git commit -m 'initial commit'
-git login
 git push
 ```
 
