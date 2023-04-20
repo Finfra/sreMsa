@@ -38,8 +38,12 @@ docker rm -f n1
 docker login
 docker push xxxxxx/mynginx:0.1
 
-git login
+
+git add -A
+git config --global user.email "nowage@gmail.com"
+git config --global user.name "Namjunggu"
 git commit -m 'initial commit'
+git login
 git push
 ```
 
