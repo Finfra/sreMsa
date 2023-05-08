@@ -45,12 +45,14 @@ ln -s /usr/local/bin/pip3.10 /usr/bin/pip3
 
 
 
-python3.10 -m pip install  ansible-core==2.12.0
-
 # install awscli and ebcli
+#pip uninstall -y botocore
+#pip install botocore==1.29.99
 python3.10 -m pip install  awscli
-python3.10 -m pip install  awsebcli
+#python3.10 -m pip install  awsebcli
 
+# install ansible-core
+python3.10 -m pip install  ansible-core==2.12.0
 
 complete -C aws_completer aws
 
