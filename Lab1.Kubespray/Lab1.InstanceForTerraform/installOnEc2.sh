@@ -46,8 +46,8 @@ ln -s /usr/local/bin/pip3.10 /usr/bin/pip3
 
 
 # install awscli and ebcli
-#pip uninstall -y botocore
-#pip install botocore==1.29.99
+pip uninstall -y botocore
+pip install botocore==1.29.99
 python3.10 -m pip install  awscli
 #python3.10 -m pip install  awsebcli
 
