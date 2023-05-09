@@ -24,7 +24,7 @@ cd
 git clone https://github.com/Finfra/sreMsa
 cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes
 terraform init
-terraform apply -auto-approve
+terraform apply --auto-approve
 ```
 
 
