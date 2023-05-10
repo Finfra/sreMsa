@@ -20,7 +20,7 @@ vagrant plugin install vagrant-env
 6. vagrant up
 ```
 cd vansinetes
-vagrant up --no-provision 
+vagrant up  
 ```
 
 7. Connect 
