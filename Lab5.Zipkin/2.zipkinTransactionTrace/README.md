@@ -3,8 +3,8 @@
 
 1. 실습용 Console서버에 접속하여 maven을 설치합니다.
 ```
-sudo apt install openjdk-11-jre-headless
-sudo apt install maven
+sudo apt install -y openjdk-11-jre-headless
+sudo apt install -y maven
 ```
 
 
