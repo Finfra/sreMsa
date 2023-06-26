@@ -1,5 +1,6 @@
 resource "aws_eip" "vm_eip" {
   count         = var.instance_count
+  domain = "vpc"
   vpc = true
   tags = {
     Name = format("vm_eip_0%d", count.index + 1)
