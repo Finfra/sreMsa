@@ -32,6 +32,10 @@ terraform apply --auto-approve
 ```
 aws configure
   # security setting
+    AWS Access Key ID [None]: xxxxxxxxxx
+    AWS Secret Access Key [None]: xxxxxxxxxxxxxxxxxxx
+    Default region name [None]: ap-northeast-2
+    Default output format [None]: text
 cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes
 bash doSetHosts.sh
 ```
