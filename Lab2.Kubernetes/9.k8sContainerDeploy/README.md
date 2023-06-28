@@ -39,7 +39,7 @@ cp /tmp/values.yaml ./mychart/
 helm lint ./mychart/
 helm install example2 ./mychart --set service.type=NodePort
 sleep 10
-export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services example-mychart)
+export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services example2-mychart)
 export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
 curl http://$NODE_IP:$NODE_PORT
 kubectl get pods
