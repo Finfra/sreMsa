@@ -4,7 +4,7 @@
 ```
 cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes/
 vi vars.tf # "instance_count"를 4로 변경
-terraform apply -auto-aprove
+terraform apply --auto-approve
 
 ```
 2. Hosts파일 셋팅
