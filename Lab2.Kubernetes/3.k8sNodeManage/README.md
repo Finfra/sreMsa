@@ -2,7 +2,7 @@
 ## Terraform 작업
 1. Terraform 파일 수정 (실습용 Console서버)
 ```
-cd ~/terraform-course/Project
+cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes/
 vi vars.tf # "instance_count"를 4로 변경
 terraform apply -auto-aprove
 
