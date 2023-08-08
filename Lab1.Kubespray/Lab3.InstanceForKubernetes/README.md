@@ -50,7 +50,7 @@ bash doSetHosts.sh
 4. git Clone
 ```
 cd
-git clone -b release-2.7 https://github.com/kubernetes-sigs/kubespray
+git clone https://github.com/kubernetes-sigs/kubespray
 ```
 
 5. inventory파일 생성
