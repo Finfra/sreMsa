@@ -50,7 +50,7 @@ bash doSetHosts.sh
 4. git Clone
 ```
 cd
-git clone https://github.com/kubernetes-sigs/kubespray
+git clone -b release-2.7 https://github.com/kubernetes-sigs/kubespray
 ```
 
 5. inventory파일 생성
@@ -89,9 +89,7 @@ cat > k8sInstallByKubesray.sh <<EOF
 if [ ! -f requirements.txt ]; then
     echo "go to kubespray install folder"
 else
-    sudo python3.10 -m pip install  ansible-core==2.12.5
     sudo pip3.10 install -r requirements.txt
-    sudo pip3.10  install ansible netaddr jinja2
     ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
       -i inventory/inventory.ini \
       cluster.yml
