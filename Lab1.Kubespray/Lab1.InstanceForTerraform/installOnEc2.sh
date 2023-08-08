@@ -1,10 +1,9 @@
+#!/bin/bash
 
 # Version Setting
 TERRAFORM_VERSION="1.5.4"
-PACKER_VERSION="1.8.3"
 
 # System Variable Setting
-
 export LC_ALL=C.UTF-8
 export DEBIAN_FRONTEND=noninteractive
 
@@ -18,12 +17,10 @@ hostname > /etc/hostname
 
 apt -y update
 sudo apt update
-# sudo apt -y install curl apt-transport-https
-# curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 
 
 
-apt -y install docker.io unzip mysql-client
+apt -y install docker.io unzip mysql-client jq
 usermod -G docker ubuntu
 
 
@@ -50,11 +47,11 @@ pip uninstall -y botocore
 pip install botocore==1.29.99
 python3.10 -m pip install  awscli
 #python3.10 -m pip install  awsebcli
-
-# install ansible-core
-python3.10 -m pip install  ansible-core==2.12.0
-
 complete -C aws_completer aws
+
+# install ansible
+sudo pip3.10 install netaddr jinja2
+sudo pip3.10 install ansible==7.6.0
 
 # for Language Setting
 cat <<EOF>> /etc/bash.bashrc
@@ -75,17 +72,9 @@ T_RETVAL=${PIPESTATUS[0]}
     && unzip -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin \
     && rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.*
 
-# # install packer
-# P_VERSION=$(/usr/local/bin/packer -v)
-# P_RETVAL=$?
-#
-# [[ $P_VERSION != $PACKER_VERSION ]] || [[ $P_RETVAL != 1 ]]  \
-#     && wget -q https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip \
-#     && unzip -o packer_${PACKER_VERSION}_linux_amd64.zip -d /usr/local/bin \
-#     && rm packer_${PACKER_VERSION}_linux_amd64.*
 
 # Setting for ssh
-x=`cat /etc/ssh/ssh_config|grep \^StrictHostKeyChecking`
+x=$(cat /etc/ssh/ssh_config|grep \^StrictHostKeyChecking)
 if [ ${#x} -eq 0 ] ;then
     echo "StrictHostKeyChecking no">>/etc/ssh/ssh_config
 fi
