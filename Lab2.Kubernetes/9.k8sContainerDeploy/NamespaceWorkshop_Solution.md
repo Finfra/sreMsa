@@ -2,6 +2,7 @@
 
 # 1. namespace prj2를 만드시오.
 ```
+
 kubectl create namespace prj2
 ```
 
