@@ -109,3 +109,8 @@ for i in $(seq 3); do ssh ubuntu@vm0$i sudo sh -c 'shutdown -h now'; done
 ids=$(aws ec2 describe-instances  --filters "Name=tag-value,Values=vm0*" --query "Reservations[].Instances[].InstanceId" --output text)
 for i in $ids; do     aws ec2 start-instances --instance-ids $i ;done
 ```
+
+## vm destroy
+```
+terraform destroy --auto-approve
+```
