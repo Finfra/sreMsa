@@ -13,7 +13,7 @@ kubectl get svc
 curl $(kubectl get services |grep h1|awk '{print $3}')
 ```
 
-## 모든 트레픽 거부 Netwok Policy 생성 후 접근 확인
+## 모든 트레픽 거부 Network Policy 생성 후 접근 확인
 ```
 
 cat <<EOF> network-policy-default-deny-ingress.yaml
@@ -33,7 +33,7 @@ curl $(kubectl get services |grep h1|awk '{print $3}') # 실패함.
 
 ```
 
-## Netwok Policy 확인
+## Network Policy 확인
 ```
 kubectl get networkpolicy
 ```
