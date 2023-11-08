@@ -15,7 +15,7 @@ vagrant plugin install vagrant-env
 5. .env 파일 수정
 * vansinetes/.env 
     - "MIRROR_CHANGE=no"를 "MIRROR_CHANGE=yes"로 바꿔줍니다. 
-    - DEFAULT_NETWORK_IP=xx.xxx.xxx.xxx 를 Virtualbox의 파일 메뉴의 "호스트 네트워크 관리자(Host Network Manger)"의 에서 확인하여 Host-Only IP를 바꿔줍니다.
+    - DEFAULT_NETWORK_IP=xx.xxx.xxx.xxx 를 Virtualbox의 파일 메뉴의 "호스트 네트워크 관리자(Host Network Manger)"의 에서 확인하여 Host-Only IP를 바꿔줍니다.(기존 subnet과 겹치지 않게 설정해도 됨. 단 끝자리는 2이상 100미만 숫자)
 
 6. vagrant up
 ```
