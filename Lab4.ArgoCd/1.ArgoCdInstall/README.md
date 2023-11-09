@@ -47,7 +47,7 @@ argocd login vm01.cluster.local:31168 # 포트번호는 위 kubectl ge Uset svc�
 argocd account update-password   # 비번수정
 ```
 
-- vm01서에서  argocd-server의 443 포트에 대한 forwarding Port얻음.
+- vm01에서  argocd-server의 443 포트에 대한 forwarding Port얻음.
 ```
 kubectl get svc argocd-server -n argocd
 ```
