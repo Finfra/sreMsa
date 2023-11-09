@@ -38,7 +38,7 @@ echo $Pass
 ```
 
 * Argo CD Login
-- vm01서에서  argocd-server의 80 포트에 대한 forwarding Port얻음.
+- vm01에서  argocd-server의 80 포트에 대한 forwarding Port얻음.
 ```
 kubectl get svc argocd-server -n argocd
 cat /etc/hosts |grep vm01
