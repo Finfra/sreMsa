@@ -131,3 +131,32 @@ echo "<h1>hello</h1>" >/share/index.html
 kubectl exec -it  nfsnginx -- curl 127.0.0.1/index.html
 
 ```
+
+
+# cf) deploy예제 yaml
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfsnginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nfsnginx
+  template:
+    metadata:
+      labels:
+        app: nfsnginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        volumeMounts:
+        - name: pvc-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: pvc-volume
+        persistentVolumeClaim:
+          claimName: pvc
+```
