@@ -64,7 +64,7 @@ kubectl  exec -it nfsnginx -- curl 127.0.0.1
 ```
 
 
-### Persistent Volume와 Persistent Volume claim을 통한 NFS를 사용하는 Deploy생성
+### Persistent Volume와 Persistent Volume claim을 통한 NFS를 사용하는 Pod생성
 * 주의 : 각 노드에서 "sudo apt -y install nfs-common" 명령 필수
 ```
 kubectl delete po/nfsnginx
