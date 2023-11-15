@@ -5,7 +5,7 @@
 # Step2. IAM Secret Key 생성
 1. IAM서비스( https://us-east-1.console.aws.amazon.com/iamv2 )에 접속합니다.
 2. 죄측의 Users메뉴를 선택하여 https://us-east-1.console.aws.amazon.com/iamv2/home#/users 에 접근합니다.
-3. 우측 상단의 "Add users" 버튼을 큭릭하여 유저를 생성합니다.
+3. 우측 상단의 "Create users" 버튼을 큭릭하여 유저를 생성합니다.
 4. "User name" 항목에 "terraform"이라고 입력하고 다음을 클릭합니다.(유저명은 어떤 것을 선택하던 상관 없습니다.)
 5. "Attach policies directly"선택
 6. "AdministratorAccess"권한과 "PowerUserAccess" 권한을 검색하여 추가해 줍니다.
