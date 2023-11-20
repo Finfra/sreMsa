@@ -70,31 +70,31 @@ kubectl get pods
 
 
 
-
-
-## Helm Repository 등록 명령
-* 등록
+## Helm Repository 관련 명령
+* 검색
+```
+helm search hub tomcat
+```
+* Repository 등록
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
 ```
-* 조회
+* Repository 등록 확인
 ```
 helm repo list
 ```
-* Chart 찾기
+* Repository에서 Chart 찾기
 ```
 helm search repo bitnami | grep tomcat
 ```
-* 업데이트
+* Repository 업데이트
 ```
 helm repo update
 ```
-* 삭제
+* Repository 삭제
 ```
 helm repo remove bitnami
 ```
-
-
 
 
 ## helm으로 외부 Repository 동작
