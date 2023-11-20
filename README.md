@@ -5,6 +5,8 @@ git config --global core.eol lf
 cd
 git clone https://github.com/Finfra/sreMsa
 cd sreMsa
+
+
 ```
 
 ## 주의) 202107이전에 수업들었던 분들은 아래 방식으로 사용하세요.
