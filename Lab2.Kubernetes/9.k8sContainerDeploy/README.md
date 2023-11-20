@@ -72,7 +72,7 @@ kubectl get pods
 
 
 
-## Helm 레포지토리 등록 명령
+## Helm Repository 등록 명령
 * 등록
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -97,7 +97,7 @@ helm repo remove bitnami
 
 
 
-## helm으로 Tomcat 동작 repository 생성
+## helm으로 외부 Repository 동작
 ```
 helm search hub tomcat
 helm search hub tomcat -o yaml
