@@ -133,8 +133,9 @@ kubectl exec -it  nfsnginx -- curl 127.0.0.1/index.html
 ```
 
 
-# cf) deploy예제 yaml
+# deploy예제 yaml
 ```
+cat > nfsDeploy.yaml <<EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -159,4 +160,15 @@ spec:
       - name: pvc-volume
         persistentVolumeClaim:
           claimName: pvc
+
+EOF
+k create -f nfsDeploy.yaml
+k expose deploy/nfsnginx --type="NodePort" --port=80
+k scale deploy nfsnginx --replicas=2
+k get svc
+curl vm01:32494
+k get po
+echo "<h1>hi</h1>" > /share/index.html
+curl vm01:32494
+
 ```
