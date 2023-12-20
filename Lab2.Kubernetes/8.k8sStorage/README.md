@@ -170,5 +170,7 @@ curl vm01:32494
 k get po
 echo "<h1>hi</h1>" > /share/index.html
 curl vm01:32494
-
+curl vm01:32494
+curl vm01:32494
+# 계속 같은 것이 나오는지 확인
 ```
