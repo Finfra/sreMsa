@@ -166,11 +166,12 @@ k create -f nfsDeploy.yaml
 k expose deploy/nfsnginx --type="NodePort" --port=80
 k scale deploy nfsnginx --replicas=2
 k get svc
-curl vm01:32494
+export NODE_PORT=$(kubectl get services/nfsnginx -o go-template='{{(index .spec.ports 0).nodePort}}')
+curl vm01:$NODE_PORT
 k get po
 echo "<h1>hi</h1>" > /share/index.html
-curl vm01:32494
-curl vm01:32494
-curl vm01:32494
+curl vm01:$NODE_PORT
+curl vm01:$NODE_PORT
+curl vm01:$NODE_PORT
 # 계속 같은 것이 나오는지 확인
 ```
