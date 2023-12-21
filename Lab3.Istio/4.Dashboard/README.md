@@ -2,6 +2,7 @@
 * Istio의 DashBoard 기능을 통해 외부에서 접근하는 트레픽에 대한 플로우를 확인합니다.
 ## Dashboard start
 ```
+cd ~/istio*
 kubectl get namespace
 kubectl apply -f samples/addons
 kubectl rollout status deployment/kiali -n istio-system
