@@ -14,7 +14,7 @@
 9. "Summary"화면에서 "Security credentials" 탭을 클릭합니다.
   - AWS 자격 증명 유형 선택에서 "액세스 키 – 프로그래밍 방식 액세스"선택
 10. "Create access key"를 클릭
-11. "Access key best practices & alternatives"화면에서 "Command Line Interface (CLI)"선택 후 Confirmation체크 박스 클릭후 다음 버튼 클릭
+11. "Access key best practices & alternatives"화면에서 "Command Line Interface (CLI)"선택 후 Confirmation체크 박스 클릭후 아래 체크박스 클릭 후다음 버튼 클릭
 12. "Create access key"버튼 클릭 하여 Security키와 Access키를 생성
 13. "Download.csv file" 메뉴를 클릭하여 Security 키를 잘 저장해 둡니다. (향후 사용함. "Secret access key"의 "show"링크를 눌러서 나오는 Secret key도 같은 것 이지만 2중으로 저장해 둘 것)
 
