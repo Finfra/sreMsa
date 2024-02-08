@@ -40,7 +40,7 @@ echo $Pass
 * Argo CD Login
 - vm01에서  argocd-server의 80 포트에 대한 forwarding Port얻음.
 ```
-kubectl get svc argocd-server -n argocd
+kubectl get service argocd-server -n argocd
 cat /etc/hosts |grep vm01
 argocd login vm01.cluster.local:31168 # 포트번호는 위 kubectl ge Uset svc명령에서 확인 가능,
                                          uername: admin
