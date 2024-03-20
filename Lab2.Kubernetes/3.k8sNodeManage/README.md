@@ -9,7 +9,10 @@ terraform apply --auto-approve
 ```
 2. Hosts파일 셋팅
 ```
-bash doSetHosts.sh
+bash doSetHosts.sh #되시면
+# or
+sudo vi /etc/hosts  #직접수정
+
 ```
 
 ## Kubespray 셋팅
