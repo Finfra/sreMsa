@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Version Setting
-TERRAFORM_VERSION="1.5.4"
+TERRAFORM_VERSION="1.8.3"
+ANSIBE_VERSION="9.5.1"           # core 2.16.6
 
 # System Variable Setting
 export LC_ALL=C.UTF-8
@@ -16,42 +17,29 @@ hostname > /etc/hostname
 
 
 apt -y update
-sudo apt update
-
-
-
-apt -y install docker.io unzip mysql-client jq
+apt -y install docker.io docker-compose unzip mysql-client unzip jq
+groupadd docker
 usermod -G docker ubuntu
 
 
 # install pip
-add-apt-repository ppa:deadsnakes/ppa
-apt -y install  python3.10
-apt -y install python3.10-distutils
-wget https://bootstrap.pypa.io/get-pip.py
-python3.10 get-pip.py
-
-python3.10 -m pip install --user --upgrade pip
+apt install -y python3-full
+apt install -y python3-pip
+pip3 install --break-system-packages numpy
 
 [[ -f /usr/bin/python ]]&&rm /usr/bin/python
-ln -s /usr/bin/python3.10 /usr/bin/python
-[[ -f /usr/bin/pip ]]&&rm /usr/bin/pip
-ln -s /usr/local/bin/pip3.10 /usr/bin/pip
-[[ -f /usr/bin/pip3 ]]&&rm /usr/bin/pip3
-ln -s /usr/local/bin/pip3.10 /usr/bin/pip3
+ln -s /usr/bin/python3.12 /usr/bin/python
 
 
 
-# install awscli and ebcli
-pip uninstall -y botocore
-pip install botocore==1.29.99
-python3.10 -m pip install  awscli
-#python3.10 -m pip install  awsebcli
+# install awscli
+python3 -m pip install --break-system-packages awscli
+#python3 -m pip install  awsebcli
 complete -C aws_completer aws
 
 # install ansible
-sudo pip3.10 install netaddr jinja2
-sudo pip3.10 install ansible==7.6.0
+pip3 install --break-system-packages netaddr jinja2
+pip3 install --break-system-packages ansible==$ANSIBE_VERSION
 
 # for Language Setting
 cat <<EOF>> /etc/bash.bashrc
@@ -61,23 +49,15 @@ set convert-meta off
 EOF
 
 
-
-# install terraform
-T_VERSION=$(/usr/local/bin/terraform -v | head -1 | cut -d ' ' -f 2 | tail -c +2)
-T_RETVAL=${PIPESTATUS[0]}
-
-[[ $T_VERSION != $TERRAFORM_VERSION ]] || [[ $T_RETVAL != 0 ]] \
-    && rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.*                                                                   \
+# Terraform Install
+[[ ! $(which terraform) ]] \
     && wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
     && unzip -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin \
     && rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.*
 
-
 # Setting for ssh
-x=$(cat /etc/ssh/ssh_config|grep \^StrictHostKeyChecking)
-if [ ${#x} -eq 0 ] ;then
-    echo "StrictHostKeyChecking no">>/etc/ssh/ssh_config
-fi
+[[ ! $(cat /etc/ssh/ssh_config|grep \^StrictHostKeyChecking) ]] \
+    && echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 
 # Setting for Convenient
 echo "export EDITOR=vi" >> /etc/bash.bashrc
