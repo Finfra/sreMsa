@@ -89,7 +89,7 @@ cat > k8sInstallByKubesray.sh <<EOF
 if [ ! -f requirements.txt ]; then
     echo "go to kubespray install folder"
 else
-    sudo pip3.10 install -r requirements.txt
+    sudo pip3 install -r requirements.txt
     ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
       -i inventory/inventory.ini \
       cluster.yml

@@ -16,9 +16,9 @@ variable "INSTANCE_USERNAME" {
 
 variable "AMIS" {
   default = {
-    eu-west-1      = "ami-0dad359ff462124ca"
-    ap-northeast-2 = "ami-00edfb46b107f643c"
-    us-east-1      = "ami-085925f297f89fce1"
+    eu-west-1      = "ami-0776c814353b4814d"
+    ap-northeast-2 = "ami-0e6f2b2fa0ca704d0"
+    us-east-1      = "ami-0eac975a54dfee8cb"
   }
 } 
 
@@ -29,5 +29,5 @@ variable "instance_count" {
 
 
 variable "instance_type" {
-  default = "t2.medium"
+  default = "t2.small"
 }
