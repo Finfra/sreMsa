@@ -3,6 +3,8 @@
 ```
 sudo -i 
 ANSIBE_VERSION="9.5.1"           # core 2.16.6
+apt install -y python3-full
+apt install -y python3-pip
 pip3 install --break-system-packages netaddr jinja2
 pip3 install --break-system-packages ansible==$ANSIBE_VERSION
 ```
