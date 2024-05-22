@@ -7,22 +7,10 @@ apt install -y python3-full
 apt install -y python3-pip
 pip3 install --break-system-packages netaddr jinja2
 pip3 install --break-system-packages ansible==$ANSIBE_VERSION
+echo "127.0.0.1 vm01" >> /etc/hosts
 ```
 
-2. key 생성 및 Local 접소 가능하게 하기
-```
-ssh-keygen -f ~/.ssh/id_rsa -N ''
-cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-```
-
-3. Kubespary Downloads
-```
-cd
-git clone https://github.com/kubernetes-sigs/kubespray
-cd ~/kubespray
-```
-
-4. Requirement 수정
+2. Requirement 수정
 ```
 cat >requirements.txt<<EOF
 ansible==9.5.1
@@ -36,7 +24,21 @@ ruamel.yaml==0.18.6
 ruamel.yaml.clib==0.2.8
 jsonschema
 EOF
-sudo pip3 install --break-system-packages -r requirements.txt
+pip3 install --break-system-packages -r requirements.txt
+```
+
+3. key 생성 및 Local 접소 가능하게 하기
+```
+exit
+ssh-keygen -f ~/.ssh/id_rsa -N ''
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+```
+
+3. Kubespary Downloads
+```
+cd
+git clone https://github.com/kubernetes-sigs/kubespray
+cd ~/kubespray
 ```
 
 5. inventory 
@@ -61,7 +63,7 @@ EOF
 
 6. playbook 실행
 ```
-ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
+ansible-playbook --flush-cache -u $(whoami) -b --become --become-user=root \
       -i inventory/inventory.ini \
       cluster.yml
 ```
