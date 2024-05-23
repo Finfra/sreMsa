@@ -1,5 +1,6 @@
 ## NFS 사용예
 ### nfs-common 설치(실습용 Console서버)
+* vm04가 있을 경우 vm04추가
 ```
 for i in vm01 vm02 vm03;do
   ssh ubuntu@$i sudo apt -y install nfs-common
