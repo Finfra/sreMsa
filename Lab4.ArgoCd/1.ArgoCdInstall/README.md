@@ -24,12 +24,19 @@ sudo chmod +x /usr/local/bin/argocd
 ```
 
 ## 3. Access The Argo CD API Server 구동
-* vm01에서 실행 Panding되면 ctrl+c
+* vm01에서 실행
 ```
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
-
+* 이하 결과 처럼 나오지 않고 Panding되면 ctrl+c
+```
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+service/argocd-server patched
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
+```
+  
 ## 4. Login Using The CLI
 * 비번 얻기
 ```
