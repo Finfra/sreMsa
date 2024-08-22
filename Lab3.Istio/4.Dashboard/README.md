@@ -1,11 +1,15 @@
 # Istio를 통한 K8s 클러스터 접근 실습(외부에서 내부로 접근)
 * Istio의 DashBoard 기능을 통해 외부에서 접근하는 트레픽에 대한 플로우를 확인합니다.
+* istioctl dashboard할때 tmux권장..
 ## Dashboard start
 ```
 cd ~/istio*
 kubectl get namespace
+
 kubectl apply -f samples/addons
+
 kubectl rollout status deployment/kiali -n istio-system
+
 istioctl dashboard kiali --address 0.0.0.0
 
 ping vm01
