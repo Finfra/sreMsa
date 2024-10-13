@@ -63,7 +63,7 @@ vm01 etcd_member_name=etcd1
 vm02 etcd_member_name=etcd2
 vm03 etcd_member_name=etcd3
 
-[kube-master]
+[kube_control_plane]
 vm01
 vm02
 
@@ -78,9 +78,8 @@ vm02
 vm03
 
 [k8s-cluster:children]
-kube-master
+kube_control_plane
 kube-node
-
 EOF
 ```
 
@@ -92,7 +91,8 @@ cat > k8sInstallByKubesray.sh <<EOF
 if [ ! -f requirements.txt ]; then
     echo "go to kubespray install folder"
 else
-    sudo pip3 install -r requirements.txt
+    apt remove -y python3-jsonschema
+    sudo pip3 install --break-system-packages -r requirements.txt
     ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
       -i inventory/inventory.ini \
       cluster.yml
