@@ -106,6 +106,8 @@ bash k8sInstallByKubesray.sh
 ## Set hostname
 ```
 # 호스트 이름 리스트
+hostname=i1
+echo i1 > /etc/hostname
 hosts=("vm01" "vm02" "vm03")
 # 각 호스트에 대해 SSH 접속 후 호스트 이름 설정
 for host in "${hosts[@]}"; do
