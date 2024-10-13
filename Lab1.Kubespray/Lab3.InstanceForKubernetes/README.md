@@ -87,19 +87,24 @@ EOF
 * pip error시 requirements.txt파일에서 에러나는 페키지의 "=="부터 줄의 끝까지 제거.
 * python3.12버전에서는 --break-system-packages 옵션 필요. 
 ```
-cat > k8sInstallByKubesray.sh <<EOF
-if [ ! -f requirements.txt ]; then
-    echo "go to kubespray install folder"
-else
-    apt remove -y python3-jsonschema
-    sudo pip3 install --break-system-packages -r requirements.txt
-    ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
-      -i inventory/inventory.ini \
-      cluster.yml
-fi
-EOF
+hosts=(vm01 vm02 vm03)
+for host in "${hosts[@]}"; do
+  ssh "$host" "sudo sudo apt-get remove --purge docker docker-engine docker.io containerd runc"
+  ssh "$host" "sudo sudo apt-get install -y docker.io"
+  ssh "$host" "sudo sudo systemctl start docker"
+  ssh "$host" "sudo sudo systemctl enable docker"
+  ssh "$host" "sudo ln -sf /usr/bin/ctr /usr/local/bin/ctr"
+done
 
-bash k8sInstallByKubesray.sh
+sudo apt remove -y python3-jsonschema
+sudo python -m pip install --break-system-packages -r requirements.txt
+sudo python -m pip install --break-system-packages ara[server]
+export ANSIBLE_CALLBACK_PLUGINS=$(python3 -m ara.setup.callback_plugins)
+ara-manage runserver&
+
+ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
+  -i inventory/inventory.ini \
+  cluster.yml
 ```
 
 # Admin
