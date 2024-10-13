@@ -103,6 +103,21 @@ bash k8sInstallByKubesray.sh
 ```
 
 # Admin
+## Set hostname
+```
+# 호스트 이름 리스트
+hosts=("vm01" "vm02" "vm03")
+# 각 호스트에 대해 SSH 접속 후 호스트 이름 설정
+for host in "${hosts[@]}"; do
+  echo "Setting hostname for $host"
+  ssh $host "sudo hostnamectl set-hostname $host && echo $host | sudo tee /etc/hostname"
+  if [ $? -eq 0 ]; then
+    echo "$host: Hostname set successfully"
+  else
+    echo "$host: Failed to set hostname"
+  fi
+done
+```
 ## Shutdown All Instance
 ```
 for i in $(seq 3); do ssh ubuntu@vm0$i sudo sh -c 'shutdown -h now'; done
