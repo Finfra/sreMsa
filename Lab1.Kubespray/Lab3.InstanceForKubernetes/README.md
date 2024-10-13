@@ -89,10 +89,10 @@ EOF
 ```
 hosts=(vm01 vm02 vm03)
 for host in "${hosts[@]}"; do
-  ssh "$host" "sudo sudo apt-get remove --purge docker docker-engine docker.io containerd runc"
-  ssh "$host" "sudo sudo apt-get install -y docker.io"
-  ssh "$host" "sudo sudo systemctl start docker"
-  ssh "$host" "sudo sudo systemctl enable docker"
+  ssh "$host" "sudo apt-get remove --purge docker docker-engine docker.io containerd runc"
+  ssh "$host" "sudo apt-get install -y docker.io"
+  ssh "$host" "sudo systemctl start docker"
+  ssh "$host" "sudo systemctl enable docker"
   ssh "$host" "sudo ln -sf /usr/bin/ctr /usr/local/bin/ctr"
 done
 
