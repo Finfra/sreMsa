@@ -51,7 +51,7 @@ bash doSetHosts.sh
 4. git Clone
 ```
 cd
-git clone https://github.com/kubernetes-sigs/kubespray
+git clone -b release-2.25 https://github.com/kubernetes-sigs/kubespray
 ```
 
 5. inventory파일 생성
@@ -89,17 +89,6 @@ EOF
 ```
 sudo apt remove -y python3-jsonschema
 sudo python -m pip install --break-system-packages -r requirements.txt
-sudo python -m pip install --break-system-packages ara[server]
-export ANSIBLE_CALLBACK_PLUGINS=$(python3 -m ara.setup.callback_plugins)
-ara-manage runserver&
-hosts=(vm03)
-for host in "${hosts[@]}"; do
-   # ssh "$host" "sudo sudo apt-get remove --purge docker docker-engine docker.io containerd runc"
-   ssh "$host" "sudo apt-get install -y docker.io"
-   ssh "$host" "sudo systemctl start docker"
-   ssh "$host" "sudo systemctl enable docker"
-   ssh "$host" "sudo ln -sf /usr/bin/ctr /usr/local/bin/ctr"
-done
 
 ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
   -i inventory/inventory.ini \
@@ -107,23 +96,6 @@ ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
 ```
 
 # Admin
-## Set hostname setting for vm01~vm03
-```
-# 호스트 이름 리스트
-hostname=i1
-echo i1 > /etc/hostname
-hosts=("vm01" "vm02" "vm03")
-# 각 호스트에 대해 SSH 접속 후 호스트 이름 설정
-for host in "${hosts[@]}"; do
-  echo "Setting hostname for $host"
-  ssh $host "sudo hostnamectl set-hostname $host && echo $host | sudo tee /etc/hostname"
-  if [ $? -eq 0 ]; then
-    echo "$host: Hostname set successfully"
-  else
-    echo "$host: Failed to set hostname"
-  fi
-done
-```
 ## Shutdown All Instance
 ```
 for i in $(seq 3); do ssh ubuntu@vm0$i sudo sh -c 'shutdown -h now'; done
