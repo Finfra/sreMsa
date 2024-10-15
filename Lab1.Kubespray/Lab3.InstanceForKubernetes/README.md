@@ -112,7 +112,7 @@ EOF
 ```
 
 ## 6. kubesparyInstall.sh 실행
-* pip error시 requirements.txt파일에서 에러나는 페키지의 "=="부터 줄의 끝까지 제거.
+* pip error시 requirements.txt파일에서 에러가 발생하는 페키지의 "=="부터 줄의 끝까지 제거.
 * python3.12버전에서는 --break-system-packages 옵션 필요. 
 ```
 sudo apt remove -y python3-jsonschema
