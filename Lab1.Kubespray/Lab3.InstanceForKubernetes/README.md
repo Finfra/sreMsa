@@ -43,7 +43,7 @@ bash doSetHosts.sh
 ```
 
 # 3.5. 모든 호스트 repo update
-* 필수 아님. repo상태 않좋을때만,
+* 필수 아님. repo상태 안좋을때만,
 ```
 hosts=("vm01" "vm02" "vm03")
 for host in "${hosts[@]}"; do
