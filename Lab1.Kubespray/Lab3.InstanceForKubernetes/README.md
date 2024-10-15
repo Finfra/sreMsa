@@ -40,7 +40,7 @@ aws configure
 cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes
 bash doSetHosts.sh
 
-
+# rm -rf ~/.ssh/known_hosts
 
 # 모든 호스트 repo update
 hosts=("vm01" "vm02" "vm03")
