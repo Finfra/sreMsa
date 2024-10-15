@@ -45,7 +45,6 @@ bash doSetHosts.sh
 # 3.5. 모든 호스트 repo update
 * 필수 아님. repo상태 않좋을때만,
 ```
-
 hosts=("vm01" "vm02" "vm03")
 for host in "${hosts[@]}"; do
   echo "Connecting to $host ..."
@@ -68,8 +67,6 @@ EOF
   fi
 done
 #cf : deb http://mirror.kakao.com/ubuntu/ noble main universe
-
-
 ```
 
 * cf) 아래와 같이 /etc/hosts파일을 직접 셋팅 해도 됨
