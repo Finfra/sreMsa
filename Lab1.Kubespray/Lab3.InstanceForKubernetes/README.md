@@ -39,6 +39,34 @@ aws configure
     Default output format [None]: text
 cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes
 bash doSetHosts.sh
+
+
+
+# 모든 호스트 repo update
+hosts=("vm01" "vm02" "vm03")
+for host in "${hosts[@]}"; do
+  echo "Connecting to $host ..."
+  ssh "$host" << EOF
+    # apt update 및 repository 추가
+    sudo apt update
+    REPO_LINE="deb http://mirror.kakao.com/ubuntu/ noble main universe"
+    if ! grep -Fxq "\$REPO_LINE" /etc/apt/sources.list; then
+      echo "\$REPO_LINE" | sudo tee -a /etc/apt/sources.list
+      echo "Repository line added successfully."
+    else
+      echo "Repository line already exists."
+    fi
+    sudo apt-get update
+EOF
+  if [ $? -eq 0 ]; then
+    echo "Script executed successfully on $host."
+  else
+    echo "Failed to execute script on $host."
+  fi
+done
+#cf : deb http://mirror.kakao.com/ubuntu/ noble main universe
+
+
 ```
 
 * cf) 아래와 같이 /etc/hosts파일을 직접 셋팅 해도 됨
