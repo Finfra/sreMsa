@@ -9,8 +9,8 @@
 * 필수 아님 : 단, http://mirrors.kernel.org/ubuntu/ 상태 이상할때(apt install명령이 잘 않될때)만 실행
 ```
 REPO_LINE="deb http://mirror.kakao.com/ubuntu/ noble main universe"
-if ! grep -Fxq "\$REPO_LINE" /etc/apt/sources.list; then
-  echo "\$REPO_LINE" | sudo tee -a /etc/apt/sources.list
+if ! grep -Fxq "$REPO_LINE" /etc/apt/sources.list; then
+  echo "$REPO_LINE" | sudo tee -a /etc/apt/sources.list
   echo "Repository line added successfully."
 else
   echo "Repository line already exists."
