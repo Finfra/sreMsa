@@ -1,5 +1,5 @@
 # Kubernetes Install With Kubespray
-0. 변수 셋팅 파일 생성 후 실행
+## 0. 변수 셋팅 파일 생성 후 실행
 * 아래와 같은 내용을 ~/.bashrc에 추가하고 실행해 줍니다.
 ```
 su - ubuntu
@@ -12,14 +12,14 @@ export TF_VAR_AWS_REGION="ap-northeast-2"
 . ~/.bashrc
 ```
 
-1. OS key 생성 [있으면 생략]
+## 1. OS key 생성 [있으면 생략]
 ```
 ssh-keygen -f ~/.ssh/id_rsa -N ''
 ```
 * cf) 설치 대상 host에 Public-key 배포
     ssh-copy-id root@10.0.2.10
 
-2. Terrform 으로 host 셋팅
+## 2. Terrform 으로 host 셋팅
 ```
 cd
 git clone https://github.com/Finfra/sreMsa
@@ -29,7 +29,7 @@ terraform apply --auto-approve
 ```
 
 
-3. Hosts파일 셋팅
+## 3. Hosts파일 셋팅
 ```
 aws configure
   # security setting
@@ -38,11 +38,14 @@ aws configure
     Default region name [None]: ap-northeast-2
     Default output format [None]: text
 cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes
-bash doSetHosts.sh
-
 # rm -rf ~/.ssh/known_hosts
+bash doSetHosts.sh
+```
 
-# 모든 호스트 repo update
+# 3.5. 모든 호스트 repo update
+* 필수 아님. repo상태 않좋을때만,
+```
+
 hosts=("vm01" "vm02" "vm03")
 for host in "${hosts[@]}"; do
   echo "Connecting to $host ..."
@@ -76,13 +79,13 @@ done
 54.75.118.154  vm03
 ```
 
-4. git Clone
+## 4. git Clone
 ```
 cd
 git clone -b release-2.25 https://github.com/kubernetes-sigs/kubespray
 ```
 
-5. inventory파일 생성
+## 5. inventory파일 생성
 ```
 cd kubespray
 cat > inventory/inventory.ini <<EOF
@@ -111,7 +114,7 @@ kube-node
 EOF
 ```
 
-6. kubesparyInstall.sh 실행
+## 6. kubesparyInstall.sh 실행
 * pip error시 requirements.txt파일에서 에러나는 페키지의 "=="부터 줄의 끝까지 제거.
 * python3.12버전에서는 --break-system-packages 옵션 필요. 
 ```
