@@ -21,8 +21,7 @@ sudo apt-get update
 # Step3. Install Terraform And Ansible
 * 아래 스크립트를 실행합니다. (한줄씩 복붙)
 ```
-sudo -i
-curl https://raw.githubusercontent.com/Finfra/sreMsa/main/Lab1.Kubespray/Lab1.InstanceForTerraform/installOnEc2.sh|bash
+https://raw.githubusercontent.com/Finfra/sreMsa/main/Lab1.Kubespray/Lab1.InstanceForTerraform/installOnEc2.sh|sudo bash
 ```
 
 # Step4. 설치 확인
