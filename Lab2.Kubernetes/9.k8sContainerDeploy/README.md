@@ -1,4 +1,10 @@
 # helm 기본기
+## tree설치
+```
+apt install tree
+```
+
+
 ## 설치 (vm01)
 ```
 wget https://get.helm.sh/helm-v3.6.2-linux-amd64.tar.gz
@@ -23,6 +29,7 @@ mkdir helmx
 cd helmx/
 helm create mychart
 helm install --dry-run --debug --generate-name ./mychart
+tree
 
 helm install example ./mychart --set service.type=NodePort
 
