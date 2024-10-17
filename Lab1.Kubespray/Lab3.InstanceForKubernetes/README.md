@@ -66,7 +66,8 @@ EOF
     echo "Failed to execute script on $host."
   fi
 done
-#cf : deb http://mirror.kakao.com/ubuntu/ noble main universe
+#cf : deb http://ftp.daum.net/ubuntu/ noble main universe
+
 ```
 
 * cf) 아래와 같이 /etc/hosts파일을 직접 셋팅 해도 됨
