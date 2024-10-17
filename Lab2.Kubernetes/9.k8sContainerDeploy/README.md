@@ -110,7 +110,8 @@ helm search hub tomcat
 helm search hub tomcat -o yaml
 # helm repo remove  bitnami
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install t1 bitnami/tomcat --set persistence.enabled=false,tomcatAllowRemoteManagement=1
+helm install t1 bitnami/tomcat --set persistence.enabled=false,tomcatAllowRemoteManagement=1,tomcatPassword=my-secure-password
+
 sleep 120
 kubectl get svc
 echo Password: $(kubectl get secret --namespace default t1-tomcat -o jsonpath="{.data.tomcat-password}" | base64 --decode)
