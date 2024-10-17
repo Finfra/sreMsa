@@ -9,10 +9,14 @@ kubectl get namespace
 kubectl apply -f samples/addons
 
 kubectl rollout status deployment/kiali -n istio-system
+```
 
-istioctl dashboard kiali --address 0.0.0.0
+```
+tmux new -s istio
+  istioctl dashboard kiali --address 0.0.0.0
+  #ctl+b,d
+# tmux attach -t istio
 
-ping vm01
 ```
 
 ## Local Browser에서 open
