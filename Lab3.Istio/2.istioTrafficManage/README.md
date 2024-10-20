@@ -4,6 +4,7 @@
 * 1. Bookinfo sample application
 ```
 cd ~/istio-1.*
+kubectl config set-context --current --namespace=default
 cat samples/bookinfo/platform/kube/bookinfo.yaml
 kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
 # rollback : kubectl delete -f samples/bookinfo/platform/kube/bookinfo.yaml
