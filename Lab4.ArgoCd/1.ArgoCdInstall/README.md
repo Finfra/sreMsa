@@ -27,7 +27,6 @@ kubectl get all -n argocd
 ```
 sudo curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
 sudo chmod +x /usr/local/bin/argocd
-
 ```
 * Windows의 경우 : [한줄 씩 복붙]
 ```
