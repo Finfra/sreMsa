@@ -50,7 +50,7 @@ kubectl get svc -n argocd|grep argocd-server
 * 1. github 사이트에 로그인
 * 2. https://github.com/argoproj/argocd-example-apps.git 접속해서 Fork뜨기.
   - 오른쪽 상단 버튼
-* 3. Fort뜬 git Repository 주소 복사해 두기.
+* 3. Fork뜬 git Repository 주소 복사해 두기.
 * 4. Namespace만들기
 ```
 kubectl create namespace prj2
