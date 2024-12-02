@@ -66,3 +66,8 @@ git checkout 202207
 ## Lab5-1. zipkin/jaeger 셋팅 실습
 ## Lab5-2. Zipkin을 이용한 MSA 환경에서 분산 트렌젝션의 추적
 ## Lab5-3. Transaction UI(API / Web) 연동 실습
+
+
+# ToDo
+* i1에 Docker Compose
+* Python3.12 자동 업그레드 문제 해결(처음부터 3.12버전으로)
