@@ -17,7 +17,7 @@ hostname > /etc/hostname
 
 
 apt -y update
-apt -y install docker.io docker-compose unzip mysql-client unzip jq
+apt -y install docker.io docker-compose unzip mysql-client jq
 groupadd docker
 usermod -G docker ubuntu
 
