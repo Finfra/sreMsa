@@ -19,7 +19,7 @@ cd istio-1.*
 export PATH=$PWD/bin:$PATH
 x=$(cat /etc/bash.bashrc|grep istio|grep istio)
 [ ${#x} -eq 0 ]&& echo export PATH=$PWD/bin:$PATH >>/etc/bash.bashrc
-istioctl profile list
+# obsolete : istioctl profile list
 ```
 
 ## Install Istio
