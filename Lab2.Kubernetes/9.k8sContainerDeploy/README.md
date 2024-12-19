@@ -3,6 +3,10 @@
 ```
 apt install tree
 ```
+## 기본 namespace 변경
+```
+kubectl config set-context --current --namespace=default
+```
 
 
 ## 설치 (vm01)
