@@ -121,6 +121,14 @@ kubectl get svc
 echo Password: $(kubectl get secret --namespace default t1-tomcat -o jsonpath="{.data.tomcat-password}" | base64 --decode)
 # user / my-secure-password      
 ```
+
+* bitanami 레포지터리 실패시.
+```
+helm repo add kubesphere https://charts.kubesphere.io/main
+helm install t1 kubesphere/tomcat   --set persistence.enabled=false   --set tomcatAllowRemoteManagement=1   --set tomcatPassword=my-secure-password   --set service.type=NodePort   --set service.nodePort=30001
+```
+
+
 * 접속해 브라우저에서 접속해 볼 것. [vm01은 c:\Windows\System32\drivers\etc\hosts 파일에 셋팅필요. ip로 접속해도 무관함.또한 접속 포트는 위 스크립트의 실행 결과 참고할 것]
   - http://vm01:31636/
   - http://vm01:31636/manager
