@@ -12,23 +12,6 @@ cd sreMsa
 
 ```
 
-## 주의) 202107이전에 수업들었던 분들은 아래 방식으로 사용하세요.
-```
-cd
-git clone https://github.com/Finfra/sreMsa
-cd sreMsa
-git checkout 202107
-```
-
-## 주의) 202107~202207에 수업들었던 분들은 아래 방식으로 사용하세요.
-```
-cd
-git clone https://github.com/Finfra/sreMsa
-cd sreMsa
-git checkout 202207
-```
-
-
 # [Lab1. 사전 실습 환경 세팅](./Lab1.Kubespray/)
 ## Lab1-1~3. Terraform으로 EC2 인스턴스 생성
 ### Lab1-1. 실습용 Terraform Instance 구성
@@ -67,7 +50,28 @@ git checkout 202207
 ## Lab5-2. Zipkin을 이용한 MSA 환경에서 분산 트렌젝션의 추적
 ## Lab5-3. Transaction UI(API / Web) 연동 실습
 
+# 수강 년도별 소스 보기
+## 202207~202504에 수업들었던 분들은 아래 방식
+```
+cd
+git clone https://github.com/Finfra/sreMsa
+cd sreMsa
+git checkout 202504
+```
 
-# ToDo
-* i1에 Docker Compose
-* Python3.12 자동 업그레드 문제 해결(처음부터 3.12버전으로)
+
+## 202107~202207에 수업들었던 분들은 아래 방식
+```
+cd
+git clone https://github.com/Finfra/sreMsa
+cd sreMsa
+git checkout 202207
+```
+## 202107이전에 수업들었던 분들은 아래 방식
+```
+cd
+git clone https://github.com/Finfra/sreMsa
+cd sreMsa
+git checkout 202107
+```
+
