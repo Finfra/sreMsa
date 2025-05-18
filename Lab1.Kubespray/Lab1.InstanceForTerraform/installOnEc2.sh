@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Version Setting
-TERRAFORM_VERSION="1.12.0"
-ANSIBE_VERSION="2.15.6"           
+TERRAFORM_VERSION="1.8.3"
+ANSIBE_VERSION="9.5.1"           # core 2.16.6
 
 # System Variable Setting
 export LC_ALL=C.UTF-8
