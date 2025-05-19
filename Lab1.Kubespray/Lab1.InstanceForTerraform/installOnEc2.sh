@@ -11,7 +11,7 @@ export DEBIAN_FRONTEND=noninteractive
 grep -qxF "export LC_ALL=C.UTF-8" /etc/bash.bashrc || echo "export LC_ALL=C.UTF-8" >> /etc/bash.bashrc
 grep -qxF "export DEBIAN_FRONTEND=noninteractive" /etc/bash.bashrc || echo "export DEBIAN_FRONTEND=noninteractive" >> /etc/bash.bashrc
 
-hostname provisioner
+hostname i1
 hostname > /etc/hostname
 
 apt update
