@@ -44,7 +44,7 @@ Invoke-WebRequest -Uri $url -OutFile $output
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
-* 이하 결과 처럼 나오지 않고 Panding되면 ctrl+c
+* 이하 결과 처럼 나오고 Panding되면 ctrl+c
 ```
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 service/argocd-server patched
