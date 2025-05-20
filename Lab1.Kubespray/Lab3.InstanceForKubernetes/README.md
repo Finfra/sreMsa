@@ -117,7 +117,9 @@ EOF
 * python3.12버전에서는 --break-system-packages 옵션 필요. 
 ```
 # ubuntu24.04에서만 : sudo apt remove -y python3-jsonschema
-sudo python3 -m pip install -r requirements.txt
+pip install --break-system-packages -r requirements.txt
+
+ansible --version
 
 ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
   -i inventory/inventory.ini \
