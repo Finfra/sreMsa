@@ -164,8 +164,8 @@ spec:
       - name: pvc-volume
         persistentVolumeClaim:
           claimName: pvc
-
 EOF
+
 kubectl create -f nfsDeploy.yaml
 kubectl expose deploy/nfsnginx --type="NodePort" --port=80
 kubectl scale deploy nfsnginx --replicas=2
