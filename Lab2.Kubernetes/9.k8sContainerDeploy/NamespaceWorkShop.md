@@ -5,7 +5,7 @@
 ```
 
 # 2. 기본 namespace를 prj2로 바꿔서 nginx2라는 deploy를 만드세요.
-``
+```
 ~~~
 ~~~
 ~~~
