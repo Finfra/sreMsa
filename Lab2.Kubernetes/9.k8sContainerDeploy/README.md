@@ -125,7 +125,9 @@ echo Password: $(kubectl get secret --namespace default t1-tomcat -o jsonpath="{
 * bitanami 레포지터리 실패시.
 ```
 helm repo add kubesphere https://charts.kubesphere.io/main
-helm install t1 kubesphere/tomcat   --set persistence.enabled=false   --set tomcatAllowRemoteManagement=1   --set tomcatPassword=my-secure-password   --set service.type=NodePort   --set service.nodePort=30001
+helm install t1 kubesphere/tomcat
+# helm pull kubesphere/tomcat --untar 다운로드 받아서 values.yml확인해서 실행.
+
 ```
 
 
