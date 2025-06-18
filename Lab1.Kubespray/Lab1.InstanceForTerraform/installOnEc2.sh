@@ -2,7 +2,7 @@
 
 # Version Setting
 TERRAFORM_VERSION="1.12.0"
-ANSIBE_VERSION="11.5.0"              # core 2.18.5
+ANSIBE_VERSION="9.13.0"              # for kubesPray
 
 # System Variable Setting
 export LC_ALL=C.UTF-8
