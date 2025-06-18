@@ -19,17 +19,10 @@ sudo apt-get update
 ```
 
 # Step3. Install Terraform And Ansible
-* 아래 스크립트를 실행합니다. python3.12가 아닐 경우임.
+* 아래 스크립트를 실행합니다. 
 ```
 sudo -i bash -c 'curl https://raw.githubusercontent.com/Finfra/sreMsa/main/Lab1.Kubespray/Lab1.InstanceForTerraform/installOnEc2.sh | bash'
 ```
-
-* python3.12가 설치되어 있을때는 아래 스크립트를 실행합니다.
-```
-sudo -i bash -c 'curl https://raw.githubusercontent.com/Finfra/sreMsa/main/Lab1.Kubespray/Lab1.InstanceForTerraform/installOnEc2_p3.12.sh | bash'
-```
-
-
 
 # Step4. 설치 확인
 ```
