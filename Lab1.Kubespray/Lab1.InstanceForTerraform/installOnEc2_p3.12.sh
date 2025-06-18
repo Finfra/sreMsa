@@ -23,7 +23,7 @@ update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 # install python3.12 + pip
 add-apt-repository ppa:deadsnakes/ppa -y
 apt update
-apt install -y apt install python3-pip python3.12-venv python3.12-dev python3.12-distutils
+apt install -y python3-pip python3.12-venv python3.12-dev 
 
 [[ -f /usr/bin/python ]] && rm /usr/bin/python
 ln -s /usr/bin/python3.12 /usr/bin/python
