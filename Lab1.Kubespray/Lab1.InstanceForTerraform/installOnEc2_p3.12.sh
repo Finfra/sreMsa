@@ -2,7 +2,7 @@
 
 # Version Setting
 TERRAFORM_VERSION="1.8.3"
-ANSIBE_VERSION="9.13.0"           # 9.13.0
+ANSIBLE_VERSION="10.7.0"
 
 # System Variable Setting
 export LC_ALL=C.UTF-8
@@ -23,7 +23,7 @@ update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 # install python3.12 + pip
 add-apt-repository ppa:deadsnakes/ppa -y
 apt update
-apt install -y python3-pip python3.12-venv python3.12-dev 
+apt install -y python3-pip python3.12-venv python3.12-dev
 
 [[ -f /usr/bin/python ]] && rm /usr/bin/python
 ln -s /usr/bin/python3.12 /usr/bin/python
@@ -35,7 +35,7 @@ complete -C aws_completer aws
 
 # install ansible
 pip install --break-system-packages netaddr jinja2
-pip install --break-system-packages ansible==$ANSIBE_VERSION
+pip install --break-system-packages ansible==$ANSIBLE_VERSION
 
 # Language Setting
 grep -qxF "set input-meta on" /etc/bash.bashrc || cat <<EOF >> /etc/bash.bashrc
@@ -46,9 +46,9 @@ EOF
 
 # Terraform Install
 [[ ! $(which terraform) ]] \
-    && wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
-    && unzip -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin \
-    && rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.*
+&& wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
+&& unzip -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin \
+&& rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.*
 
 # 편의 설정
 grep -qxF "export EDITOR=vi" /etc/bash.bashrc || echo "export EDITOR=vi" >> /etc/bash.bashrc
