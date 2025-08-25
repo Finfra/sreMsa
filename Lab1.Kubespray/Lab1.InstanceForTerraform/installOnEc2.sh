@@ -4,7 +4,7 @@
 
 # Version Setting
 TERRAFORM_VERSION="1.12.0"
-ANSIBLE_VERSION="9.13.0"
+ANSIBLE_VERSION="10.7.0"
 
 # Python 버전 확인 함수
 check_python_version() {
@@ -12,7 +12,7 @@ check_python_version() {
         PYTHON_VERSION=$(python3.12 --version 2>&1 | awk '{print $2}' | cut -d. -f1,2)
         PYTHON_CMD="python3.12"
         echo "3.12"
-    elif command -v python3 &> /dev/null; then
+        elif command -v python3 &> /dev/null; then
         PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}' | cut -d. -f1,2)
         PYTHON_CMD="python3"
         echo "$PYTHON_VERSION"
@@ -60,7 +60,7 @@ if [[ "$DETECTED_PYTHON" == "3.12" ]]; then
     pip install --break-system-packages netaddr jinja2
     pip install --break-system-packages ansible==$ANSIBLE_VERSION
     
-elif [[ "$DETECTED_PYTHON" > "3.10" && "$DETECTED_PYTHON" < "3.12" ]]; then
+    elif [[ "$DETECTED_PYTHON" > "3.10" && "$DETECTED_PYTHON" < "3.12" ]]; then
     echo "=== Python $DETECTED_PYTHON 감지 - 기존 버전 활용 ==="
     
     # 기존 Python 사용, pip만 확인/설치
@@ -117,9 +117,9 @@ EOF
 
 # Terraform 설치
 [[ ! $(which terraform) ]] \
-    && wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
-    && unzip -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin \
-    && rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.*
+&& wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
+&& unzip -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin \
+&& rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.*
 
 # 편의 설정
 grep -qxF "export EDITOR=vi" /etc/bash.bashrc || echo "export EDITOR=vi" >> /etc/bash.bashrc
