@@ -2,7 +2,7 @@
 
 # Version Setting
 TERRAFORM_VERSION="1.8.3"
-ANSIBLE_VERSION="10.7.0"
+ANSIBLE_VERSION="9.5.1"
 
 # System Variable Setting
 export LC_ALL=C.UTF-8
