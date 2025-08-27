@@ -4,7 +4,7 @@
 
 # Version Setting
 TERRAFORM_VERSION="1.12.0"
-ANSIBLE_VERSION="10.7.0"
+ANSIBLE_VERSION="9.5.1"
 
 # Python 버전 확인 함수
 check_python_version() {
