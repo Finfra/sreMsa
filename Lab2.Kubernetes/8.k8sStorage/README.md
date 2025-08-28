@@ -175,7 +175,7 @@ curl vm01:$NODE_PORT
 kubectl get po
 echo "<h1>hi</h1>" > /share/index.html
 curl vm01:$NODE_PORT
-curl vm01:$NODE_PORT
-curl vm01:$NODE_PORT
+curl vm02:$NODE_PORT
+curl vm03:$NODE_PORT
 # 계속 같은 것이 나오는지 확인
 ```
