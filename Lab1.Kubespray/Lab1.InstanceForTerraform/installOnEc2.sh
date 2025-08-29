@@ -3,8 +3,8 @@
 # 현재 설치된 Python 버전에 따라 자동 분기
 
 # Version Setting
-TERRAFORM_VERSION="1.12.0"
-ANSIBLE_VERSION="9.5.1"
+TERRAFORM_VERSION="1.13.1"
+ANSIBLE_VERSION="10.7.0"
 
 # Python 버전 확인 함수
 check_python_version() {
