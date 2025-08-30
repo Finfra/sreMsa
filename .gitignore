@@ -2,6 +2,11 @@
 */.*
 .vagrant
 
+# claudeCode
+.claude
+CLAUDE.md
+claudedocs
+
 # for macOS
 .DS_Store
 .AppleDouble
