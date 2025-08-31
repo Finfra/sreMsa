@@ -12,7 +12,7 @@ check_python_version() {
         PYTHON_VERSION=$(python3.12 --version 2>&1 | awk '{print $2}' | cut -d. -f1,2)
         PYTHON_CMD="python3.12"
         echo "3.12"
-        elif command -v python3 &> /dev/null; then
+    elif command -v python3 &> /dev/null; then
         PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}' | cut -d. -f1,2)
         PYTHON_CMD="python3"
         echo "$PYTHON_VERSION"
@@ -60,7 +60,7 @@ if [[ "$DETECTED_PYTHON" == "3.12" ]]; then
     pip install --break-system-packages netaddr jinja2
     pip install --break-system-packages ansible==$ANSIBLE_VERSION
     
-    elif [[ "$DETECTED_PYTHON" > "3.10" && "$DETECTED_PYTHON" < "3.12" ]]; then
+elif [[ "$DETECTED_PYTHON" > "3.10" && "$DETECTED_PYTHON" < "3.12" ]]; then
     echo "=== Python $DETECTED_PYTHON 감지 - 기존 버전 활용 ==="
     
     # 기존 Python 사용, pip만 확인/설치
@@ -83,26 +83,23 @@ if [[ "$DETECTED_PYTHON" == "3.12" ]]; then
     pip uninstall -y pyOpenSSL 2>/dev/null || true
     
 else
-    echo "=== Python 3.11 새로 설치 ==="
+    echo "=== Python 3.12 새로 설치 ==="
     
-    # Python 3.11 설치
+    # Python 3.12 설치 (3.11 대신 3.12로 변경)
     add-apt-repository ppa:deadsnakes/ppa -y
     apt update
-    apt install -y python3.11
+    apt install -y python3.12 python3-pip python3.12-venv python3.12-dev
     
-    # pip 설치
-    curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
+    # Python 심볼릭 링크 설정
+    [[ -f /usr/bin/python ]] && rm /usr/bin/python
+    ln -s /usr/bin/python3.12 /usr/bin/python
     
     # AWS CLI 설치
-    python -m pip install awscli
+    python3.12 -m pip install --break-system-packages awscli
     
     # Ansible 설치
-    pip install netaddr jinja2
-    pip install ansible==$ANSIBLE_VERSION
-    
-    # OpenSSL 충돌 해결
-    pip uninstall -y pyOpenSSL 2>/dev/null || true
+    pip install --break-system-packages netaddr jinja2
+    pip install --break-system-packages ansible==$ANSIBLE_VERSION
 fi
 
 # AWS CLI 자동완성 설정

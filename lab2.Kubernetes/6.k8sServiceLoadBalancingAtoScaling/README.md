@@ -1,5 +1,5 @@
 # Kubernetes 서비스, 로드발렌싱, AutoScaling
-* ./Lab1.Kubespray/1.KubernetesBasic/README.md 파일을 참고 하여 문제를 푸세요.
+* ./lab1.Kubespray/1.KubernetesBasic/README.md 파일을 참고 하여 문제를 푸세요.
 *  답은 Solution.md 파일에 있습니다.
 
 ## 1. Deployment를 출력하시오.

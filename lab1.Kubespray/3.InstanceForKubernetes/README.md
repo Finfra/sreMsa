@@ -23,7 +23,7 @@ ssh-keygen -f ~/.ssh/id_rsa -N ''
 ```
 cd
 git clone https://github.com/Finfra/sreMsa
-cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes
+cd ~/sreMsa/lab1.Kubespray/3.InstanceForKubernetes
 terraform init
 terraform apply --auto-approve
 ```
@@ -37,7 +37,7 @@ aws configure
     AWS Secret Access Key [None]: xxxxxxxxxxxxxxxxxxx
     Default region name [None]: ap-northeast-2
     Default output format [None]: text
-cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes
+cd ~/sreMsa/lab1.Kubespray/3.InstanceForKubernetes
 # rm -rf ~/.ssh/known_hosts
 bash doSetHosts.sh
 ```
@@ -80,7 +80,7 @@ done
 ## 4. git Clone
 ```
 cd
-git clone -b release-2.25 https://github.com/kubernetes-sigs/kubespray
+git clone -b release-2.28 https://github.com/kubernetes-sigs/kubespray
 ```
 
 ## 5. inventory파일 생성
@@ -116,8 +116,8 @@ EOF
 * pip error시 requirements.txt파일에서 에러가 발생하는 페키지의 "=="부터 줄의 끝까지 제거.
 * python3.12버전에서는 --break-system-packages 옵션 필요. 
 ```
-# ubuntu24.04에서만 : sudo apt remove -y python3-jsonschema
-sudo python -m pip install -r requirements.txt
+sudo apt remove -y python3-jsonschema # ubuntu24.04에서만 
+sudo python -m pip install --break-system-packages -r requirements.txt
 
 ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
   -i inventory/inventory.ini \

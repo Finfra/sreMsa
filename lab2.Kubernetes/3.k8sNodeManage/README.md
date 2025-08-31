@@ -2,7 +2,7 @@
 ## Terraform 작업
 1. Terraform 파일 수정 (실습용 Console서버)
 ```
-cd ~/sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes/
+cd ~/sreMsa/lab1.Kubespray/3.InstanceForKubernetes/
 vi vars.tf # "instance_count"를 4로 변경
 terraform apply --auto-approve
 
@@ -66,7 +66,7 @@ kubectl get nodes
 ## Terraform 작업
 1. Terraform 파일 수정(실습용 Console서버)
 ```
-cd sreMsa/Lab1.Kubespray/Lab3.InstanceForKubernetes/
+cd sreMsa/lab1.Kubespray/3.InstanceForKubernetes/
 vi vars.tf # "instance_count"를 3으로 변경
 terraform apply -auto-approve
 
