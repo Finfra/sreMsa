@@ -16,9 +16,9 @@ variable "INSTANCE_USERNAME" {
 
 variable "AMIS" {
   default = {
-    eu-west-1      = "ami-0a422d70f727fe93e"
-    ap-northeast-2 = "ami-042e76978adeb8c48"
-    us-east-1      = "ami-005fc0f236362e99f"
+    eu-west-1      = "ami-0d3bb9c10151c3245"
+    ap-northeast-2 = "ami-00e73adb2e2c80366"
+    us-east-1      = "ami-0aa28dab1f2852040"
   }
 } 
 
