@@ -29,5 +29,5 @@ variable "instance_count" {
 
 
 variable "instance_type" {
-  default = "t2.small"
+  default = "t3.small"
 }
