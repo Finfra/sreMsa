@@ -1,4 +1,4 @@
-# 수강 관련 문의 : [kitri](http://kitri.re.kr)
+# 수강 관련 문의 : (한국글로벌널리지)[https://www.globalknowledge.co.kr]
 
 # Usage.
 ```
