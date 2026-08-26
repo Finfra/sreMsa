@@ -17,10 +17,11 @@ network:
   node_host_base: 10   # vm01 = 192.168.56.11, vm02 = .12, vm03 = .13 ...
 
 # 콘솔 서버 — AWS 의 i1 인스턴스와 같은 역할.
-# Kubespray(Ansible)를 여기서 실행한다. Kubernetes 노드가 아니다.
+# Kubespray(Ansible)를 여기서 실행한다. Kubernetes 노드가 아니므로
+# 자원을 적게 줘도 되고, swap 도 켜 둔 채로 쓴다.
 i1:
-  cpu: 2
-  memory: 2048
+  cpu: 1
+  memory: 1024
 
 nodes:
   # Kubernetes 노드 수. 3.k8sNodeManage 실습에서 4 로 올린 뒤 `vagrant up vm04`.
@@ -36,7 +37,13 @@ nodes:
     vm02:
       memory: 3072
 
-# 게스트 합계 기본값: 2048 + 3072 + 3072 + 2560 = 10752MB (약 10.5GB)
+# 게스트 합계 기본값: 1024 + 3072 + 3072 + 2560 = 9728MB (약 9.5GB)
+# vCPU 합계: 1 + 2 + 2 + 2 = 7
 #   - 호스트 16GB : 가능하되 브라우저·IDE 를 닫는 편이 좋다
 #   - 호스트 24GB : 권장. 노드 추가 실습(vm04, +2560MB)까지 여유롭다
 #   - 호스트 12GB 이하 : README.md 의 "메모리가 부족할 때" 절 참조
+#
+# i1 이 1GB 인 것은 Ansible 만 돌리기 때문이다. 다만 Kubespray 가 노드마다
+# fork 를 띄우는 구간에서는 빠듯할 수 있어, scripts/common.sh 가 i1 에만
+# swap 파일 2GB 를 만들어 준다. i1 은 Kubernetes 노드가 아니므로
+# swap 을 꺼야 할 이유가 없다.

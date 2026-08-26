@@ -3,7 +3,8 @@
 #
 #   1) /etc/hosts 에 i1·vm0N 을 등록하고, 호스트명이 127.0.0.1 로 풀리는 것을 막는다
 #   2) ubuntu 계정을 만든다 — AWS 인스턴스와 계정명을 맞추기 위한 것이다
-#   3) swap 을 끄고 ssh 의 호스트키 확인을 끈다
+#   3) swap 을 정리한다 — Kubernetes 노드는 끄고, i1 은 오히려 만들어 준다
+#   4) 방화벽과 ssh 호스트키 확인을 끈다
 #
 # 인자 $1 : Vagrantfile 이 만들어 넘긴 hosts 블록
 
@@ -48,9 +49,27 @@ chmod 440 /etc/sudoers.d/90-ubuntu
 
 install -d -m 700 -o ubuntu -g ubuntu /home/ubuntu/.ssh
 
-echo "=== [common] ${HN} — swap off ==="
-swapoff -a || true
-sed -i '/[[:space:]]swap[[:space:]]/s/^\(.*\)$/#\1/' /etc/fstab
+if [ "$HN" = "i1" ]; then
+  # i1 은 Kubernetes 노드가 아니라 kubelet 이 없다. swap 을 끌 이유가 없고,
+  # 메모리를 작게 줬으므로 Ansible fork 가 몰리는 구간의 완충으로 오히려 필요하다.
+  echo "=== [common] ${HN} — swap 확보 (Kubernetes 노드가 아니다) ==="
+  if [ -f /swapfile ]; then
+    echo "  이미 있음"
+  else
+    fallocate -l 2G /swapfile 2>/dev/null || dd if=/dev/zero of=/swapfile bs=1M count=2048 status=none
+    chmod 600 /swapfile
+    mkswap /swapfile >/dev/null
+    grep -q '^/swapfile' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+    echo "  2GB 생성"
+  fi
+  swapon /swapfile 2>/dev/null || true
+  swapon --show || echo "  (swap 활성화 실패 — 메모리가 빠듯하면 settings.yml 의 i1.memory 를 올릴 것)"
+else
+  # Kubernetes 노드는 kubelet 이 swap 을 거부하므로 반드시 꺼야 한다.
+  echo "=== [common] ${HN} — swap off (kubelet 요구사항) ==="
+  swapoff -a || true
+  sed -i '/[[:space:]]swap[[:space:]]/s/^\(.*\)$/#\1/' /etc/fstab
+fi
 
 echo "=== [common] ${HN} — 방화벽 비활성 ==="
 # kubespray 요구사항: "The firewalls are not managed, you'll need to implement

@@ -6,12 +6,13 @@ Kubespray 를 실행하는 부분은 [3.InstanceForKubernetes/README.md](3.Insta
 
 만들어지는 것은 VM 네 대다.
 
-| VM | 역할 | IP |
-| :--- | :--- | :--- |
-| i1 | 콘솔 서버. 여기서 Kubespray 를 실행한다 (Kubernetes 노드 아님) | 192.168.56.10 |
-| vm01 | control plane + etcd + **worker** | 192.168.56.11 |
-| vm02 | control plane + worker | 192.168.56.12 |
-| vm03 | worker | 192.168.56.13 |
+| VM   | 역할                                                           | IP            | vCPU | 메모리 |
+| :--- | :------------------------------------------------------------- | :------------ | ---: | -----: |
+| i1   | 콘솔 서버. 여기서 Kubespray 를 실행한다 (Kubernetes 노드 아님) | 192.168.56.10 | 1 | 1024MB |
+| vm01 | control plane + etcd + **worker**                              | 192.168.56.11 | 2 | 3072MB |
+| vm02 | control plane + worker                                         | 192.168.56.12 | 2 | 3072MB |
+| vm03 | worker                                                         | 192.168.56.13 | 2 | 2560MB |
+| | | **합계** | **7** | **9728MB** |
 
 > 이전 판까지 쓰던 `rayshoo/vansinetes` 는 더 이상 동작하지 않는다.
 > 폐쇄된 `apt.kubernetes.io` 저장소에서 Kubernetes 1.20.2 를 받으려 하기 때문이며, 주소를 바꿔도 살아나지 않는다.
@@ -21,7 +22,8 @@ Kubespray 를 실행하는 부분은 [3.InstanceForKubernetes/README.md](3.Insta
 
 ## 하드웨어
 
-* 메모리 **16GB 최소**, 24GB 이상 권장 — VM 이 합계 10.5GB 를 쓴다
+* 메모리 **16GB 최소**, 24GB 이상 권장 — VM 이 합계 **9.5GB** 를 쓴다
+* CPU **논리 프로세서 8개 이상 권장** — VM 이 합계 7개를 가져간다. 4개뿐이면 느려진다
 * 디스크 여유 **60GB 이상**
 * CPU 가상화 지원 (요즘 PC 는 모두 지원한다)
 

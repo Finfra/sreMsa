@@ -102,23 +102,42 @@ AWS 는 IP 가 생성 시점에 정해지므로 `doSetHosts.sh` 가 `aws ec2 des
 
 # 자원
 
-기본값 합계는 **10.5GB** 다.
+기본값 합계는 **7 vCPU · 9.5GB** 다.
 
 | VM | vCPU | 메모리 | 역할 |
 | :--- | ---: | ---: | :--- |
-| i1 | 2 | 2048MB | Ansible 실행 (Kubernetes 노드 아님) |
+| i1 | 1 | 1024MB | Ansible 실행 (Kubernetes 노드 아님) |
 | vm01 | 2 | 3072MB | control plane + etcd + worker |
 | vm02 | 2 | 3072MB | control plane + worker |
 | vm03 | 2 | 2560MB | worker |
+| **합계** | **7** | **9728MB** | |
 
 * 호스트 **16GB** — 가능하되 브라우저·IDE 를 닫는 편이 좋다
 * 호스트 **24GB 이상** — 권장. 노드 추가 실습(vm04, +2560MB)까지 여유롭다
+* **CPU 도 함께 본다** — 논리 프로세서가 8개인 PC 라면 게스트가 7개를 가져가고 호스트에 1개가 남는다.
+  코어가 4개뿐이라면 노드를 1 vCPU 로 낮추는 편이 낫다
+
+## i1 이 1GB 인 이유, 그리고 swap
+
+i1 은 Kubernetes 노드가 아니라 Ansible 만 돌리므로 1 vCPU · 1GB 로 충분하다.
+다만 Kubespray 가 노드마다 fork 를 띄우는 구간에서는 1GB 가 빠듯할 수 있어,
+[scripts/common.sh](scripts/common.sh) 가 **i1 에만 swap 파일 2GB 를 만들어 준다.**
+
+Kubernetes 노드는 kubelet 이 swap 을 거부하므로 반대로 반드시 꺼야 한다.
+같은 스크립트가 호스트명을 보고 갈라 처리한다.
+
+| 대상 | swap | 이유 |
+| :--- | :--- | :--- |
+| i1 | **2GB 생성** | kubelet 이 없다. 작은 메모리의 완충이 된다 |
+| vm01~vm0N | **끔** | kubelet 이 swap 이 켜져 있으면 뜨지 않는다 |
+
+i1 에서 메모리 부족이 실제로 보이면 settings.yml 의 `i1.memory` 를 2048 로 되돌린다.
 
 ## 메모리가 부족할 때
 
 control plane 을 vm01 한 대로 줄이면 vm02 를 워커 자원으로 낮출 수 있다.
 settings.yml 의 `overrides` 에서 vm02 항목을 지우고, inventory 의 `[kube_control_plane]` 에서 vm02 를 뺀다.
-합계가 10.5GB → 10GB 가 되고, 무엇보다 control plane 이 하나라 부팅이 빨라진다.
+합계가 9.5GB → 9GB 가 되고, 무엇보다 control plane 이 하나라 부팅이 빨라진다.
 다만 AWS 경로의 inventory 와 달라지므로 **강의 중에는 기본값을 권한다.**
 
 # 노드 추가 실습 (3.k8sNodeManage)
