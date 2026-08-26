@@ -59,6 +59,10 @@ Vagrant.configure("2") do |config|
   config.vm.box = S["box"]["name"]
   config.vm.box_version = S["box"]["version"] if S["box"]["version"]
 
+  # box 업데이트 확인은 vagrant up 마다 Vagrant Cloud 에 접속한다.
+  # 교육장에서 동시에 실습하면 그 요청이 겹치므로 기본을 꺼 둔다 (settings.yml).
+  config.vm.box_check_update = (S["box"]["check_update"] == true)
+
   # 게스트 additions 자동 업데이트는 시간만 잡아먹고 자주 깨진다.
   config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 

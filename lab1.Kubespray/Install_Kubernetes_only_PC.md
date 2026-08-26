@@ -29,19 +29,41 @@ Kubespray 를 실행하는 부분은 [3.InstanceForKubernetes/README.md](3.Insta
 
 메모리가 부족하면 [0.VagrantForLocal/README.md](0.VagrantForLocal/README.md) 의 "메모리가 부족할 때" 절을 본다.
 
-## 소프트웨어 (Windows 기준)
+## 소프트웨어 — 강사가 제공하는 `_prgs` 폴더를 쓴다 ★
 
-1. **VirtualBox** — https://www.virtualbox.org/wiki/Downloads
-2. **Vagrant** — https://developer.hashicorp.com/vagrant/downloads
-3. **Git for Windows** — https://git-scm.com/download/win
-   Git Bash 를 쓴다. PowerShell·cmd 로도 되지만 이 문서의 명령은 Git Bash 기준이다.
+**인터넷에서 직접 받지 말 것.** 강사가 배포하는 **`_prgs`** 폴더에 필요한 파일이 모두 들어 있다.
+
+| `_prgs` 안의 파일 | 크기 | 용도 |
+| :--- | ---: | :--- |
+| `bento-ubuntu-24.04-*-virtualbox-amd64.box` | 621 MB | **Vagrant box** — VM 의 기반 이미지 |
+| `VirtualBox-7.2.16-*-Win.exe` | 170 MB | VirtualBox |
+| `vagrant_2.4.9_windows_amd64.msi` | 236 MB | Vagrant |
+| `Git-2.55.0.5-64-bit.exe` | 62 MB | Git for Windows |
+| `SHA256SUMS.txt` | — | 무결성 검증용 |
+| 합계 | **약 1.1 GB** | |
+
+수강생 전원이 같은 파일을 동시에 내려받으면 교육장 회선이 막혀 실습을 시작조차 못 한다.
+box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 미리 받아 배포한다.
+
+`_prgs` 안의 **VirtualBox → Vagrant → Git** 순서로 설치한다. 옵션은 기본값 그대로 둔다.
+Git Bash 를 쓴다. PowerShell·cmd 로도 되지만 이 문서의 명령은 Git Bash 기준이다.
 
 설치 후 터미널을 새로 열어 확인한다.
 
 ```bash
-vagrant --version
 VBoxManage --version
+vagrant --version
+git --version
 ```
+
+> 이미 같은 버전을 설치해 두었다면 그대로 써도 된다.
+> 다만 **Vagrant box 만큼은 반드시 `_prgs` 것을 쓴다**(아래 "Vagrant box 등록" 절).
+> 회선을 가장 많이 잡아먹는 것이 box 이기 때문이다.
+>
+> 인터넷에서 직접 받아야 하는 상황이라면 아래가 원본 주소다.
+> VirtualBox https://www.virtualbox.org/wiki/Downloads ·
+> Vagrant https://developer.hashicorp.com/vagrant/downloads ·
+> Git https://git-scm.com/download/win
 
 ## Windows 만의 사전 작업 ★ 여기서 가장 많이 막힌다
 
@@ -70,6 +92,35 @@ Windows 의 Git 은 기본으로 줄바꿈을 CRLF 로 바꾼다. 셸 스크립�
 git config --global core.autocrlf false
 ```
 
+## Vagrant box 등록 ★ 이 절을 건너뛰면 인터넷에서 621MB 를 받는다
+
+`_prgs` 의 `.box` 파일을 Vagrant 에 등록한다. **인터넷을 쓰지 않는다.**
+
+Git Bash 에서 `_prgs` 폴더로 이동한 뒤 실행한다.
+
+```bash
+vagrant box add bento/ubuntu-24.04 ./bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
+```
+
+**이름을 `bento/ubuntu-24.04` 로 등록해야 한다.** 이름이 다르면 `vagrant up` 이 이 box 를 찾지 못하고
+인터넷에서 다시 받으려 한다. 등록됐는지 확인한다.
+
+```bash
+vagrant box list
+```
+
+```
+bento/ubuntu-24.04 (virtualbox, 0)
+```
+
+버전이 `0` 으로 보이는 것이 정상이다. 로컬 파일에서 추가하면 버전 정보가 없기 때문이며 실습에 지장이 없다.
+[settings.yml](0.VagrantForLocal/settings.yml) 의 `box.version` 을 비워 둔 것도 이 때문이다.
+
+> 잘못된 이름으로 등록했다면 지우고 다시 넣는다.
+> ```bash
+> vagrant box remove <잘못된이름>
+> ```
+
 # 1. 소스 내려받기
 
 ```bash
@@ -84,7 +135,11 @@ cd sreMsa/lab1.Kubespray/0.VagrantForLocal
 vagrant up
 ```
 
-* 처음 실행하면 Ubuntu 이미지를 받느라 오래 걸린다. **20~40분** 을 예상한다.
+* 앞에서 box 를 등록해 두었으므로 **이미지 다운로드는 일어나지 않는다.**
+  VM 4대를 만들고 프로비저닝하는 데 **20~40분** 을 예상한다(i1 의 도구 설치가 대부분이다).
+* `vagrant up` 이 box 를 받으려 한다면 등록이 안 된 것이다. `vagrant box list` 로 이름을 확인한다.
+* box 업데이트 확인도 꺼 두었다([settings.yml](0.VagrantForLocal/settings.yml) 의 `box.check_update`).
+  교육장에서 여러 명이 동시에 `vagrant up` 을 할 때 그 조회가 겹치는 것을 막기 위함이다.
 * i1 이 가장 먼저 만들어진다. i1 이 ssh 키를 만들어야 vm01~vm03 이 그 키를 받기 때문에 순서가 중요하다.
   `vagrant up` 을 그냥 실행하면 순서는 알아서 지켜진다.
 * 중간에 실패하면 그 VM 만 다시 만든다.
@@ -300,6 +355,7 @@ vagrant destroy -f
 | 증상 | 원인·해결 |
 | :--- | :--- |
 | `vagrant up` 이 VM 을 못 띄운다 | Hyper-V·메모리 무결성이 켜져 있다. 0장의 사전 작업을 다시 확인한다 |
+| `vagrant up` 이 box 를 내려받으려 한다 | box 등록을 건너뛰었거나 이름이 다르다. `vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다 |
 | 스크립트가 `\r` 오류를 낸다 | `core.autocrlf` 를 끄지 않고 clone 했다. `git config --global core.autocrlf false` 후 다시 clone |
 | i1 에서 `ssh vm01` 이 암호를 묻는다 | 호스트에서 `vagrant provision vm01` |
 | `ansible ping` 이 실패한다 | i1 에서 `bash /vagrant/doVerify.sh` — 어느 단계에서 끊기는지 나온다 |
