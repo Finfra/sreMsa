@@ -16,9 +16,19 @@ HN="$(hostname)"
 echo "=== [common] ${HN} — /etc/hosts 갱신 ==="
 
 # 호스트명이 루프백으로 풀리면 kubespray 가 노드 주소를 127.x 로 잡는다.
-# 그 줄들을 지우고 아래에서 실제 host-only IP 로 다시 넣는다.
+#
+# Ubuntu 는 127.0.1.1 을, Vagrant 는 hostname 을 설정하면서 127.0.2.1 을 넣는다.
+#   127.0.2.1 vm01 vm01     <- Vagrant 가 넣는 줄
+# 이대로 두면 노드에서 `getent hosts vm01` 이 루프백을 답한다. 우리가 아래에서
+# 넣는 실제 IP 보다 파일 위쪽에 있어 먼저 잡히기 때문이다.
+#
+# 그래서 127.x 대역에서 이 호스트명을 가리키는 줄을 모두 지운다.
+# `127.0.0.1 localhost` 는 호스트명을 필드로 갖지 않으므로 그대로 살아남는다.
+awk -v hn="$HN" '
+  $1 ~ /^127\./ { for (i = 2; i <= NF; i++) if ($i == hn) next }
+  { print }
+' /etc/hosts > /tmp/hosts.new && cat /tmp/hosts.new > /etc/hosts && rm -f /tmp/hosts.new
 sed -i '/^127\.0\.1\.1/d' /etc/hosts
-sed -i "/^127\.0\.0\.1[[:space:]]\+${HN}\([[:space:]]\|$\)/d" /etc/hosts
 grep -qE '^127\.0\.0\.1[[:space:]]+localhost' /etc/hosts || sed -i '1i 127.0.0.1 localhost' /etc/hosts
 
 # 마커 사이만 교체한다. 재실행해도 중복되지 않는다.
