@@ -1,0 +1,42 @@
+# sreMsa lab1 — 로컬(PC) Kubespray 실습 환경 설정
+#
+# 이 파일만 고치면 된다. Vagrantfile 은 손대지 않는다.
+# 값을 바꾼 뒤에는 `vagrant reload --provision` 또는 `vagrant destroy -f && vagrant up`.
+
+box:
+  # Ubuntu 24.04 LTS. kubespray 2.28 이 공식 지원하는 배포판이다.
+  name: "bento/ubuntu-24.04"
+  # 특정 버전에 고정하려면 값을 넣는다. 비워 두면 최신을 받는다.
+  version: ~
+
+network:
+  # VirtualBox host-only 대역. 192.168.56.0/21 은 VirtualBox 가 기본 허용하는 범위라
+  # /etc/vbox/networks.conf 를 건드릴 필요가 없다.
+  subnet: "192.168.56"
+  i1_host: 10          # i1   = 192.168.56.10
+  node_host_base: 10   # vm01 = 192.168.56.11, vm02 = .12, vm03 = .13 ...
+
+# 콘솔 서버 — AWS 의 i1 인스턴스와 같은 역할.
+# Kubespray(Ansible)를 여기서 실행한다. Kubernetes 노드가 아니다.
+i1:
+  cpu: 2
+  memory: 2048
+
+nodes:
+  # Kubernetes 노드 수. 3.k8sNodeManage 실습에서 4 로 올린 뒤 `vagrant up vm04`.
+  count: 3
+  # 아래는 기본값이고, overrides 에 적은 노드는 그 값이 이긴다.
+  cpu: 2
+  memory: 2560
+  overrides:
+    # vm01·vm02 는 kube_control_plane 이라 워커보다 더 준다.
+    # (AWS inventory 와 역할 배치를 동일하게 유지하기 위함)
+    vm01:
+      memory: 3072
+    vm02:
+      memory: 3072
+
+# 게스트 합계 기본값: 2048 + 3072 + 3072 + 2560 = 10752MB (약 10.5GB)
+#   - 호스트 16GB : 가능하되 브라우저·IDE 를 닫는 편이 좋다
+#   - 호스트 24GB : 권장. 노드 추가 실습(vm04, +2560MB)까지 여유롭다
+#   - 호스트 12GB 이하 : README.md 의 "메모리가 부족할 때" 절 참조

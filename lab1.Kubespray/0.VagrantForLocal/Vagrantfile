@@ -1,0 +1,113 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+# sreMsa lab1 — 로컬(PC) Kubespray 실습 환경
+#
+#   i1          Kubespray(Ansible)를 실행하는 콘솔 서버. AWS 의 i1 인스턴스와 같은 역할이다.
+#   vm01..vm0N  Kubernetes 노드. AWS 의 vm01~vm03 과 같은 역할이다.
+#
+# AWS 경로의 명령을 그대로 쓰기 위해 아래를 맞춘다.
+#   * 계정명 ubuntu + sudo 무암호
+#   * i1 -> vm0N 키 기반 무암호 ssh
+#   * 모든 노드의 /etc/hosts 에 i1·vm0N 등록
+#   * i1 에 ansible·python·terraform·awscli 설치
+#     (1.InstanceForTerraform/installOnEc2.sh 를 그대로 재사용한다)
+#
+# 설정은 settings.yml 에서 읽는다. 이 파일은 고칠 일이 없다.
+
+require "yaml"
+require "fileutils"
+
+BASE = File.dirname(__FILE__)
+S    = YAML.load_file(File.join(BASE, "settings.yml"))
+
+NET        = S["network"]["subnet"]
+I1_HOST    = S["network"]["i1_host"]
+NODE_BASE  = S["network"]["node_host_base"]
+NODE_COUNT = S["nodes"]["count"]
+
+def node_name(i)
+  format("vm%02d", i)
+end
+
+def node_ip(i)
+  "#{NET}.#{NODE_BASE + i}"
+end
+
+I1_IP = "#{NET}.#{I1_HOST}"
+
+# ---------------------------------------------------------------------------
+# 모든 노드에 넣을 /etc/hosts 블록을 만든다.
+# 같은 내용을 hosts.generated 파일로도 남긴다.
+#   - i1 의 doSetHosts.sh 가 이 파일을 읽는다
+#   - Windows 호스트의 hosts 파일에 붙여 넣을 때도 이 파일을 그대로 쓴다
+# ---------------------------------------------------------------------------
+hosts_lines = ["#{I1_IP} i1"]
+(1..NODE_COUNT).each { |i| hosts_lines << "#{node_ip(i)} #{node_name(i)}" }
+HOSTS_BLOCK = hosts_lines.join("\n")
+
+File.write(File.join(BASE, "hosts.generated"), HOSTS_BLOCK + "\n")
+FileUtils.mkdir_p(File.join(BASE, ".keys"))
+
+# i1 이 만든 공개키. 첫 `vagrant up` 때는 아직 없으므로 빈 문자열이 되고,
+# 그때는 vm0N 이 공유 폴더(/vagrant/.keys)에서 직접 읽는다.
+# 공유 폴더가 마운트되지 않는 환경을 위한 이중 경로다.
+PUBKEY_PATH = File.join(BASE, ".keys", "id_rsa.pub")
+PUBKEY = File.exist?(PUBKEY_PATH) ? File.read(PUBKEY_PATH).strip : ""
+
+Vagrant.configure("2") do |config|
+  config.vm.box = S["box"]["name"]
+  config.vm.box_version = S["box"]["version"] if S["box"]["version"]
+
+  # 게스트 additions 자동 업데이트는 시간만 잡아먹고 자주 깨진다.
+  config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
+
+  # 강의 소스 전체를 게스트에 올린다.
+  # i1 에서 /sreMsa/lab1.Kubespray/... 로 AWS 경로의 스크립트를 그대로 쓸 수 있다.
+  config.vm.synced_folder "../../", "/sreMsa"
+
+  # -------------------------------------------------------------------------
+  # i1 — 콘솔 서버
+  #
+  # 반드시 가장 먼저 정의한다. i1 이 만든 ssh 공개키를 .keys/ 에 남기고
+  # vm0N 이 부팅하면서 그 키를 자기 authorized_keys 에 넣기 때문이다.
+  # -------------------------------------------------------------------------
+  config.vm.define "i1", primary: true do |n|
+    n.vm.hostname = "i1"
+    n.vm.network "private_network", ip: I1_IP
+
+    n.vm.provider "virtualbox" do |vb|
+      vb.name   = "sreMsa-i1"
+      vb.cpus   = S["i1"]["cpu"]
+      vb.memory = S["i1"]["memory"]
+    end
+
+    n.vm.provision "common", type: "shell",
+                   path: "scripts/common.sh", args: [HOSTS_BLOCK]
+    n.vm.provision "i1", type: "shell", path: "scripts/i1.sh"
+  end
+
+  # -------------------------------------------------------------------------
+  # vm01 .. vm0N — Kubernetes 노드
+  # -------------------------------------------------------------------------
+  (1..NODE_COUNT).each do |i|
+    name = node_name(i)
+    ov   = (S["nodes"]["overrides"] || {})[name] || {}
+
+    config.vm.define name do |n|
+      n.vm.hostname = name
+      n.vm.network "private_network", ip: node_ip(i)
+
+      n.vm.provider "virtualbox" do |vb|
+        vb.name   = "sreMsa-#{name}"
+        vb.cpus   = ov["cpu"]    || S["nodes"]["cpu"]
+        vb.memory = ov["memory"] || S["nodes"]["memory"]
+      end
+
+      n.vm.provision "common", type: "shell",
+                     path: "scripts/common.sh", args: [HOSTS_BLOCK]
+      n.vm.provision "node", type: "shell",
+                     path: "scripts/node.sh", args: [PUBKEY]
+    end
+  end
+end
