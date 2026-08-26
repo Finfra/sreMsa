@@ -162,6 +162,21 @@ vagrant up vm04
 vagrant provision          # 전 노드 /etc/hosts 갱신
 ```
 
+# 교육장 회선 보호
+
+수강생이 동시에 실습하면 같은 파일을 여러 명이 한꺼번에 내려받아 회선이 막힌다.
+box 하나가 621MB 이므로 20명이면 12GB 가 한꺼번에 흐른다. 두 가지로 막는다.
+
+| 수단 | 무엇을 막는가 |
+| :--- | :--- |
+| 강사 제공 `_prgs` 폴더 | box·설치 파일 다운로드 자체. `vagrant box add` 로 로컬 파일에서 등록한다 |
+| `settings.yml` 의 `box.check_update: false` | `vagrant up` 마다 Vagrant Cloud 에 새 버전을 물어보는 조회 |
+
+`check_update` 는 파일을 받는 것은 아니지만 `vagrant up` 마다 외부 요청이 나가므로,
+여러 명이 동시에 시작하는 순간 그 요청이 겹친다. 강사가 새 box 를 받아 볼 때만 `true` 로 바꾼다.
+
+수강생 안내는 `_prgs/README.md` 에 별도로 들어 있다.
+
 # 문제가 생기면
 
 | 증상 | 확인 |
@@ -170,4 +185,5 @@ vagrant provision          # 전 노드 /etc/hosts 갱신
 | `ansible ping` 이 실패한다 | i1 에서 `bash /vagrant/doVerify.sh` — 어느 단계에서 끊기는지 나온다 |
 | 노드가 전부 10.0.2.15 로 보인다 | inventory 에 `ip=` 가 빠졌다. `doMakeInventory.sh` 로 다시 만든다 |
 | `/vagrant` 가 비어 있다 | 공유 폴더 미마운트. `vagrant reload` 후 재시도 |
+| box 를 인터넷에서 받으려 한다 | `vagrant box list` 로 이름이 `bento/ubuntu-24.04` 인지 확인. 다르면 지우고 다시 등록 |
 | cluster.yml 이 중간에 멈춘다 | i1 에서 `rm -rf /tmp/ansible_facts* ~/.ansible/tmp/*` 후 재실행 (AWS README 3.1 절과 동일) |

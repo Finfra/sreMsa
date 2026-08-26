@@ -7,7 +7,13 @@ box:
   # Ubuntu 24.04 LTS. kubespray 2.28 이 공식 지원하는 배포판이다.
   name: "bento/ubuntu-24.04"
   # 특정 버전에 고정하려면 값을 넣는다. 비워 두면 최신을 받는다.
+  # 강사가 배포한 box 를 `vagrant box add` 로 넣었다면 버전이 0 으로 잡히므로
+  # 여기는 비워 두어야 한다.
   version: ~
+  # vagrant up 을 할 때마다 Vagrant Cloud 에 새 버전이 있는지 물어보는 동작.
+  # 교육장에서 여러 명이 동시에 실습하면 그 요청이 겹쳐 회선을 잡아먹으므로 꺼 둔다.
+  # 강사가 새 box 를 받아 볼 때만 true 로 바꾼다.
+  check_update: false
 
 network:
   # VirtualBox host-only 대역. 192.168.56.0/21 은 VirtualBox 가 기본 허용하는 범위라
