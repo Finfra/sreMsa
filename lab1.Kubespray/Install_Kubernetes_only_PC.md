@@ -110,7 +110,7 @@ vagrant box list
 ```
 
 ```
-bento/ubuntu-24.04 (virtualbox, 0)
+bento/ubuntu-24.04 (virtualbox, 0, (amd64))
 ```
 
 버전이 `0` 으로 보이는 것이 정상이다. 로컬 파일에서 추가하면 버전 정보가 없기 때문이며 실습에 지장이 없다.
