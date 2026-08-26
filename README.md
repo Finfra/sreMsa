@@ -51,6 +51,24 @@ cd sreMsa
 ## Lab5-3. Transaction UI(API / Web) 연동 실습
 
 # 수강 년도별 소스 보기
+## 202508~202511에 수업들었던 분들은 아래 방식
+```
+cd
+git clone https://github.com/Finfra/sreMsa
+cd sreMsa
+git checkout 202511
+```
+
+
+## 202504~202508에 수업들었던 분들은 아래 방식
+```
+cd
+git clone https://github.com/Finfra/sreMsa
+cd sreMsa
+git checkout 202508
+```
+
+
 ## 202207~202504에 수업들었던 분들은 아래 방식
 ```
 cd
