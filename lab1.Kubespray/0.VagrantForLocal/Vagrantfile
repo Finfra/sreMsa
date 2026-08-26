@@ -63,6 +63,9 @@ Vagrant.configure("2") do |config|
   # 교육장에서 동시에 실습하면 그 요청이 겹치므로 기본을 꺼 둔다 (settings.yml).
   config.vm.box_check_update = (S["box"]["check_update"] == true)
 
+  # 부팅 대기 시간. 기본 300 초는 느린 디스크에서 모자란다 (settings.yml 주석 참조).
+  config.vm.boot_timeout = S["boot_timeout"] || 900
+
   # 게스트 additions 자동 업데이트는 시간만 잡아먹고 자주 깨진다.
   config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 

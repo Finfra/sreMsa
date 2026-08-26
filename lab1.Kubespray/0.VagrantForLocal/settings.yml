@@ -15,6 +15,17 @@ box:
   # 강사가 새 box 를 받아 볼 때만 true 로 바꾼다.
   check_update: false
 
+# 게스트가 부팅해 SSH 를 열 때까지 Vagrant 가 기다리는 시간(초).
+#
+# 기본값 300 초는 느린 디스크에서 모자란다. 실기(Windows 10 · 16GB · SSD)에서
+# vm02 가 여기에 걸려 실패했다. VM 은 정상 부팅 중이었고 콘솔에는
+# "systemd-networkd.service/start running (7min 3s)" 와
+# "task blocked for more than 245 seconds" 가 찍혀 있었다.
+# box 압축 해제 직후라 SSD 쓰기 캐시가 소진돼 I/O 응답이 69ms 까지 늘어난 탓이다.
+#
+# 기다리는 시간을 늘리는 것은 비용이 없다. 빨리 뜨면 그만큼 일찍 넘어간다.
+boot_timeout: 900
+
 network:
   # VirtualBox host-only 대역. 192.168.56.0/21 은 VirtualBox 가 기본 허용하는 범위라
   # /etc/vbox/networks.conf 를 건드릴 필요가 없다.
