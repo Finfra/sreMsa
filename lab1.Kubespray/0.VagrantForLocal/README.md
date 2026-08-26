@@ -19,7 +19,17 @@ AWS 없이 PC 한 대에서 Kubernetes 클러스터를 만든다.
 ```
 
 Windows 호스트에는 **VirtualBox 와 Vagrant 만** 있으면 된다.
-Ansible 은 호스트가 아니라 i1 안에서 돈다. Vagrant 플러그인도 쓰지 않는다.
+Ansible 은 호스트가 아니라 i1 안에서 돈다. **Vagrant 플러그인도 쓰지 않는다** — `vagrant plugin list` 가
+`No plugins installed` 인 상태로 4대가 동작하는 것을 실기에서 확인했다(2026-08-26).
+예전 자료들이 Windows 에 `vagrant-winnfsd` 를 필수로 안내하는 것은 공유 폴더를 NFS 로 쓰던 시절의 이야기이고,
+여기서는 VirtualBox 기본 공유를 쓴다. 수강생에게 배포하는 환경일수록 설치 단계와 버전 충돌 지점을 줄이는 편이 낫다.
+
+[Vagrantfile](Vagrantfile) 의 아래 한 줄은 플러그인을 요구하는 것이 아니라,
+**이미 설치돼 있는 경우에만** 그 동작을 끄는 가드다.
+
+```ruby
+config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
+```
 
 수강생용 단계별 절차는 [Install_Kubernetes_only_PC.md](../Install_Kubernetes_only_PC.md) 에 있다.
 이 문서는 이 폴더의 구성과 AWS 경로와의 차이를 설명한다.
