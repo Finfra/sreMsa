@@ -56,6 +56,21 @@ vagrant --version
 git --version
 ```
 
+**Vagrant 플러그인은 하나도 설치하지 않는다.** 이 실습은 플러그인 없이 동작하도록 만들었다.
+예전 자료들이 Windows 에 `vagrant-winnfsd` 를 필수로 안내하는 경우가 있는데,
+그것은 공유 폴더를 NFS 로 쓰던 시절의 이야기이고 여기서는 VirtualBox 기본 공유를 쓴다.
+
+```bash
+vagrant plugin list
+```
+
+```
+No plugins installed.
+```
+
+이렇게 나오는 것이 정상이다. 이미 설치된 플러그인이 있어도 대개 무해하지만,
+`vagrant-triggers` 는 Vagrant 내장 기능과 충돌하므로 있으면 지운다(`vagrant plugin uninstall vagrant-triggers`).
+
 > 이미 같은 버전을 설치해 두었다면 그대로 써도 된다.
 > 다만 **Vagrant box 만큼은 반드시 `_prgs` 것을 쓴다**(아래 "Vagrant box 등록" 절).
 > 회선을 가장 많이 잡아먹는 것이 box 이기 때문이다.
@@ -82,6 +97,15 @@ Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격
 
 > 되돌리려면 `bcdedit /set hypervisorlaunchtype auto` + 재부팅.
 > Docker Desktop·WSL2 를 다시 쓸 때 필요하다.
+
+**재부팅한 뒤 실제로 꺼졌는지 확인한다.** 설정값만 보면 안 된다 — 재부팅 전에도 `Off` 로 보이기 때문이다.
+
+```powershell
+(Get-CimInstance Win32_ComputerSystem).HypervisorPresent
+```
+
+`False` 가 나와야 VirtualBox 가 VM 을 띄울 수 있다. `True` 면 아직 Hyper-V 가 올라와 있는 것이므로
+메모리 무결성까지 껐는지 다시 확인하고 재부팅한다.
 
 ## Git 줄바꿈 설정
 
@@ -354,7 +378,8 @@ vagrant destroy -f
 
 | 증상 | 원인·해결 |
 | :--- | :--- |
-| `vagrant up` 이 VM 을 못 띄운다 | Hyper-V·메모리 무결성이 켜져 있다. 0장의 사전 작업을 다시 확인한다 |
+| `vagrant up` 이 VM 을 못 띄운다 | Hyper-V·메모리 무결성이 켜져 있다. 0장의 사전 작업을 다시 확인한다. `HypervisorPresent` 가 `False` 인지 볼 것 |
+| `Timed out while waiting for the machine to boot` | **VM 이 죽은 것이 아닐 수 있다.** 아래 "부팅이 오래 걸릴 때" 참조 |
 | `vagrant up` 이 box 를 내려받으려 한다 | box 등록을 건너뛰었거나 이름이 다르다. `vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다 |
 | 스크립트가 `\r` 오류를 낸다 | `core.autocrlf` 를 끄지 않고 clone 했다. `git config --global core.autocrlf false` 후 다시 clone |
 | i1 에서 `ssh vm01` 이 암호를 묻는다 | 호스트에서 `vagrant provision vm01` |
@@ -363,6 +388,45 @@ vagrant destroy -f
 | Windows 에서 `curl vm01:...` 이 안 된다 | 3장의 hosts 파일 등록을 빠뜨렸다 |
 | cluster.yml 이 중간에 멈춘다 | fact 캐시를 지우고 재실행 (9장 참조) |
 | 메모리가 모자라 PC 가 멈춘다 | [0.VagrantForLocal/README.md](0.VagrantForLocal/README.md) 의 "메모리가 부족할 때" |
+
+## 부팅이 오래 걸릴 때
+
+`Timed out while waiting for the machine to boot` 가 나와도 **VM 이 실패한 것이 아닐 수 있다.**
+디스크가 느리면 부팅에 5~10분이 걸리기도 하는데, Vagrant 가 먼저 기다리기를 포기한 것뿐이다.
+
+먼저 VM 이 살아 있는지 본다.
+
+```bash
+vagrant status
+```
+
+`running` 이면 부팅 중일 가능성이 크다. 콘솔 화면을 찍어 확인한다.
+
+```powershell
+& "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" controlvm sreMsa-vm02 screenshotpng vm02.png
+```
+
+아래처럼 나오면 **정상적으로 부팅하는 중**이고 시간만 더 필요한 것이다.
+
+```
+Job systemd-networkd.service/start running (7min 3s / 7min 31s)
+INFO: task (networkd):532 blocked for more than 245 seconds
+```
+
+이 실습은 [settings.yml](0.VagrantForLocal/settings.yml) 에서 대기 시간을 **900초**로 늘려 두었으므로
+대개는 걸리지 않는다. 그래도 걸린다면 다시 시도한다.
+
+```bash
+vagrant halt vm02 -f
+vagrant up vm02
+```
+
+디스크 응답이 실제로 느린지는 이렇게 잰다. SSD 라면 보통 0.001초 이하이고,
+**0.05초를 넘으면 느린 상태**다(대용량 파일을 쓴 직후 캐시가 소진되면 이렇게 된다).
+
+```powershell
+Get-Counter "\PhysicalDisk(_Total)\Avg. Disk sec/Transfer"
+```
 
 # 더 볼 것
 
