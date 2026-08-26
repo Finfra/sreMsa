@@ -31,17 +31,23 @@ if [ ! -f "$GEN" ]; then
   exit 1
 fi
 
+# hosts.generated 는 Windows 호스트가 만든다. CR 이 섞여 들어오면 name 이
+# "vm01\r" 이 되어 이름 해석·ssh·inventory 가 전부 어긋나므로 먼저 제거한다.
+GEN_CLEAN="$(mktemp)"
+tr -d '\r' < "$GEN" > "$GEN_CLEAN"
+
 nodes=(); ips=()
 while read -r ip name; do
+  [ -z "$name" ] && continue
   [ "$name" = "i1" ] && continue
   nodes+=("$name"); ips+=("$ip")
-done < "$GEN"
+done < "$GEN_CLEAN"
 echo "  대상 노드: ${nodes[*]}"
 
 # ---------------------------------------------------------------- 1. 도구
 echo ""
 echo "[1] i1 의 도구"
-command -v ansible >/dev/null && pass "ansible $(ansible --version | head -1 | awk '{print $NF}' | tr -d ')')" || fail "ansible 없음 — installOnEc2.sh 가 실패했다"
+command -v ansible >/dev/null && pass "ansible $(ansible --version | head -1 | sed 's/.*core \([0-9.]*\).*/core \1/')" || fail "ansible 없음 — installOnEc2.sh 가 실패했다"
 command -v python  >/dev/null && pass "python $(python --version 2>&1 | awk '{print $2}')" || fail "python 없음"
 [ -f ~/.ssh/id_rsa ] && pass "ssh 개인키 있음" || fail "~/.ssh/id_rsa 없음"
 
@@ -112,7 +118,7 @@ if [ -f "$INV" ]; then
   echo "     inventory: $INV"
 else
   INV="$(mktemp)"
-  { echo "[all]"; for i in "${!nodes[@]}"; do echo "${nodes[$i]} ansible_host=${ips[$i]}"; done; } > "$INV"
+  { echo "[all]"; for i in "${!nodes[@]}"; do echo "${nodes[$i]} ansible_host=${ips[$i]} ip=${ips[$i]}"; done; } > "$INV"
   echo "     inventory: 임시 생성 (kubespray 를 아직 clone 하지 않음)"
 fi
 

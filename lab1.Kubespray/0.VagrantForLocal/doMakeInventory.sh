@@ -25,11 +25,16 @@ if [ ! -d "$KSDIR" ]; then
 fi
 
 # hosts.generated 에서 노드 목록을 읽는다 (i1 은 Kubernetes 노드가 아니므로 제외)
+# Windows 호스트가 만든 파일이라 CR 이 섞일 수 있다. 먼저 제거한다.
+GEN_CLEAN="$(mktemp)"
+tr -d '\r' < "$GEN" > "$GEN_CLEAN"
+
 names=(); ips=()
 while read -r ip name; do
+  [ -z "$name" ] && continue
   [ "$name" = "i1" ] && continue
   names+=("$name"); ips+=("$ip")
-done < "$GEN"
+done < "$GEN_CLEAN"
 
 n="${#names[@]}"
 if [ "$n" -lt 1 ]; then echo "!! 노드가 없다."; exit 1; fi
