@@ -21,6 +21,11 @@ if [ ! -f "$GEN" ]; then
   exit 1
 fi
 
+# Windows 호스트가 만든 파일이라 CR 이 섞일 수 있다. 정리본을 만들어 쓴다.
+GEN_CLEAN="$(mktemp)"
+tr -d '\r' < "$GEN" > "$GEN_CLEAN"
+GEN="$GEN_CLEAN"
+
 echo "=== /etc/hosts 확인 ==="
 if ! diff -q <(sed -n '/# >>> sreMsa >>>/,/# <<< sreMsa <<</p' /etc/hosts | sed '1d;$d') "$GEN" >/dev/null 2>&1; then
   echo "  어긋나 있어 다시 넣는다."

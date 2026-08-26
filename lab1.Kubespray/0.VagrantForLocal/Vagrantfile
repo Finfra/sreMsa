@@ -46,7 +46,11 @@ hosts_lines = ["#{I1_IP} i1"]
 (1..NODE_COUNT).each { |i| hosts_lines << "#{node_ip(i)} #{node_name(i)}" }
 HOSTS_BLOCK = hosts_lines.join("\n")
 
-File.write(File.join(BASE, "hosts.generated"), HOSTS_BLOCK + "\n")
+# ⚠️ 반드시 바이너리 모드("wb")로 쓴다.
+# Windows 에서 Ruby 의 기본 텍스트 모드는 \n 을 \r\n 으로 바꾼다. 그러면 이 파일을
+# 읽는 게스트 쪽 셸 스크립트가 `read -r ip name` 에서 name 을 "vm01\r" 로 받아
+# 이름 해석·ssh·inventory 가 전부 어긋난다. 실기에서 실제로 겪은 문제다.
+File.open(File.join(BASE, "hosts.generated"), "wb") { |f| f.write(HOSTS_BLOCK + "\n") }
 FileUtils.mkdir_p(File.join(BASE, ".keys"))
 
 # i1 이 만든 공개키. 첫 `vagrant up` 때는 아직 없으므로 빈 문자열이 되고,
