@@ -214,11 +214,39 @@ ping -n 1 vm01
 
 ```bash
 vagrant ssh i1
-sudo su - ubuntu
 ```
+
+접속하면 **`ubuntu` 계정으로 바로 들어간다.** 이 실습의 명령이 전부 ubuntu 기준이라
+프로비저닝이 그렇게 맞춰 두었다. `sudo su - ubuntu` 를 따로 칠 필요가 없다.
 
 > AWS 경로의 [3.InstanceForKubernetes/README.md](3.InstanceForKubernetes/README.md) 0단계 `su - ubuntu` 에 해당한다.
 > AWS 키 설정(`TF_VAR_AWS_ACCESS_KEY` 등)은 로컬에서 필요 없으므로 건너뛴다.
+
+## 접속이 느리다면 — `doSsh.sh` 를 쓴다 ★
+
+`vagrant ssh` 는 명령 하나에 **5~10초**가 걸린다. Vagrant CLI 가 Ruby 런타임과
+내장 플러그인 수십 개를 매번 새로 로드하는 구조 때문이고, **VM 이나 PC 가 느린 것이 아니다.**
+실기(Windows 10 · i7-6700T · 16GB)에서 측정한 값이다.
+
+| 명령 | 소요 |
+| :--- | ---: |
+| `vagrant ssh i1 -c true` | 6.8초 |
+| `vagrant status` | 9.0초 |
+| `vagrant --help` | 11.3초 |
+| **`ssh -F ssh-config i1`** | **0.12초** |
+| `VBoxManage showvminfo` | 0.08초 |
+
+같은 폴더의 **`doSsh.sh`** 는 접속 정보를 한 번만 뽑아 두고 그 다음부터 `ssh` 를 직접 쓴다.
+자주 드나드는 실습에서는 이쪽이 훨씬 편하다.
+
+```bash
+./doSsh.sh              # i1 에 접속
+./doSsh.sh vm01         # vm01 에 접속
+./doSsh.sh i1 hostname  # 명령 하나만 실행하고 빠져나옴
+```
+
+`vagrant` 를 부르는 것은 `ssh-config` 를 만드는 최초 1회뿐이다.
+VM 을 다시 만들었다면 `rm .vagrant/ssh-config` 후 다시 실행한다.
 
 # 5. 환경 점검 ★ Kubespray 전에 반드시
 
