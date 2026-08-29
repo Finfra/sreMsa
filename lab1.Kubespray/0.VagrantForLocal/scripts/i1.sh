@@ -46,4 +46,4 @@ python  --version 2>&1 | sed 's/^/  /'
 ansible --version 2>&1 | head -1 | sed 's/^/  /'
 
 echo "=== [i1] 완료 ==="
-echo "    다음: vagrant ssh i1  ->  sudo su - ubuntu"
+echo "    다음: vagrant ssh i1   (접속하면 ubuntu 계정으로 바로 들어간다)"
