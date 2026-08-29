@@ -2,3 +2,8 @@
 .keys/
 hosts.generated
 *.log
+
+# 강사가 배포하는 프로그램 폴더(약 1.1GB). 수강생이 repo 안에 두더라도
+# 커밋되지 않게 막는다. box 하나만 621MB 다.
+_prgs/
+*.box
