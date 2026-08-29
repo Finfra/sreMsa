@@ -12,6 +12,17 @@ set -uo pipefail
 GEN="${GEN:-/vagrant/hosts.generated}"
 ok=0; ng=0
 
+# ansible 출력을 담을 임시 파일.
+#
+# 고정 경로(예: /tmp/ansible_ping.log)를 쓰면 안 된다. 안내를 놓쳐 vagrant 계정으로
+# 한 번 실행하면 그 계정 소유의 파일이 /tmp 에 남고, 그 뒤 ubuntu 계정으로
+# 올바르게 실행해도 tee 가 쓰기에 실패해 [7]·[8] 이 영구히 실패한다.
+# 게다가 실패 시 그 파일을 다시 출력하므로 vagrant 시절의 옛 에러가
+# "Permission denied (publickey,password)" 로 표시되어 ssh 키 문제로 오인하게 된다.
+# mktemp 는 사용자별 고유 파일을 만들어 이 충돌을 원천 차단한다.
+PING_LOG="$(mktemp)"; BECOME_LOG="$(mktemp)"
+trap 'rm -f "$PING_LOG" "$BECOME_LOG"' EXIT
+
 pass() { echo "  [ OK ] $*"; ok=$((ok+1)); }
 fail() { echo "  [FAIL] $*"; ng=$((ng+1)); }
 
@@ -122,23 +133,23 @@ else
   echo "     inventory: 임시 생성 (kubespray 를 아직 clone 하지 않음)"
 fi
 
-if ansible -i "$INV" all -u ubuntu -m ping -o 2>&1 | tee /tmp/ansible_ping.log | grep -q 'SUCCESS'; then
+if ansible -i "$INV" all -u ubuntu -m ping -o 2>&1 | tee "$PING_LOG" | grep -q 'SUCCESS'; then
   while read -r line; do
     name="$(echo "$line" | awk '{print $1}')"
     echo "$line" | grep -q 'SUCCESS' && pass "ansible ping ${name}" || fail "ansible ping ${name}"
-  done < /tmp/ansible_ping.log
+  done < "$PING_LOG"
 else
   fail "ansible ping 전체 실패 — 아래 출력을 확인할 것"
-  sed 's/^/       /' /tmp/ansible_ping.log
+  sed 's/^/       /' "$PING_LOG"
 fi
 
 echo ""
 echo "[8] Ansible 권한 상승 (become)"
-if ansible -i "$INV" all -u ubuntu -b --become-user=root -m command -a 'id -un' -o >/tmp/ansible_become.log 2>&1; then
-  grep -c 'rc=0' /tmp/ansible_become.log >/dev/null && pass "become 으로 root 획득" || fail "become 실패"
+if ansible -i "$INV" all -u ubuntu -b --become-user=root -m command -a 'id -un' -o >"$BECOME_LOG" 2>&1; then
+  grep -c 'rc=0' "$BECOME_LOG" >/dev/null && pass "become 으로 root 획득" || fail "become 실패"
 else
   fail "become 실패 — 아래 출력을 확인할 것"
-  sed 's/^/       /' /tmp/ansible_become.log
+  sed 's/^/       /' "$BECOME_LOG"
 fi
 
 echo ""
