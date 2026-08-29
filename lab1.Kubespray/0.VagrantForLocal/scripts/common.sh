@@ -59,6 +59,44 @@ chmod 440 /etc/sudoers.d/90-ubuntu
 
 install -d -m 700 -o ubuntu -g ubuntu /home/ubuntu/.ssh
 
+# vagrant 계정이 신뢰하는 키를 ubuntu 에도 넣는다.
+# `vagrant ssh-config` 로 뽑은 설정으로 `ubuntu@` 에 직접 붙을 수 있게 된다.
+if [ -f /home/vagrant/.ssh/authorized_keys ]; then
+  cat /home/vagrant/.ssh/authorized_keys >> /home/ubuntu/.ssh/authorized_keys
+  sort -u /home/ubuntu/.ssh/authorized_keys -o /home/ubuntu/.ssh/authorized_keys
+  chown ubuntu:ubuntu /home/ubuntu/.ssh/authorized_keys
+  chmod 600 /home/ubuntu/.ssh/authorized_keys
+fi
+
+# `vagrant ssh` 로 들어오면 곧바로 ubuntu 셸로 전환한다.
+#
+# 이 실습의 명령은 전부 ubuntu 계정 기준이다. vagrant 계정 상태로 doVerify.sh 를
+# 돌리면 [0] 이 "sudo su - ubuntu 후 실행할 것" 을 안내하고 끝나는데, 그 한 번의
+# 실행이 남긴 파일이 이후 ubuntu 로 제대로 실행해도 계속 실패하게 만들었다.
+# 처음부터 ubuntu 로 떨어뜨려 그 사슬을 끊는다.
+#
+# 두 가지를 지킨다.
+#   * `su - ubuntu` 는 못 쓴다. useradd 로 만든 ubuntu 는 비밀번호가 잠긴 상태
+#     (passwd -S 가 L)라 su 가 인증에 실패한다. vagrant 는 NOPASSWD sudo 를
+#     가지므로 `sudo -i -u ubuntu` 를 쓴다.
+#   * 대화형($- 에 i 포함)일 때만 전환한다. `vagrant ssh -c "..."` · 프로비저닝 ·
+#     rsync 같은 비대화형 경로가 vagrant 계정으로 남아야 vagrant up 이 깨지지 않는다.
+if ! grep -q 'SREMSA_AS_UBUNTU' /home/vagrant/.bashrc 2>/dev/null; then
+  cat >> /home/vagrant/.bashrc <<'RC'
+
+# --- sreMsa: vagrant ssh 로 들어오면 ubuntu 셸로 전환 ---
+if [[ $- == *i* ]] && [ "$(id -un)" = "vagrant" ] \
+   && [ -z "${SREMSA_AS_UBUNTU:-}" ] && id -u ubuntu >/dev/null 2>&1; then
+  export SREMSA_AS_UBUNTU=1
+  exec sudo -i -u ubuntu
+fi
+RC
+  chown vagrant:vagrant /home/vagrant/.bashrc
+  echo "  vagrant -> ubuntu 자동 전환 등록"
+else
+  echo "  vagrant -> ubuntu 자동 전환 이미 등록됨"
+fi
+
 if [ "$HN" = "i1" ]; then
   # i1 은 Kubernetes 노드가 아니라 kubelet 이 없다. swap 을 끌 이유가 없고,
   # 메모리를 작게 줬으므로 Ansible fork 가 몰리는 구간의 완충으로 오히려 필요하다.
