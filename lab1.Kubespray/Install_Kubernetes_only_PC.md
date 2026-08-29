@@ -39,13 +39,25 @@ Kubespray 를 실행하는 부분은 [3.InstanceForKubernetes/README.md](3.Insta
 | `VirtualBox-7.2.16-*-Win.exe` | 170 MB | VirtualBox |
 | `vagrant_2.4.9_windows_amd64.msi` | 236 MB | Vagrant |
 | `Git-2.55.0.5-64-bit.exe` | 62 MB | Git for Windows |
+| **`vc_redist.x64.exe`** | 25 MB | **Visual C++ 재배포 패키지 — VirtualBox 의 전제조건** |
 | `SHA256SUMS.txt` | — | 무결성 검증용 |
-| 합계 | **약 1.1 GB** | |
+| 합계 | **약 1.2 GB** | |
 
 수강생 전원이 같은 파일을 동시에 내려받으면 교육장 회선이 막혀 실습을 시작조차 못 한다.
 box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 미리 받아 배포한다.
 
-`_prgs` 안의 **VirtualBox → Vagrant → Git** 순서로 설치한다. 옵션은 기본값 그대로 둔다.
+`_prgs` 안의 **`vc_redist.x64.exe` → VirtualBox → Vagrant → Git** 순서로 설치한다. 옵션은 기본값 그대로 둔다.
+
+> ★ **`vc_redist.x64.exe` 를 먼저 설치해야 한다.** VirtualBox 는 Visual C++ 재배포 패키지를 요구하는데,
+> Windows 를 새로 설치한 PC 에는 이것이 없다. 없는 상태로 VirtualBox 를 실행하면 이렇게 막힌다.
+>
+> ```
+> Oracle VirtualBox 7.2.16 needs the Microsoft Visual C++ 2019
+> Redistributable Package being installed first.
+> ```
+>
+> 다른 프로그램을 쓰다 보면 대개 딸려 들어오기 때문에 기존 PC 에서는 잘 드러나지 않는다.
+> **갓 설치한 Windows 에서만 나타나는 함정**이라 실기에서 처음 확인했다.
 Git Bash 를 쓴다. PowerShell·cmd 로도 되지만 이 문서의 명령은 Git Bash 기준이다.
 
 설치 후 터미널을 새로 열어 확인한다.
