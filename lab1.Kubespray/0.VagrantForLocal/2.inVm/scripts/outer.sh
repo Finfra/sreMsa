@@ -21,6 +21,56 @@ export DEBIAN_FRONTEND=noninteractive
 
 say(){ echo "=== [outer] $* ==="; }
 
+# ---------------------------------------------------------------- 0) 공유 폴더
+say "0/6 공유 폴더 확인·복구"
+# ⚠️ 커널을 올린 직후의 부팅에서는 Guest Additions 가 아직 **옛 커널용**이라
+#    vboxsf 마운트가 조용히 실패한다. /sreMsa 가 빈 디렉토리로 남고,
+#    그러면 이 스크립트가 6단계에서 installOnEc2.sh 를 못 찾는다.
+#
+#    2026-08-31 실측: 그 상태에서 `vagrant reload` 를 한 번 더 하면
+#    중첩 환경의 커널이 RCU 스톨에 빠져(task blocked 368s+) 부팅 자체가 멈췄다.
+#    그래서 재부팅을 늘리는 대신 **여기서 GA 를 재빌드하고 직접 마운트**한다.
+#
+#    공유 폴더 이름은 Vagrantfile 의 마운트 지점에서 그대로 온다(실측 확인):
+#      sreMsa -> /sreMsa · prgs -> /prgs · vagrant -> /vagrant
+SHARES="sreMsa prgs vagrant"
+need_remount=0
+for m in $SHARES; do
+  mountpoint -q "/$m" 2>/dev/null || need_remount=1
+done
+
+if [ "$need_remount" = "1" ]; then
+  echo "  일부 공유 폴더가 붙지 않았다 — Guest Additions 를 현재 커널용으로 재빌드한다"
+  GA="$(ls -d /opt/VBoxGuestAdditions-* 2>/dev/null | head -1)"
+  if [ -n "$GA" ] && [ -x "$GA/init/vboxadd" ]; then
+    echo "    $GA/init/vboxadd setup"
+    "$GA/init/vboxadd" setup 2>&1 | tail -6 | sed 's/^/      /'
+    systemctl restart vboxadd-service 2>/dev/null || true
+  else
+    echo "    GA 소스 폴더를 찾지 못했다 — dkms 경로로 시도"
+    dpkg-reconfigure -f noninteractive virtualbox-guest-dkms 2>/dev/null || true
+  fi
+  modprobe vboxsf 2>/dev/null || true
+
+  for m in $SHARES; do
+    mountpoint -q "/$m" 2>/dev/null && continue
+    [ -d "/$m" ] || mkdir -p "/$m"
+    if mount -t vboxsf -o uid=0,gid=0 "$m" "/$m" 2>/dev/null; then
+      echo "    /$m 마운트 성공"
+    else
+      echo "    /$m 마운트 실패"
+    fi
+  done
+fi
+
+for m in $SHARES; do
+  if mountpoint -q "/$m" 2>/dev/null; then
+    printf '  /%-8s OK (%s개 항목)\n' "$m" "$(ls -1 "/$m" 2>/dev/null | wc -l)"
+  else
+    printf '  /%-8s !! 마운트 안 됨\n' "$m"
+  fi
+done
+
 # ---------------------------------------------------------------- 1) 디스크
 say "1/6 디스크 확장"
 if [ "$EXPAND_LVM" = "yes" ]; then
