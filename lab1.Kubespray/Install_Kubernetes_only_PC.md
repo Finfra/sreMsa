@@ -27,7 +27,7 @@ Kubespray 를 실행하는 부분은 [3.InstanceForKubernetes/README.md](3.Insta
 * 디스크 여유 **60GB 이상**
 * CPU 가상화 지원 (요즘 PC 는 모두 지원한다)
 
-메모리가 부족하면 [0.VagrantForLocal/README.md](0.VagrantForLocal/README.md) 의 "메모리가 부족할 때" 절을 본다.
+메모리가 부족하면 [0.VagrantForLocal/1.vm4/README.md](0.VagrantForLocal/1.vm4/README.md) 의 "메모리가 부족할 때" 절을 본다.
 
 ## 소프트웨어 — 강사가 제공하는 `_prgs` 폴더를 쓴다 ★
 
@@ -150,7 +150,7 @@ bento/ubuntu-24.04 (virtualbox, 0, (amd64))
 ```
 
 버전이 `0` 으로 보이는 것이 정상이다. 로컬 파일에서 추가하면 버전 정보가 없기 때문이며 실습에 지장이 없다.
-[settings.yml](0.VagrantForLocal/settings.yml) 의 `box.version` 을 비워 둔 것도 이 때문이다.
+[settings.yml](0.VagrantForLocal/1.vm4/settings.yml) 의 `box.version` 을 비워 둔 것도 이 때문이다.
 
 > 잘못된 이름으로 등록했다면 지우고 다시 넣는다.
 > ```bash
@@ -162,7 +162,7 @@ bento/ubuntu-24.04 (virtualbox, 0, (amd64))
 ```bash
 cd ~
 git clone https://github.com/Finfra/sreMsa
-cd sreMsa/lab1.Kubespray/0.VagrantForLocal
+cd sreMsa/lab1.Kubespray/0.VagrantForLocal/1.vm4
 ```
 
 # 2. VM 만들기
@@ -174,7 +174,7 @@ vagrant up
 * 앞에서 box 를 등록해 두었으므로 **이미지 다운로드는 일어나지 않는다.**
   VM 4대를 만들고 프로비저닝하는 데 **20~40분** 을 예상한다(i1 의 도구 설치가 대부분이다).
 * `vagrant up` 이 box 를 받으려 한다면 등록이 안 된 것이다. `vagrant box list` 로 이름을 확인한다.
-* box 업데이트 확인도 꺼 두었다([settings.yml](0.VagrantForLocal/settings.yml) 의 `box.check_update`).
+* box 업데이트 확인도 꺼 두었다([settings.yml](0.VagrantForLocal/1.vm4/settings.yml) 의 `box.check_update`).
   교육장에서 여러 명이 동시에 `vagrant up` 을 할 때 그 조회가 겹치는 것을 막기 위함이다.
 * i1 이 가장 먼저 만들어진다. i1 이 ssh 키를 만들어야 vm01~vm03 이 그 키를 받기 때문에 순서가 중요하다.
   `vagrant up` 을 그냥 실행하면 순서는 알아서 지켜진다.
@@ -427,7 +427,7 @@ vagrant destroy -f
 | 노드가 전부 10.0.2.15 로 보인다 | inventory 에 `ip=` 가 빠졌다. `bash /vagrant/doMakeInventory.sh` |
 | Windows 에서 `curl vm01:...` 이 안 된다 | 3장의 hosts 파일 등록을 빠뜨렸다 |
 | cluster.yml 이 중간에 멈춘다 | fact 캐시를 지우고 재실행 (9장 참조) |
-| 메모리가 모자라 PC 가 멈춘다 | [0.VagrantForLocal/README.md](0.VagrantForLocal/README.md) 의 "메모리가 부족할 때" |
+| 메모리가 모자라 PC 가 멈춘다 | [0.VagrantForLocal/1.vm4/README.md](0.VagrantForLocal/1.vm4/README.md) 의 "메모리가 부족할 때" |
 
 ## 부팅이 오래 걸릴 때
 
@@ -453,7 +453,7 @@ Job systemd-networkd.service/start running (7min 3s / 7min 31s)
 INFO: task (networkd):532 blocked for more than 245 seconds
 ```
 
-이 실습은 [settings.yml](0.VagrantForLocal/settings.yml) 에서 대기 시간을 **900초**로 늘려 두었으므로
+이 실습은 [settings.yml](0.VagrantForLocal/1.vm4/settings.yml) 에서 대기 시간을 **900초**로 늘려 두었으므로
 대개는 걸리지 않는다. 그래도 걸린다면 다시 시도한다.
 
 ```bash
@@ -470,5 +470,5 @@ Get-Counter "\PhysicalDisk(_Total)\Avg. Disk sec/Transfer"
 
 # 더 볼 것
 
-* [0.VagrantForLocal/README.md](0.VagrantForLocal/README.md) — 구성 상세, AWS·Terraform 과의 대조표, 노드 추가 실습
+* [0.VagrantForLocal/1.vm4/README.md](0.VagrantForLocal/1.vm4/README.md) — 구성 상세, AWS·Terraform 과의 대조표, 노드 추가 실습
 * [3.InstanceForKubernetes/README.md](3.InstanceForKubernetes/README.md) — AWS 경로. 7~10장이 이 문서와 같은 내용이다

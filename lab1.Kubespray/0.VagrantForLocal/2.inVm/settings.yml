@@ -1,0 +1,51 @@
+# sreMsa lab1 — 중첩(nested) 실습 환경 설정
+#
+# 바깥 VM 한 대 안에 VirtualBox·Vagrant 를 넣고, 그 안에서 vm01~vm03 을 만든다.
+# 수강생에게는 이 VM 하나만 배포하면 된다.
+#
+# 이 파일만 고치면 된다. Vagrantfile 은 손대지 않는다.
+
+box:
+  name: "bento/ubuntu-24.04"
+  version: ~
+  check_update: false
+
+boot_timeout: 900
+
+# 바깥 VM — i1 역할(Kubespray 콘솔)과 VirtualBox 호스트를 겸한다.
+#
+# ⚠️ 메모리 산정이 이 방식의 최대 제약이다.
+#   안쪽 노드 합계 8,704MB + 바깥 OS·VirtualBox 여유 2,048MB = 10,752MB
+#   jpc1 실측: 물리 15.9GB, Windows 가 2~4GB 사용 → 10.5GB 가 상한선에 가깝다.
+#   호스트가 12GB 이하면 아래 outer.memory 와 inner 노드 메모리를 함께 낮춰야 한다.
+outer:
+  cpu: 7            # 호스트 논리 8코어 중 7 (안쪽 6 + 바깥 1)
+  memory: 10752     # 10.5GB
+  # 바깥 VM 에 붙일 host-only 주소. 안쪽 대역(192.168.56.x)과 겹치면 안 된다.
+  host_ip: "192.168.57.10"
+  # box 기본 디스크는 64GB 지만 LVM 이 31GB 만 잡고 있다(실측).
+  # 안쪽 노드 3대가 18GB 이상 쓰므로 프로비저닝에서 전량으로 확장한다.
+  expand_lvm: true
+
+# 안쪽 노드 — 바깥 VM 안의 VirtualBox 가 만든다.
+# 값의 의미는 상위 폴더 settings.yml 과 같다.
+inner:
+  subnet: "192.168.56"
+  i1_host: 10          # 바깥 VM 이 안쪽에서 갖는 주소 = 192.168.56.10
+  node_host_base: 10   # vm01 = .11, vm02 = .12, vm03 = .13
+  count: 3
+  cpu: 2
+  memory: 2560
+  overrides:
+    vm01:
+      memory: 3072
+    vm02:
+      memory: 3072
+  # 안쪽 합계: 3072 + 3072 + 2560 = 8,704MB / vCPU 6
+
+# 바깥 VM 안에 설치할 도구.
+# Ubuntu 24.04 리포에 vagrant 가 없어(실측: Candidate 없음) HashiCorp 저장소를 쓴다.
+tools:
+  virtualbox_pkg: "virtualbox"          # noble-updates/multiverse 7.0.16
+  vagrant_from: "hashicorp"             # hashicorp | deb_url
+  vagrant_deb_url: ~                    # vagrant_from: deb_url 일 때 사용
