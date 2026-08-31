@@ -75,7 +75,8 @@ Vagrant.configure("2") do |config|
 
   # 강의 소스 전체를 게스트에 올린다.
   # i1 에서 /sreMsa/lab1.Kubespray/... 로 AWS 경로의 스크립트를 그대로 쓸 수 있다.
-  config.vm.synced_folder "../../", "/sreMsa"
+  # 이 폴더가 0.VagrantForLocal/1.vm4 로 한 단계 깊어졌으므로 세 번 올라간다.
+  config.vm.synced_folder "../../../", "/sreMsa"
 
   # -------------------------------------------------------------------------
   # i1 — 콘솔 서버

@@ -125,6 +125,24 @@ echo "=== [common] ${HN} — 방화벽 비활성 ==="
 systemctl disable --now ufw >/dev/null 2>&1 || true
 ufw disable >/dev/null 2>&1 || true
 
+echo "=== [common] ${HN} — motd 비활성 (ssh 접속 지연 제거) ==="
+# Ubuntu 의 동적 motd 는 로그인마다 /etc/update-motd.d/ 를 전부 실행한다.
+# 2026-08-30 실측(bento/ubuntu-24.04) — 8개 합계 약 30초:
+#   50-landscape-sysinfo 7.1s · 10-help-text 6.6s · 50-motd-news 4.3s(인터넷 접속 시도)
+#   85-fwupd 4.1s · 91-contract-ua-esm-status 3.5s · 99-bento 2.6s · 97-overlayroot 1.5s
+#
+# ⚠️ pam_motd 는 **비대화형 ssh 에도** 걸린다. 그래서 사람이 `ssh vm01` 할 때만이 아니라
+#    ansible 이 노드에 붙을 때마다 이 비용을 낸다. 실측에서 `ssh vm01 true` 가 14초였다.
+#
+# 지우지 않고 실행권한만 뗀다 — 되돌리려면 chmod +x 하면 된다.
+chmod -x /etc/update-motd.d/* 2>/dev/null || true
+# pam 단계에서 아예 부르지 않게 한다 (볼트 Debian.md "motd 내리기" 와 같은 조치)
+sed -i 's/^\(session[[:space:]]*optional[[:space:]]*pam_motd\.so.*\)$/#\1/' /etc/pam.d/sshd 2>/dev/null || true
+# motd-news 는 외부 접속을 시도하므로 설정으로도 끈다
+[ -f /etc/default/motd-news ] && sed -i 's/^ENABLED=1/ENABLED=0/' /etc/default/motd-news
+rm -f /run/motd.dynamic 2>/dev/null || true
+echo "  update-motd.d 실행권한 해제 · pam_motd 주석 · motd-news 비활성"
+
 echo "=== [common] ${HN} — ssh 호스트키 확인 끄기 ==="
 grep -q '^StrictHostKeyChecking' /etc/ssh/ssh_config || \
   echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config

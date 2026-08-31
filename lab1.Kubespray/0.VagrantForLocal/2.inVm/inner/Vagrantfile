@@ -1,0 +1,83 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+# 안쪽 노드 vm01~vm0N — **바깥 VM(i1) 안에서** 실행한다.
+#
+# 이웃 폴더(1.vm4)의 Vagrantfile 에서 i1 정의만 뺀 것이다.
+# 노드명·IP·계정·프로비저닝 스크립트가 전부 같으므로, 안쪽에서 보는 구조는
+# 상위 폴더 방식과 구별되지 않는다. lab2 이후 실습 명령이 그대로 통한다.
+#
+# ⚠️ 이 Vagrantfile 은 **게스트의 로컬 디스크**(기본 ~/inner)에서 실행해야 한다.
+#    공유 폴더(vboxsf) 안에서 `vagrant up` 을 하면 아래로 죽는다 —
+#      "The private key to connect to the machine via SSH must be owned
+#       by the user running Vagrant."
+#    vboxsf 는 파일 소유권을 마운트 옵션으로 고정하므로 Vagrant 가 만든
+#    private_key 의 소유자를 바꿀 수 없고, ssh 가 그런 키를 거부한다.
+#    doInner.sh 가 필요한 파일을 로컬로 복사한 뒤 거기서 실행한다.
+#
+# settings.yml 은 같은 폴더에서 읽는다(doInner.sh 가 함께 복사한다).
+# 프로비저닝 스크립트는 공유 폴더의 상위 폴더 것을 그대로 쓴다 — 읽기만 하므로 무방하고,
+# 복제하지 않으므로 상위 폴더를 고치면 이쪽에도 반영된다.
+
+require "yaml"
+require "fileutils"
+
+BASE   = File.dirname(__FILE__)
+S      = YAML.load_file(File.join(BASE, "settings.yml"))
+INNER  = S["inner"]
+
+# 상위 폴더 경로. doInner.sh 가 SREMSA_LOCAL 로 넘긴다.
+LOCAL  = ENV["SREMSA_LOCAL"] || "/sreMsa/lab1.Kubespray/0.VagrantForLocal/1.vm4"
+
+NET        = INNER["subnet"]
+I1_HOST    = INNER["i1_host"]
+NODE_BASE  = INNER["node_host_base"]
+NODE_COUNT = INNER["count"]
+
+def node_name(i)
+  format("vm%02d", i)
+end
+
+I1_IP = "#{NET}.#{I1_HOST}"
+
+hosts_lines = ["#{I1_IP} i1"]
+(1..NODE_COUNT).each { |i| hosts_lines << "#{NET}.#{NODE_BASE + i} #{node_name(i)}" }
+HOSTS_BLOCK = hosts_lines.join("\n")
+
+File.open(File.join(BASE, "hosts.generated"), "wb") { |f| f.write(HOSTS_BLOCK + "\n") }
+FileUtils.mkdir_p(File.join(BASE, ".keys"))
+
+# 바깥 VM(i1) 의 ubuntu 공개키. doInner.sh 가 여기에 복사해 둔다.
+PUBKEY_PATH = File.join(BASE, ".keys", "id_rsa.pub")
+PUBKEY = File.exist?(PUBKEY_PATH) ? File.read(PUBKEY_PATH).strip : ""
+
+# 상위 폴더의 프로비저닝 스크립트를 그대로 쓴다.
+COMMON_SH = File.join(LOCAL, "scripts", "common.sh")
+NODE_SH   = File.join(LOCAL, "scripts", "node.sh")
+
+Vagrant.configure("2") do |config|
+  config.vm.box = S["box"]["name"]
+  config.vm.box_version = S["box"]["version"] if S["box"]["version"]
+  config.vm.box_check_update = (S["box"]["check_update"] == true)
+  config.vm.boot_timeout = S["boot_timeout"] || 900
+  config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
+
+  (1..NODE_COUNT).each do |i|
+    name = node_name(i)
+    ov   = (INNER["overrides"] || {})[name] || {}
+
+    config.vm.define name do |n|
+      n.vm.hostname = name
+      n.vm.network "private_network", ip: "#{NET}.#{NODE_BASE + i}"
+
+      n.vm.provider "virtualbox" do |vb|
+        vb.name   = name
+        vb.cpus   = ov["cpu"]    || INNER["cpu"]
+        vb.memory = ov["memory"] || INNER["memory"]
+      end
+
+      n.vm.provision "common", type: "shell", path: COMMON_SH, args: [HOSTS_BLOCK]
+      n.vm.provision "node",   type: "shell", path: NODE_SH,   args: [PUBKEY]
+    end
+  end
+end
