@@ -23,53 +23,47 @@ say(){ echo "=== [outer] $* ==="; }
 
 # ---------------------------------------------------------------- 0) 공유 폴더
 say "0/6 공유 폴더 확인·복구"
-# ⚠️ 커널을 올린 직후의 부팅에서는 Guest Additions 가 아직 **옛 커널용**이라
-#    vboxsf 마운트가 조용히 실패한다. /sreMsa 가 빈 디렉토리로 남고,
-#    그러면 이 스크립트가 6단계에서 installOnEc2.sh 를 못 찾는다.
+# ⚠️ 공유 폴더가 풀리는 진짜 원인 (2026-08-31 실측으로 확정)
 #
-#    2026-08-31 실측: 그 상태에서 `vagrant reload` 를 한 번 더 하면
-#    중첩 환경의 커널이 RCU 스톨에 빠져(task blocked 368s+) 부팅 자체가 멈췄다.
-#    그래서 재부팅을 늘리는 대신 **여기서 GA 를 재빌드하고 직접 마운트**한다.
+#    3단계의 `/sbin/vboxconfig` 가 VirtualBox 커널 모듈을 재빌드하면서
+#    **vboxsf 모듈을 언로드·리로드한다.** 그때 기존 vboxsf 마운트가 통째로
+#    끊긴다. 프로비저닝 로그가 그것을 그대로 보여 준다:
 #
-#    공유 폴더 이름은 Vagrantfile 의 마운트 지점에서 그대로 온다(실측 확인):
-#      sreMsa -> /sreMsa · prgs -> /prgs · vagrant -> /vagrant
+#      0/6 공유 폴더 확인·복구  →  /sreMsa OK (6개 항목)
+#      3/6 VirtualBox 설치      →  vboxconfig 실행
+#      6/6 Kubespray 도구       →  !! /sreMsa/.../installOnEc2.sh 없음
+#
+#    즉 "GA 가 옛 커널용이라 마운트가 안 된다" 가 아니라 **모듈 재로드가
+#    마운트를 날리는 것**이다. 그래서 복구를 함수로 두고 vboxconfig **뒤에도**
+#    부른다. 재부팅을 늘리는 것으로는 해결되지 않으며, 실제로 3차 부팅은
+#    중첩 환경에서 RCU 스톨(task blocked 368s+)로 이어졌다.
+#
+# 공유 폴더 이름은 Vagrantfile 의 마운트 지점에서 그대로 온다(실측 확인).
 SHARES="sreMsa prgs vagrant"
-need_remount=0
-for m in $SHARES; do
-  mountpoint -q "/$m" 2>/dev/null || need_remount=1
-done
 
-if [ "$need_remount" = "1" ]; then
-  echo "  일부 공유 폴더가 붙지 않았다 — Guest Additions 를 현재 커널용으로 재빌드한다"
-  GA="$(ls -d /opt/VBoxGuestAdditions-* 2>/dev/null | head -1)"
-  if [ -n "$GA" ] && [ -x "$GA/init/vboxadd" ]; then
-    echo "    $GA/init/vboxadd setup"
-    "$GA/init/vboxadd" setup 2>&1 | tail -6 | sed 's/^/      /'
-    systemctl restart vboxadd-service 2>/dev/null || true
-  else
-    echo "    GA 소스 폴더를 찾지 못했다 — dkms 경로로 시도"
-    dpkg-reconfigure -f noninteractive virtualbox-guest-dkms 2>/dev/null || true
-  fi
-  modprobe vboxsf 2>/dev/null || true
-
+remount_shares() {
+  local need=0 m
   for m in $SHARES; do
-    mountpoint -q "/$m" 2>/dev/null && continue
-    [ -d "/$m" ] || mkdir -p "/$m"
-    if mount -t vboxsf -o uid=0,gid=0 "$m" "/$m" 2>/dev/null; then
-      echo "    /$m 마운트 성공"
+    mountpoint -q "/$m" 2>/dev/null || need=1
+  done
+  if [ "$need" = "1" ]; then
+    modprobe vboxsf 2>/dev/null || true
+    for m in $SHARES; do
+      mountpoint -q "/$m" 2>/dev/null && continue
+      [ -d "/$m" ] || mkdir -p "/$m"
+      mount -t vboxsf "$m" "/$m" 2>/dev/null || true
+    done
+  fi
+  for m in $SHARES; do
+    if mountpoint -q "/$m" 2>/dev/null; then
+      printf '  /%-8s OK (%s개 항목)\n' "$m" "$(ls -1 "/$m" 2>/dev/null | wc -l)"
     else
-      echo "    /$m 마운트 실패"
+      printf '  /%-8s !! 마운트 안 됨\n' "$m"
     fi
   done
-fi
+}
 
-for m in $SHARES; do
-  if mountpoint -q "/$m" 2>/dev/null; then
-    printf '  /%-8s OK (%s개 항목)\n' "$m" "$(ls -1 "/$m" 2>/dev/null | wc -l)"
-  else
-    printf '  /%-8s !! 마운트 안 됨\n' "$m"
-  fi
-done
+remount_shares
 
 # ---------------------------------------------------------------- 1) 디스크
 say "1/6 디스크 확장"
@@ -184,6 +178,10 @@ else
   dpkg-reconfigure -f noninteractive virtualbox-dkms 2>&1 | tail -3 | sed 's/^/    /' || true
   modprobe vboxdrv 2>&1 | sed 's/^/    /' || true
 fi
+
+# ★ vboxconfig 가 vboxsf 를 재로드하며 마운트를 끊었다. 여기서 되돌린다.
+echo "  공유 폴더 재마운트 (vboxconfig 가 끊은 것을 되돌린다)"
+remount_shares
 
 echo "  버전: $(VBoxManage --version 2>/dev/null || echo '확인 실패')"
 if lsmod | grep -q '^vboxdrv'; then
