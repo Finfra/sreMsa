@@ -172,6 +172,27 @@ download_keep_remote_cache: true
 download_cache_dir: /var/cache/kubespray
 DLYAML
 
+# ── kubelet 예약 축소 (2026-09-06 실측) ────────────────────────────────
+#   노드가 1 vCPU 인데 kubespray 기본 예약이 600m(kube 100m + system 500m)라
+#   allocatable 이 400m 밖에 남지 않는다. 그런데 컨트롤플레인 파드의
+#   requests 합은 550m 이다 — apiserver 250 + controller-manager 200 +
+#   scheduler 100. 그래서 controller-manager 가 스케줄되지 못하고
+#   UnexpectedAdmissionError 로 거부된다.
+#
+#     Message: Pod was rejected: preemption: error finding a set of pods to
+#              preempt: no set of running pods found to reclaim resources:
+#              [(res: cpu, q: 50), ]
+#
+#   ⚠️ 노드 부하가 낮아도 소용없다 — 실제 사용량이 아니라 requests 총합으로
+#      판정하기 때문이다(실측 시 load 0.23 인데도 거부).
+#   예약을 70m 로 낮춰 allocatable 을 930m 로 만든다.
+grep -q "^kube_cpu_reserved:" "$GV" 2>/dev/null || cat >> "$GV" <<RSYAML
+kube_cpu_reserved: "20m"
+kube_memory_reserved: "128Mi"
+system_cpu_reserved: "50m"
+system_memory_reserved: "256Mi"
+RSYAML
+
 # ⚠️ download_run_once 는 받은 파일을 ansible 호스트(i1)의 캐시로 되복사한다
 #    (TASK "Download_file | Copy file back to ansible host file cache").
 #    그 rsync 는 i1 에서 ubuntu 사용자로 수신하므로 캐시 디렉토리가
