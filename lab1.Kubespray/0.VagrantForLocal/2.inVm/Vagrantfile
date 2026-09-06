@@ -81,6 +81,23 @@ Vagrant.configure("2") do |config|
       # 중첩은 페이징 부하가 크다. 켜 두지 않으면 눈에 띄게 느려진다.
       vb.customize ["modifyvm", :id, "--nested-paging", "on"]
       vb.customize ["modifyvm", :id, "--paravirt-provider", "kvm"]
+
+      # ★ Host I/O cache — 중첩에서는 이것이 성능을 좌우한다 (2026-08-31 실측).
+      #   VirtualBox 의 SATA 컨트롤러는 기본이 off 라 게스트의 fsync 를 호스트
+      #   디스크까지 그대로 밀어낸다. 단일 VM 이면 안전한 기본값이지만, 중첩은
+      #   그 비용을 두 번 낸다(안쪽 게스트 → 바깥 파일 → 바깥 vdi → SSD).
+      #
+      #   실측(바깥 VM, 4k x200 oflag=dsync):
+      #     off → 2.55~2.64초 (fsync 회당 12.8~13.2ms)
+      #     on  → 0.217~0.243초 (회당 1.08~1.22ms)   = 약 11배
+      #
+      #   etcd 는 모든 쓰기를 fsync 하며 권장치가 10ms 미만이다. off 상태에서는
+      #   이를 넘겨 apiserver·scheduler 가 재시작 루프에 빠지고 cluster.yml 이
+      #   2시간 19분 만에 failed=1 로 끝났다.
+      #
+      #   ⚠️ 맞바꾸는 것: 호스트 전원이 갑자기 끊기면 캐시에 있던 쓰기가 유실된다.
+      #      실습 환경이라 재구축이 가능하므로 감수한다.
+      vb.customize ["storagectl", :id, "--name", "SATA Controller", "--hostiocache", "on"]
     end
 
     n.vm.provision "outer", type: "shell",

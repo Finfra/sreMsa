@@ -74,6 +74,13 @@ Vagrant.configure("2") do |config|
         vb.name   = name
         vb.cpus   = ov["cpu"]    || INNER["cpu"]
         vb.memory = ov["memory"] || INNER["memory"]
+
+        # ★ Host I/O cache — 바깥 Vagrantfile 의 같은 설정과 짝이다.
+        #   안쪽 노드의 디스크는 바깥 VM 의 ext4 위에 놓인 파일이므로,
+        #   여기를 켜지 않으면 fsync 가 바깥까지 두 번 내려간다.
+        #   etcd 가 이 지연에 가장 민감하다(권장 10ms 미만).
+        #   근거 실측은 ../Vagrantfile 의 주석 참조.
+        vb.customize ["storagectl", :id, "--name", "SATA Controller", "--hostiocache", "on"]
       end
 
       n.vm.provision "common", type: "shell", path: COMMON_SH, args: [HOSTS_BLOCK]
