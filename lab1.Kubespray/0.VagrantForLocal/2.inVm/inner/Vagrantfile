@@ -81,6 +81,21 @@ Vagrant.configure("2") do |config|
         #   etcd 가 이 지연에 가장 민감하다(권장 10ms 미만).
         #   근거 실측은 ../Vagrantfile 의 주석 참조.
         vb.customize ["storagectl", :id, "--name", "SATA Controller", "--hostiocache", "on"]
+
+        # ── SSD 로 인식시킨다 (2026-09-06 실측) ──────────────────────────
+        #   기본값이 nonrotational=off 라 게스트가 이 디스크를 회전 디스크로
+        #   본다. 실측: /sys/block/sda/queue/rotational = 1,
+        #             scheduler = none [mq-deadline]  ← SSD 인데 seek 최적화
+        #   그 결과 커널이 있지도 않은 헤드 이동을 줄이려 요청을 병합·재정렬해
+        #   지연을 스스로 만들고, readahead 도 과다해진다.
+        #   discard=off 면 TRIM 이 안 돼(lsblk -D 의 DISC-MAX = 0B) 쓰기 증폭도 생긴다.
+        #   ⚠️ 중첩에서는 이 손해가 두 겹이다 — 안쪽이 잘못 만든 요청이
+        #      바깥의 잘못된 스케줄러를 한 번 더 통과한다.
+        vb.customize ["storageattach", :id, "--storagectl", "SATA Controller",
+                      "--port", "0", "--device", "0",
+                      "--nonrotational", "on", "--discard", "on"]
+        # headless 운용이라 원격 데스크톱 서버가 불필요하다.
+        vb.customize ["modifyvm", :id, "--vrde", "off"]
       end
 
       n.vm.provision "common", type: "shell", path: COMMON_SH, args: [HOSTS_BLOCK]
