@@ -153,6 +153,33 @@ say "6/6 중첩 전용 타임아웃 상향"
 #    설정 오류가 아니라 속도 문제이므로 제한만 늘린다.
 GV=~/kubespray/inventory/group_vars/all/all.yml
 if [ -f "$GV" ] && ! grep -q 'kubeadm_join_timeout' "$GV"; then
+
+# ── 다운로드 최적화 (2026-09-01 실측으로 활성화) ──────────────────────
+#   이전 실행 1시간 11분 중 다운로드가 62% 였다.
+#     Download_container 884.88s · 657.73s · Download_file 289.87s
+#     APT cache 287.19s · Manage packages 203.77s   합계 약 44분
+#   중첩은 이중 NAT(안쪽 → 바깥 VM → 호스트)라 대역이 좁은데 안쪽 3대가
+#   같은 이미지를 각자 받아 그 좁은 대역을 나눠 썼다. run_once 로 vm01 만
+#   받아 나머지에 배포하면 배포 구간이 192.168.56.x 로컬이라 훨씬 빠르다.
+#
+#   keep_remote_cache 는 중단 대비다. 이 환경은 호스트 NVMe 결함으로
+#   I/O 가 간헐 급정지해(2026-09-01 3회) 재실행이 잦은데, 캐시가 남으면
+#   이미 받은 것을 다시 받지 않는다.
+grep -q "^download_run_once:" "$GV" 2>/dev/null || cat >> "$GV" <<'DLYAML'
+download_run_once: true
+download_localhost: false
+download_keep_remote_cache: true
+download_cache_dir: /var/cache/kubespray
+DLYAML
+
+# ⚠️ download_run_once 는 받은 파일을 ansible 호스트(i1)의 캐시로 되복사한다
+#    (TASK "Download_file | Copy file back to ansible host file cache").
+#    그 rsync 는 i1 에서 ubuntu 사용자로 수신하므로 캐시 디렉토리가
+#    root 소유면 mkstemp 로 실패한다 — 2026-09-05 에 실제로 겪었고,
+#    cluster.yml 이 vm01 failed=1 로 세 번 연속 실패했다.
+#    (안쪽 노드는 --rsync-path='sudo -u root rsync' 라 root 소유여도 된다.)
+sudo mkdir -p /var/cache/kubespray
+sudo chown -R ubuntu:ubuntu /var/cache/kubespray
   cat >> "$GV" <<'YML'
 
 # --- 중첩(nested) 환경 전용 ---
