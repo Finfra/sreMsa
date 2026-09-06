@@ -39,8 +39,16 @@ done < "$GEN_CLEAN"
 n="${#names[@]}"
 if [ "$n" -lt 1 ]; then echo "!! 노드가 없다."; exit 1; fi
 
-# control plane 은 AWS 경로와 같게 앞의 2대로 둔다 (노드가 1대뿐이면 1대)
-cp_count=2
+# control plane 은 AWS 경로와 같게 앞의 2대로 둔다 (노드가 1대뿐이면 1대).
+#
+# ⚠️ SREMSA_CP_COUNT 로 덮어쓸 수 있다 — 2.inVm(중첩)이 이것을 쓴다.
+#    중첩에서는 노드가 1 vCPU 라 control-plane join 이 감당되지 않는다.
+#    2026-09-06 실측: `Joining control plane node to the cluster` 하나가
+#    1,219초(20분 20초)로 전체 36분의 56% 를 먹고 vm02 만 failed=1 이었다.
+#    kubeadm_join_timeout 600s 의 두 배를 넘겼으므로 시한 연장으로는 풀리지 않는다.
+#    control-plane 을 1대로 줄이면 그 태스크 자체가 사라진다.
+#    (1.vm4 는 노드가 2 vCPU 라 2대로 두어도 15분 20초에 완주한다 — 기본값 유지)
+cp_count="${SREMSA_CP_COUNT:-2}"
 [ "$n" -lt 2 ] && cp_count=1
 
 mkdir -p "${KSDIR}/inventory/group_vars/all"
