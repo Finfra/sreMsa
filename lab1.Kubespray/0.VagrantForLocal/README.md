@@ -70,6 +70,9 @@ pip install -r ~/kubespray/requirements.txt   # ansible 9.13.0 = core 2.16.19
 ```
 
 [2.inVm](2.inVm/) 은 [doInner.sh](2.inVm/inner/doInner.sh) 가 이 venv 를 자동으로 만든다.
+[1.vm4](1.vm4/) 는 수강생이 직접 만든다 — 절차는 [Install_Kubernetes_only_PC.md](../Install_Kubernetes_only_PC.md) 9.1 절에 있다.
+
+⚠️ venv 는 **터미널마다** 켜야 한다. i1 에 다시 접속했다면 `cluster.yml` 전에 `source ~/ksvenv/bin/activate` 를 한 번 더 실행한다.
 
 ## motd 를 꺼 두었다
 

@@ -62,6 +62,7 @@ config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 | Kubespray | `release-2.28` (Kubernetes 1.32.13) |
 | inventory 역할 배치 | `kube_control_plane` = vm01·vm02 / `etcd` = vm01 / `kube_node` = **전 노드** |
 | 설치 명령 | `ansible-playbook ... cluster.yml` — 문장까지 동일 |
+| ansible 버전 맞추기 | 양쪽 다 `requirements.txt` 를 깔아야 한다. 로컬은 venv 로 한다 ([상위 README](../README.md)) |
 
 `kube_node` 에 vm01 이 들어 있다. **vm01 은 control plane 이자 etcd 이자 워커 노드다.**
 그래서 vm01 에는 다른 노드보다 메모리를 더 준다(settings.yml 의 `overrides`).
@@ -196,4 +197,5 @@ box 하나가 621MB 이므로 20명이면 12GB 가 한꺼번에 흐른다. 두 �
 | 노드가 전부 10.0.2.15 로 보인다 | inventory 에 `ip=` 가 빠졌다. `doMakeInventory.sh` 로 다시 만든다 |
 | `/vagrant` 가 비어 있다 | 공유 폴더 미마운트. `vagrant reload` 후 재시도 |
 | box 를 인터넷에서 받으려 한다 | `vagrant box list` 로 이름이 `bento/ubuntu-24.04` 인지 확인. 다르면 지우고 다시 등록 |
+| `cluster.yml` 이 **첫 태스크에서** `Ansible must be between 2.16.4 and 2.17.0` 로 끝난다 | venv 를 켜지 않았다. i1 에서 `source ~/ksvenv/bin/activate` — 만든 적이 없으면 [상위 README](../README.md) "Kubespray 는 venv 가 필요하다" |
 | cluster.yml 이 중간에 멈춘다 | i1 에서 `rm -rf /tmp/ansible_facts* ~/.ansible/tmp/*` 후 재실행 (AWS README 3.1 절과 동일) |

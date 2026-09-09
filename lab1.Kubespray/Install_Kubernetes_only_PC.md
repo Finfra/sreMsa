@@ -291,7 +291,7 @@ bash /vagrant/doSetHosts.sh
 
 # 7. Kubespray 내려받기
 
-**여기서부터 9단계까지는 AWS 경로와 글자 하나까지 같다.**
+**여기서부터 9단계까지는 AWS 경로와 사실상 같다.** 다른 것은 9.1 의 ansible 설치 방식 하나뿐이다.
 
 ```bash
 cd ~
@@ -351,6 +351,37 @@ EOF
 
 # 9. 설치 실행
 
+## 9.1 ansible 버전 맞추기 ★ 이 단계를 건너뛰면 설치가 시작되지 않는다
+
+4장에서 i1 에 깔린 ansible 은 **core 2.17.x** 인데, Kubespray `release-2.28` 은 **2.16.4 이상 2.17.0 미만**만 받는다.
+그대로 실행하면 아래처럼 **첫 태스크에서 거부당한다.**
+
+```
+TASK [Check 2.16.4 <= Ansible version < 2.17.0]
+fatal: "Ansible must be between 2.16.4 and 2.17.0 exclusive - you have 2.17.14"
+```
+
+Kubespray 가 요구하는 버전은 방금 받은 `requirements.txt` 에 적혀 있다.
+시스템 파이썬을 건드리지 않도록 **전용 가상환경(venv)** 을 만들어 그 안에만 설치한다.
+
+```bash
+cd ~/kubespray
+python3 -m venv ~/ksvenv
+source ~/ksvenv/bin/activate
+pip install -U pip
+pip install -r requirements.txt      # ansible 9.13.0 = core 2.16.19
+ansible --version                    # core 2.16.19 로 바뀌었는지 확인
+```
+
+> AWS 경로에서 `pip install -r requirements.txt` 를 하던 자리와 같다.
+> AWS 는 시스템에 바로 깔았지만, 여기서는 venv 를 쓴다 — 되돌리려면 `rm -rf ~/ksvenv` 하나면 된다.
+
+⚠️ **venv 는 터미널마다 켜 줘야 한다.** i1 에 다시 접속했거나 창을 새로 열었다면
+`cluster.yml` 을 돌리기 전에 `source ~/ksvenv/bin/activate` 를 한 번 더 실행한다.
+프롬프트 앞에 `(ksvenv)` 가 보이면 켜진 것이다.
+
+## 9.2 설치
+
 ```bash
 ansible -i inventory/inventory.ini all -m ping     # 연결 확인
 
@@ -360,7 +391,8 @@ ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
   cluster.yml
 ```
 
-* **30~45분** 걸린다 *(검증 필요 — 실기 측정 전)*. AWS 에서 20~25분 걸리는 작업이고, 로컬 디스크가 더 느리다.
+* **15~20분** 걸린다. 16GB·8코어 PC 에서 `cluster.yml` 만 **15분 20초**, `vagrant up` 부터 세면 **24분 15초** 였다(2026-08-30·08-31 두 차례 실측).
+  PC 가 느리면 더 걸릴 수 있으나, 45분을 넘기면 정상 진행이 아니라고 보고 아래 "자주 막히는 곳" 을 확인한다.
 * 두 번째 설치라면 먼저 캐시를 지운다 (AWS 경로 3.1 절과 동일).
 
 ```bash
@@ -426,6 +458,7 @@ vagrant destroy -f
 | `ansible ping` 이 실패한다 | i1 에서 `bash /vagrant/doVerify.sh` — 어느 단계에서 끊기는지 나온다 |
 | 노드가 전부 10.0.2.15 로 보인다 | inventory 에 `ip=` 가 빠졌다. `bash /vagrant/doMakeInventory.sh` |
 | Windows 에서 `curl vm01:...` 이 안 된다 | 3장의 hosts 파일 등록을 빠뜨렸다 |
+| `Ansible must be between 2.16.4 and 2.17.0` 로 즉시 멈춘다 | venv 를 켜지 않았다. 9.1 참조 — `source ~/ksvenv/bin/activate` 후 다시 실행 |
 | cluster.yml 이 중간에 멈춘다 | fact 캐시를 지우고 재실행 (9장 참조) |
 | 메모리가 모자라 PC 가 멈춘다 | [0.VagrantForLocal/1.vm4/README.md](0.VagrantForLocal/1.vm4/README.md) 의 "메모리가 부족할 때" |
 
