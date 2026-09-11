@@ -41,7 +41,7 @@ Kubespray 를 실행하는 부분은 [3.InstanceForKubernetes/README.md](3.Insta
 | `Git-2.55.0.5-64-bit.exe` | 62 MB | Git for Windows |
 | **`vc_redist.x64.exe`** | 25 MB | **Visual C++ 재배포 패키지 — VirtualBox 의 전제조건** |
 | `SHA256SUMS.txt` | — | 무결성 검증용 |
-| 합계 | **약 1.2 GB** | |
+| 합계 | **약 1.1 GB** | |
 
 수강생 전원이 같은 파일을 동시에 내려받으면 교육장 회선이 막혀 실습을 시작조차 못 한다.
 box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 미리 받아 배포한다.
