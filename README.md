@@ -52,7 +52,6 @@ cd sreMsa
 
 # [Lab6. Serverless](./lab6.Serverless/)
 * OpenFaaS로 서버리스(FaaS) 실습
-## Lab6-0. Java 설치 (전 실습 공통 정본 — lab5가 참조. lab6 함수는 Node.js라 불필요)
 ## Lab6-1. Kubernetes 위에 OpenFaaS CE 설치
 ## Lab6-2. 첫 함수 만들기 — 빌드·배포·호출, 코드 수정 후 재배포
 ## Lab6-3. 콜드 스타트 — 첫 요청만 느린 이유를 직접 측정

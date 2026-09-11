@@ -224,7 +224,7 @@ faas-cli template store list
 ```
 
 * `node20`·`java11`·`java17`·`php8`·`python3-http` 등이 있습니다.
-* ⚠️ **`java17` 템플릿은 현재 빌드되지 않습니다.** 템플릿이 쓰는 베이스 이미지(`openjdk:17-jdk-slim`)가 Docker Hub 에서 사라졌기 때문입니다(openjdk 공식 이미지 deprecated). 이 실습에서 `node20` 을 쓰는 이유입니다.
+* ⚠️ **`java11`·`java17` 템플릿은 현재 둘 다 빌드되지 않습니다.** 템플릿이 쓰는 베이스 이미지(`openjdk:17-jdk-slim`·`openjdk:11-jre-slim`)가 Docker Hub 에서 사라졌기 때문입니다 — **openjdk 공식 이미지가 deprecated 되면서 태그들이 정리**됐습니다. 이 실습에서 `node20` 을 쓰는 이유입니다.
     - cf) 이런 일은 드물지 않습니다. **외부 이미지·저장소에 의존하면 어느 날 조용히 죽습니다.** 운영에서 이미지를 자체 저장소에 미러링하는 이유이기도 합니다.
 
 ## 9. 다음 단계

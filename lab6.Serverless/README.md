@@ -1,12 +1,11 @@
 # Agenda
 
-| Folder            | Contents                                                               |
-| ----------------- | ---------------------------------------------------------------------- |
-| 0.java            | Java 설치 — **전 실습 공통 정본** (lab5 가 참조. lab6 실습에는 불필요) |
-| 1.openfaasInstall | Kubernetes 위에 OpenFaaS CE 설치, faas-cli 로 접속                     |
-| 2.firstFunction   | 함수를 직접 만들어 빌드·배포·호출                                      |
-| 3.coldStart       | 첫 요청만 느린 이유 — 콜드 스타트를 직접 측정                          |
-| 4.autoScale       | 요청이 몰리면 인스턴스가 늘어나는 구간 관찰                            |
+| Folder            | Contents                                           |
+| ----------------- | -------------------------------------------------- |
+| 1.openfaasInstall | Kubernetes 위에 OpenFaaS CE 설치, faas-cli 로 접속 |
+| 2.firstFunction   | 함수를 직접 만들어 빌드·배포·호출                  |
+| 3.coldStart       | 첫 요청만 느린 이유 — 콜드 스타트를 직접 측정      |
+| 4.autoScale       | 요청이 몰리면 인스턴스가 늘어나는 구간 관찰        |
 
 # 이 실습이 다루는 것
 
@@ -35,7 +34,6 @@
 * lab1 을 마쳐 **3개 노드가 `Ready`** 인 클러스터가 있어야 합니다.
 * 그 외 준비물은 `2.firstFunction` 안에서 그때그때 설치합니다(registry·docker·faas-cli).
 
-* **`0.java` 는 이 실습의 선행이 아닙니다.**
-    - 이 폴더에 있지만 **lab5(Zipkin)가 참조하는 공통 정본**이라 여기 둔 것입니다. 설치 절차를 한 곳에만 두어 버전이 갈리지 않게 하려는 배치입니다.
-    - **lab6 의 함수는 Node.js(`node20`)로 만듭니다.** 따라서 lab6 만 진행한다면 `0.java` 를 건너뛰어도 됩니다.
-    - cf) OpenFaaS 에 `java17` 템플릿이 있긴 하나 **현재 빌드되지 않습니다.** 이유는 `2.firstFunction` 8절에 적었습니다.
+* **Java 는 필요 없습니다.** 이 실습의 함수는 Node.js(`node20`)로 만듭니다.
+    - cf) OpenFaaS 에 `java11`·`java17` 템플릿이 있긴 하나 **둘 다 현재 빌드되지 않습니다.** 이유는 `2.firstFunction` 8절에 적었습니다.
+    - Java 설치가 필요한 것은 lab5(Zipkin)이며 절차는 [lab5.Zipkin/0.java](../lab5.Zipkin/0.java/1.JavaBasic.md) 에 있습니다.
