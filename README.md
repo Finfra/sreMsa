@@ -50,6 +50,14 @@ cd sreMsa
 ## Lab5-2. Zipkin을 이용한 MSA 환경에서 분산 트렌젝션의 추적
 ## Lab5-3. Transaction UI(API / Web) 연동 실습
 
+# [Lab6. Serverless](./lab6.Serverless/)
+* OpenFaaS로 서버리스(FaaS) 실습
+## Lab6-0. Java 설치 (전 실습 공통 정본 — lab5도 이 문서를 참조)
+## Lab6-1. Kubernetes 위에 OpenFaaS CE 설치
+## Lab6-2. 첫 함수 만들기 — 빌드·배포·호출, 코드 수정 후 재배포
+## Lab6-3. 콜드 스타트 — 첫 요청만 느린 이유를 직접 측정
+## Lab6-4. 오토스케일 — 요청이 몰릴 때 인스턴스가 늘어나는 구간 관찰
+
 # 수강 년도별 소스 보기
 ## 202508~202511에 수업들었던 분들은 아래 방식
 ```
