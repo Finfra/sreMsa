@@ -3,7 +3,6 @@ name: README
 description: 중첩(nested) 방식 실습 환경 — VM 한 대 안에 클러스터 전체를 넣는다
 date: 2026.08.30
 ---
-
 # 무엇이 다른가
 
 이웃 폴더([1.vm4](../1.vm4/))는 호스트가 VM 을 **4대** 만든다. 이 폴더는 **1대**만 만들고 나머지를 그 안에서 만든다.
@@ -40,13 +39,13 @@ jpc1(Intel i7-6700T · Skylake)에서 둘 다 확인했다. 지원하지 않는 
 
 이웃 폴더(1.vm4)는 호스트가 4대에 나눠 주지만, 여기서는 **VM 한 대에 전부 몰아줘야** 한다.
 
-| | 이웃 폴더(1.vm4) | 이 폴더 |
-| :--- | ---: | ---: |
-| vm01 · vm02 · vm03 | 8,704MB | 8,704MB |
-| i1 | 1,024MB | — (바깥 VM 이 겸함) |
-| 바깥 게스트 OS + VirtualBox | — | 2,048MB |
-| **VM 에 줘야 할 총량** | **9,728MB** | **10,752MB** |
-| 권장 호스트 메모리 | 16GB | **20GB 이상** |
+|                             | 이웃 폴더(1.vm4) |             이 폴더 |
+| :-------------------------- | ---------------: | ------------------: |
+| vm01 · vm02 · vm03          |          8,704MB |             8,704MB |
+| i1                          |          1,024MB | — (바깥 VM 이 겸함) |
+| 바깥 게스트 OS + VirtualBox |                — |             2,048MB |
+| **VM 에 줘야 할 총량**      |      **9,728MB** |        **10,752MB** |
+| 권장 호스트 메모리          |             16GB |       **20GB 이상** |
 
 16GB 호스트에서도 돌기는 하나 여유가 거의 없다. 그런 경우 [settings.yml](settings.yml) 의 `outer.memory` 와 `inner` 노드 메모리를 함께 낮춘다.
 
@@ -107,24 +106,24 @@ fatal: "Ansible must be between 2.16.4 and 2.17.0 exclusive - you have 2.17.14"
 
 # 파일
 
-| 파일 | 실행 위치 | 하는 일 |
-| :--- | :--- | :--- |
-| [settings.yml](settings.yml) | — | 바깥·안쪽 자원. **고칠 파일은 이것 하나뿐이다** |
-| [Vagrantfile](Vagrantfile) | Windows | 바깥 VM 한 대를 만든다 (`--nested-hw-virt on`) |
-| [scripts/outer.sh](scripts/outer.sh) | 바깥 VM | LVM 확장 · VirtualBox · Vagrant · 계정 · Kubespray 도구 |
-| [inner/doInner.sh](inner/doInner.sh) | 바깥 VM | 안쪽 노드 생성 진입점 |
-| [inner/Vagrantfile](inner/Vagrantfile) | 바깥 VM | vm01~vm0N 정의 |
+| 파일                                   | 실행 위치 | 하는 일                                                 |
+| :------------------------------------- | :-------- | :------------------------------------------------------ |
+| [settings.yml](settings.yml)           | —         | 바깥·안쪽 자원.**고칠 파일은 이것 하나뿐이다**          |
+| [Vagrantfile](Vagrantfile)             | Windows   | 바깥 VM 한 대를 만든다 (`--nested-hw-virt on`)          |
+| [scripts/outer.sh](scripts/outer.sh)   | 바깥 VM   | LVM 확장 · VirtualBox · Vagrant · 계정 · Kubespray 도구 |
+| [inner/doInner.sh](inner/doInner.sh)   | 바깥 VM   | 안쪽 노드 생성 진입점                                   |
+| [inner/Vagrantfile](inner/Vagrantfile) | 바깥 VM   | vm01~vm0N 정의                                          |
 
 안쪽 노드의 프로비저닝은 이웃 폴더(1.vm4)의 [scripts/common.sh](../1.vm4/scripts/common.sh)·[scripts/node.sh](../1.vm4/scripts/node.sh) 를 **그대로 쓴다.** 복제하지 않으므로 이웃 폴더(1.vm4)를 고치면 이쪽에도 반영된다.
 
 # 어느 쪽을 쓸 것인가
 
-| | 이웃 폴더(1.vm4) | 이 폴더 |
-| :--- | :--- | :--- |
-| 배포 단위 | VM 4대 | **VM 1대** |
-| 호스트 메모리 | 16GB | 20GB 권장 |
-| 중첩 가상화 | 불필요 | **필수** |
-| 성능 | 기준 | 느리다 |
-| 검증 상태 | `cluster.yml` 완주 확인 | 🚧 검증 중 |
+|               | 이웃 폴더(1.vm4) | 이 폴더    |
+| :------------ | :--------------- | :--------- |
+| 배포 단위     | VM 4대           | **VM 1대** |
+| 호스트 메모리 | 16GB             | 20GB 권장  |
+| 중첩 가상화   | 불필요           | **필수**   |
+| 성능          | 기준             | 느리다     |
+| 검증 상태     | 설치 확인        | 설치 확인  |
 
 수강생 배포를 VM 하나로 끝내야 하는 상황이 아니라면 이웃 폴더(1.vm4)가 안전하다.
