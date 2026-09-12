@@ -28,8 +28,8 @@ AWS 경로와 같은 번호 체계다. 진입점 문서 둘이 이 폴더 직하
 
 | 폴더·파일                                                 | 무엇인가                                              |
 | :-------------------------------------------------------- | :---------------------------------------------------- |
-| [1.install_APP_on_PC.md](0.pc_setting/1.install_APP_on_PC.md)          | **① 기본 설치** — 프로그램·Windows 설정·소스 내려받기 |
-| [2.Install_k8s_on_PC.md](0.pc_setting/2.Install_k8s_on_PC.md)          | **② 단계별 절차서** — VM 만들기부터 Kubespray 까지    |
+| [0.pc_setting/README.md](0.pc_setting/README.md)          | **① 기본 설치** — 프로그램·Windows 설정·소스 내려받기 |
+| [1.pc.byVagrant/README.md](1.pc.byVagrant/README.md)          | **② 단계별 절차서** — VM 만들기부터 Kubespray 까지    |
 | [1.pc.byVagrant](1.pc.byVagrant/)                         | VM 4대 생성·프로비저닝. **호스트(Windows)에서** 실행  |
 | [3.pc.InstanceForKubernetes](3.pc.InstanceForKubernetes/) | inventory·hosts·점검. **i1 안에서** 실행              |
 | [cf_inVm](cf_inVm/)                                       | 참고용 — VM 1대 안에 전부 넣는 중첩 방식              |
@@ -47,7 +47,7 @@ AWS 경로와 같은 번호 체계다. 진입점 문서 둘이 이 폴더 직하
 | 속도                   | 기준                              | 느리다              |
 | 검증 상태              | 검증 완료                         | 검증 완료           |
 
-**수강생 배포를 VM 하나로 끝내야 하는 상황이 아니라면 [1.pc.byVagrant](1.pc.byVagrant/) 가 안전하다.** 16GB PC 에서 실측으로 전 과정을 통과한 경로이며, 수강생용 단계별 절차인 [2.Install_k8s_on_PC.md](0.pc_setting/2.Install_k8s_on_PC.md) 도 이 폴더를 기준으로 쓰여 있다.
+**수강생 배포를 VM 하나로 끝내야 하는 상황이 아니라면 [1.pc.byVagrant](1.pc.byVagrant/) 가 안전하다.** 16GB PC 에서 실측으로 전 과정을 통과한 경로이며, 수강생용 단계별 절차인 [1.pc.byVagrant/README.md](1.pc.byVagrant/README.md) 도 이 폴더를 기준으로 쓰여 있다.
 
 ## cf_inVm 을 고려할 때 확인할 것
 
@@ -85,7 +85,7 @@ pip install -r ~/kubespray/requirements.txt   # ansible 9.13.0 = core 2.16.19
 ```
 
 [cf_inVm](cf_inVm/) 은 [doInner.sh](cf_inVm/inner/doInner.sh) 가 이 venv 를 자동으로 만든다.
-[1.pc.byVagrant](1.pc.byVagrant/) 는 수강생이 직접 만든다 — 절차는 [2.Install_k8s_on_PC.md](0.pc_setting/2.Install_k8s_on_PC.md) 9.1 절에 있다.
+[1.pc.byVagrant](1.pc.byVagrant/) 는 수강생이 직접 만든다 — 절차는 [1.pc.byVagrant/README.md](1.pc.byVagrant/README.md) 9.1 절에 있다.
 
 ⚠️ venv 는 **터미널마다** 켜야 한다. i1 에 다시 접속했다면 `cluster.yml` 전에 `source ~/ksvenv/bin/activate` 를 한 번 더 실행한다.
 
