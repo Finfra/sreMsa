@@ -36,7 +36,7 @@ config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 | VM   | 역할                                                           | IP            |  vCPU |     메모리 |
 | :--- | :------------------------------------------------------------- | :------------ | ----: | ---------: |
 | i1   | 콘솔 서버. 여기서 Kubespray 를 실행한다 (Kubernetes 노드 아님) | 192.168.56.10 |     1 |     1024MB |
-| vm01 | control plane + etcd + **worker**                              | 192.168.56.11 |     2 |     3072MB |
+| vm01 | control plane + etcd + **worker**                               | 192.168.56.11 |     2 |     3072MB |
 | vm02 | control plane + worker                                         | 192.168.56.12 |     2 |     3072MB |
 | vm03 | worker                                                         | 192.168.56.13 |     2 |     2560MB |
 |      |                                                                | **합계**      | **7** | **9728MB** |
@@ -157,9 +157,11 @@ vagrant ssh i1
 별도 설치가 필요 없어 이 실습은 Git for Windows 를 쓰지 않는다.
 
 > 처음 실행할 때 스크립트 실행이 막히면 그 창에서만 한 번 허용한다.
+>
 > ```powershell
 > Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 > ```
+>
 > (`Process` 범위라 창을 닫으면 원래대로 돌아간다. 시스템 설정을 바꾸지 않는다.)
 
 `vagrant` 를 부르는 것은 `ssh-config` 를 만드는 최초 1회뿐이다.
@@ -397,23 +399,23 @@ vagrant destroy -f
 
 # 자주 막히는 곳
 
-| 증상                                                                | 원인·해결                                                                                                                                                                      |
-| :------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `vagrant up` 이 VM 을 못 띄운다                                     | Hyper-V·메모리 무결성이 켜져 있다. [0.pc_setting/README.md](../0.pc_setting/README.md) 의 "Windows 만의 사전 작업" 을 다시 확인한다. `HypervisorPresent` 가 `False` 인지 볼 것 |
-| `Timed out while waiting for the machine to boot`                   | **VM 이 죽은 것이 아닐 수 있다.** 아래 "부팅이 오래 걸릴 때" 참조                                                                                                              |
-| `vagrant up` 이 box 를 내려받으려 한다                              | box 등록을 건너뛰었거나 이름이 다르다. `vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다                                                                                |
-| i1 에서 `ssh vm01` 이 암호를 묻는다                                 | 호스트에서 `vagrant provision vm01`                                                                                                                                            |
-| `/vagrant` 가 비어 있다                                             | 공유 폴더가 마운트되지 않았다. `vagrant reload` 후 재시도                                                                                                                      |
-| `ansible ping` 이 실패한다                                          | i1 에서 `bash /sreMsa/lab1.Kubespray/pc/2.pc.InstanceForKubernetes/doVerify.sh` — 어느 단계에서 끊기는지 나온다                                                                |
-| 노드가 전부 10.0.2.15 로 보인다                                     | inventory 에 `ip=` 가 빠졌다. `bash /sreMsa/lab1.Kubespray/pc/2.pc.InstanceForKubernetes/doMakeInventory.sh`                                                                   |
-| Windows 에서 `curl vm01:...` 이 안 된다                             | 3장의 hosts 파일 등록을 빠뜨렸다                                                                                                                                               |
-| `Ansible must be between 2.16.4 and 2.17.0` 로 즉시 멈춘다          | venv 를 켜지 않았다. 9.1 참조 — `source ~/ksvenv/bin/activate` 후 다시 실행                                                                                                    |
-| cluster.yml 이 중간에 멈춘다                                        | fact 캐시를 지우고 재실행 (9장 참조)                                                                                                                                           |
-| 메모리가 모자라 PC 가 멈춘다                                        | 아래 참고 자료의 "자원 → 메모리가 부족할 때"                                                                                                                                   |
-| **VirtualBox 설치가 1초 만에 실패한다**                             | `2_vc_redist.x64.exe` 를 `3_VirtualBox` 보다 먼저 설치하지 않았다. `msiexec` 오류 1603 이 그 증상이다                                                                          |
+| 증상                                                                | 원인·해결                                                                                                                                                                     |
+| :------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `vagrant up` 이 VM 을 못 띄운다                                     | Hyper-V·메모리 무결성이 켜져 있다.[0.pc_setting/README.md](../0.pc_setting/README.md) 의 "Windows 만의 사전 작업" 을 다시 확인한다. `HypervisorPresent` 가 `False` 인지 볼 것 |
+| `Timed out while waiting for the machine to boot`                   | **VM 이 죽은 것이 아닐 수 있다.** 아래 "부팅이 오래 걸릴 때" 참조                                                                                                             |
+| `vagrant up` 이 box 를 내려받으려 한다                              | box 등록을 건너뛰었거나 이름이 다르다.`vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다                                                                                |
+| i1 에서`ssh vm01` 이 암호를 묻는다                                  | 호스트에서`vagrant provision vm01`                                                                                                                                            |
+| `/vagrant` 가 비어 있다                                             | 공유 폴더가 마운트되지 않았다.`vagrant reload` 후 재시도                                                                                                                      |
+| `ansible ping` 이 실패한다                                          | i1 에서`bash /sreMsa/lab1.Kubespray/pc/2.pc.InstanceForKubernetes/doVerify.sh` — 어느 단계에서 끊기는지 나온다                                                                |
+| 노드가 전부 10.0.2.15 로 보인다                                     | inventory 에`ip=` 가 빠졌다. `bash /sreMsa/lab1.Kubespray/pc/2.pc.InstanceForKubernetes/doMakeInventory.sh`                                                                   |
+| Windows 에서`curl vm01:...` 이 안 된다                              | 3장의 hosts 파일 등록을 빠뜨렸다                                                                                                                                              |
+| `Ansible must be between 2.16.4 and 2.17.0` 로 즉시 멈춘다          | venv 를 켜지 않았다. 9.1 참조 —`source ~/ksvenv/bin/activate` 후 다시 실행                                                                                                    |
+| cluster.yml 이 중간에 멈춘다                                        | fact 캐시를 지우고 재실행 (9장 참조)                                                                                                                                          |
+| 메모리가 모자라 PC 가 멈춘다                                        | 아래 참고 자료의 "자원 → 메모리가 부족할 때"                                                                                                                                  |
+| **VirtualBox 설치가 1초 만에 실패한다**                             | `2_vc_redist.x64.exe` 를 `3_VirtualBox` 보다 먼저 설치하지 않았다. `msiexec` 오류 1603 이 그 증상이다                                                                         |
 | **Docker Desktop 을 깔았더니 `vagrant up` 이 안 된다**              | Hyper-V 가 켜졌다. **이 실습에 Docker Desktop 은 필요 없다** — 컨테이너는 VM 안에서 돈다. 관리자 PowerShell 에서 `bcdedit /set hypervisorlaunchtype off` 후 재부팅             |
 | **Docker Desktop 이 `Virtualization support not detected` 로 뜬다** | Hyper-V 를 껐기 때문이며 **정상이다.** Docker Desktop 은 이 실습에서 쓰지 않는다 — 컨테이너 실습은 11장처럼 VM(i1) 안의 Docker 로 한다                                         |
-| **VM 이 깨졌거나 설치가 끝나지 않았다**                             | 배포 폴더의 `_vm` 안에 완성본이 있다. **강사 안내를 받고 진행한다** — 그 안의 `README.md` 에 절차가 있다                                                                       |
+| **VM 이 깨졌거나 설치가 끝나지 않았다**                             | 배포 폴더의`_vm` 안에 완성본이 있다. **강사 안내를 받고 진행한다** — 그 안의 `README.md` 에 절차가 있다                                                                       |
 
 ## 부팅이 오래 걸릴 때
 
@@ -469,10 +471,10 @@ Get-Counter "\PhysicalDisk(_Total)\Avg. Disk sec/Transfer"
 
 | 파일                                                                   | 실행 위치 | 하는 일                                                 |
 | :--------------------------------------------------------------------- | :-------- | :------------------------------------------------------ |
-| [settings.yml](settings.yml)                                           | —         | 노드 수·자원·IP 대역. **고칠 파일은 이것 하나뿐이다**   |
+| [settings.yml](settings.yml)                                           | —         | 노드 수·자원·IP 대역. **고칠 파일은 이것 하나뿐이다**    |
 | [Vagrantfile](Vagrantfile)                                             | 호스트    | settings.yml 을 읽어 i1·vm01~vm0N 을 만든다             |
 | [scripts/common.sh](scripts/common.sh)                                 | 전 노드   | /etc/hosts, ubuntu 계정, swap off, 방화벽 off           |
-| [scripts/i1.sh](scripts/i1.sh)                                         | i1        | ssh 키 생성 + `installOnEc2.sh` 실행                    |
+| [scripts/i1.sh](scripts/i1.sh)                                         | i1        | ssh 키 생성 + `installOnEc2.sh` 실행                     |
 | [scripts/node.sh](scripts/node.sh)                                     | vm0N      | i1 공개키 등록                                          |
 | [doSetHosts.sh](../2.pc.InstanceForKubernetes/doSetHosts.sh)           | i1        | AWS 동명 스크립트의 로컬판. hosts 확인·known_hosts 정리 |
 | [doMakeInventory.sh](../2.pc.InstanceForKubernetes/doMakeInventory.sh) | i1        | kubespray inventory 생성 (`ip=` 자동 기입)              |
@@ -484,16 +486,16 @@ Get-Counter "\PhysicalDisk(_Total)\Avg. Disk sec/Transfer"
 
 ## 같은 것
 
-| 항목                | 값                                                                                           |
-| :------------------ | :------------------------------------------------------------------------------------------- |
-| 노드 이름           | `i1`, `vm01`, `vm02`, `vm03`                                                                 |
-| 계정                | `ubuntu` (sudo 무암호)                                                                       |
-| i1 → 노드 접속      | i1 의 `~/.ssh/id_rsa` 키 기반 무암호 ssh                                                     |
-| i1 의 도구          | [installOnEc2.sh](../../aws/1.aws.byTerraform/installOnEc2.sh) **동일 파일을 그대로 실행**   |
-| Kubespray           | `release-2.28` (Kubernetes 1.32.13)                                                          |
-| inventory 역할 배치 | `kube_control_plane` = vm01·vm02 / `etcd` = vm01 / `kube_node` = **전 노드**                 |
-| 설치 명령           | `ansible-playbook ... cluster.yml` — 문장까지 동일                                           |
-| ansible 버전 맞추기 | 양쪽 다 `requirements.txt` 를 깔아야 한다. 로컬은 venv 로 한다 (9.1 절) |
+| 항목                | 값                                                                                         |
+| :------------------ | :----------------------------------------------------------------------------------------- |
+| 노드 이름           | `i1`, `vm01`, `vm02`, `vm03`                                                               |
+| 계정                | `ubuntu` (sudo 무암호)                                                                     |
+| i1 → 노드 접속      | i1 의`~/.ssh/id_rsa` 키 기반 무암호 ssh                                                    |
+| i1 의 도구          | [installOnEc2.sh](../../aws/1.aws.byTerraform/installOnEc2.sh) **동일 파일을 그대로 실행** |
+| Kubespray           | `release-2.28` (Kubernetes 1.32.13)                                                        |
+| inventory 역할 배치 | `kube_control_plane` = vm01·vm02 / `etcd` = vm01 / `kube_node` = **전 노드**               |
+| 설치 명령           | `ansible-playbook ... cluster.yml` — 문장까지 동일                                         |
+| ansible 버전 맞추기 | 양쪽 다`requirements.txt` 를 깔아야 한다. 로컬은 venv 로 한다 (9.1 절)                     |
 
 `kube_node` 에 vm01 이 들어 있다. **vm01 은 control plane 이자 etcd 이자 워커 노드다.**
 그래서 vm01 에는 다른 노드보다 메모리를 더 준다(settings.yml 의 `overrides`).
@@ -615,4 +617,3 @@ Ubuntu 의 접속 안내(motd)는 로그인마다 시간을 잡아먹고 ansible
 **그대로 쓴다.** 복제하지 않으므로 한쪽을 고치면 양쪽에 반영된다.
 
 `.gitignore` 도 상위 `pc/` 에 하나만 두어 두 구현의 산출물(`.vagrant/`·`.keys/`·`hosts.generated`)을 함께 걸러 낸다.
-

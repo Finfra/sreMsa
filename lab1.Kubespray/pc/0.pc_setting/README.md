@@ -1,14 +1,34 @@
 # 실습 환경 기본 설치 — 프로그램·소스 준비 (Windows)
 
 내 PC 에 Kubernetes 실습 환경을 만들기 위한 **첫 단계**다.
-프로그램을 깔고, Windows 설정을 바꾸고, 실습 소스를 받는 데까지를 다룬다.
+Windows 설정을 바꾸고, 프로그램을 깔고, 실습 소스를 확인하는 데까지를 다룬다.
 
 * **이 문서만 마치면** VM 을 만들 준비가 끝난다. 그 다음은
   [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 의 **2장** 부터 이어서 진행한다.
-* 장 번호는 그 문서와 이어진다 — 여기가 0~1장, 거기가 2장부터다.
 * 이 문서는 강사 배포 폴더 `_prgs` 안에도 같은 내용으로 들어 있다.
 
-# 0. 준비물
+# 전체 흐름
+
+```mermaid
+flowchart LR
+    A["① Windows 설정<br/>Hyper-V 끄기 + 재부팅"] --> B["② 프로그램 설치<br/>VirtualBox·Vagrant"]
+    B --> C["③ box 등록<br/>+ 소스 확인"]
+    C --> D["④ VM 4대<br/>vagrant up"]
+    D --> E["⑤ Kubernetes<br/>inventory + Kubespray"]
+```
+
+| 단계  | 무엇을 하나                            | 문서                                                                  |
+| :---: | :------------------------------------- | :-------------------------------------------------------------------- |
+| **1** | Hyper-V 끄기 → `_prgs` 로 프로그램 설치 | 이 문서 0장                                                           |
+| **2** | Vagrant box 등록 · 소스 확인           | 이 문서 0~1장                                                         |
+| **3** | VM 4대 생성 (`i1`·`vm01`~`vm03`)       | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 2장                     |
+| **4** | hosts·inventory·환경 점검              | [2.pc.InstanceForKubernetes](../2.pc.InstanceForKubernetes/README.md) |
+| **5** | Kubespray 실행 · 설치 확인             | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 7~10장                  |
+
+* **AWS 갈래와 달리 계정·키 발급이 없다.** 내 PC 에 만들기 때문이며, 그만큼 1단계가 곧 시작이다.
+* 장 번호는 두 문서에 걸쳐 이어진다 — 이 문서가 0~1장, [1.pc.byVagrant](../1.pc.byVagrant/README.md) 가 2장부터다.
+
+# 0. 준비와 설치
 
 ## 하드웨어
 
@@ -18,6 +38,8 @@
 * CPU 가상화 지원 (요즘 PC 는 모두 지원한다)
 
 메모리가 부족하면 [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 의 "메모리가 부족할 때" 절을 본다.
+
+
 
 ## 배포 폴더 3개를 `다운로드` 에 복사한다 ★
 
@@ -37,6 +59,37 @@ C:\Users\<계정>\Downloads\
 | `_vm`    | **문제가 생겼을 때만.** VM 이 깨지거나 설치가 끝나지 않은 경우 강사 안내에 따라 쓴다 |
 
 > `sreMsa` 폴더가 곧 실습 소스다. **따로 내려받을 것이 없다.**
+
+## Windows 만의 사전 작업 ★ 프로그램을 깔기 전에 먼저 한다
+
+VirtualBox 는 Hyper-V 가 켜져 있으면 VM 을 띄우지 못한다.
+Docker Desktop·WSL2 를 쓴 적이 있거나, Windows 11 이라면 대개 켜져 있다.
+
+**관리자 권한 PowerShell** 에서 실행한 뒤 재부팅한다.
+
+```powershell
+bcdedit /set hypervisorlaunchtype off
+shutdown -r -t 0
+```
+
+Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격리)** 이 기본으로 켜져 있어 같은 증상이 난다.
+`Windows 보안 → 장치 보안 → 코어 격리 세부 정보` 에서 **메모리 무결성**을 끄고 재부팅한다.
+
+> 되돌리려면 `bcdedit /set hypervisorlaunchtype auto` + 재부팅.
+> Docker Desktop·WSL2 를 다시 쓸 때 필요하다.
+
+**재부팅한 뒤 실제로 꺼졌는지 확인한다.** 설정값만 보면 안 된다 — 재부팅 전에도 `Off` 로 보이기 때문이다.
+
+```powershell
+(Get-CimInstance Win32_ComputerSystem).HypervisorPresent
+```
+
+`False` 가 나와야 VirtualBox 가 VM 을 띄울 수 있다. `True` 면 아직 Hyper-V 가 올라와 있는 것이므로
+메모리 무결성까지 껐는지 다시 확인하고 재부팅한다.
+
+**Docker Desktop 을 쓴 적이 있다면 이 절이 특히 중요하다.** 그것이 Hyper-V 를 켜 두기 때문이다.
+이 실습은 Hyper-V 를 **끈 상태로 끝까지** 진행한다 — 컨테이너 실습도 VM 안에서 하므로([1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 11장) 중간에 다시 켤 일이 없다.
+
 
 ## 소프트웨어 — 강사가 제공하는 `_prgs` 폴더를 쓴다 ★
 
@@ -61,6 +114,9 @@ box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 
 **구글 드라이브에서 바로 실행하지 말고 로컬(`다운로드` 폴더)로 복사한 뒤 쓴다.** 드라이브에서 직접 실행하면
 파일을 그때그때 내려받느라 느리고, 회선이 끊기면 설치가 중단된다.
 
+
+## 프로그램 설치 ★ 번호 순서를 지킨다
+
 > ⚠️ **`docker/` 는 이 단계에서 설치하지 않는다.** VM 안의 Ubuntu 에 까는 것이며 [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 11장에서 쓴다.
 > **내 PC(Windows)에 Docker Desktop 을 설치하지 말 것** — Hyper-V 가 켜져 VirtualBox 가 VM 을 띄우지 못하게 된다.
 
@@ -77,7 +133,7 @@ box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 
 >
 > 출력된 해시를 `SHA256SUMS.txt` 의 값과 견준다. 다른 것이 있으면 그 파일만 다시 복사받는다.
 
-설치가 끝나면 곧바로 다음 절로 간다. **재부팅은 "Windows 만의 사전 작업" 에서 한 번에 처리**한다.
+**재부팅은 앞의 사전 작업에서 이미 끝났다.** 설치가 끝나면 곧바로 다음 절로 간다.
 
 > ★ **`2_vc_redist.x64.exe` 를 `3_VirtualBox` 보다 먼저 설치해야 한다.** VirtualBox 는 Visual C++ 재배포 패키지를 요구하는데,
 > Windows 를 새로 설치한 PC 에는 이것이 없다. 없는 상태로 VirtualBox 설치를 실행하면 아래 메시지와 함께
@@ -123,36 +179,6 @@ No plugins installed.
 > VirtualBox https://www.virtualbox.org/wiki/Downloads ·
 > Vagrant https://developer.hashicorp.com/vagrant/downloads
 
-## Windows 만의 사전 작업 ★ 여기서 가장 많이 막힌다
-
-VirtualBox 는 Hyper-V 가 켜져 있으면 VM 을 띄우지 못한다.
-Docker Desktop·WSL2 를 쓴 적이 있거나, Windows 11 이라면 대개 켜져 있다.
-
-**관리자 권한 PowerShell** 에서 실행한 뒤 재부팅한다.
-
-```powershell
-bcdedit /set hypervisorlaunchtype off
-shutdown -r -t 0
-```
-
-Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격리)** 이 기본으로 켜져 있어 같은 증상이 난다.
-`Windows 보안 → 장치 보안 → 코어 격리 세부 정보` 에서 **메모리 무결성**을 끄고 재부팅한다.
-
-> 되돌리려면 `bcdedit /set hypervisorlaunchtype auto` + 재부팅.
-> Docker Desktop·WSL2 를 다시 쓸 때 필요하다.
-
-**재부팅한 뒤 실제로 꺼졌는지 확인한다.** 설정값만 보면 안 된다 — 재부팅 전에도 `Off` 로 보이기 때문이다.
-
-```powershell
-(Get-CimInstance Win32_ComputerSystem).HypervisorPresent
-```
-
-`False` 가 나와야 VirtualBox 가 VM 을 띄울 수 있다. `True` 면 아직 Hyper-V 가 올라와 있는 것이므로
-메모리 무결성까지 껐는지 다시 확인하고 재부팅한다.
-
-**Docker Desktop 을 쓴 적이 있다면 이 절이 특히 중요하다.** 그것이 Hyper-V 를 켜 두기 때문이다.
-이 실습은 Hyper-V 를 **끈 상태로 끝까지** 진행한다 — 컨테이너 실습도 VM 안에서 하므로([1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 11장) 중간에 다시 켤 일이 없다.
-
 ## Vagrant box 등록 ★ 이 절을 건너뛰면 인터넷에서 621MB 를 받는다
 
 `_prgs` 의 `.box` 파일을 Vagrant 에 등록한다. **인터넷을 쓰지 않는다.**
@@ -180,31 +206,11 @@ bento/ubuntu-24.04 (virtualbox, 0, (amd64))
 버전이 `0` 으로 보이는 것이 정상이다. 로컬 파일에서 추가하면 버전 정보가 없으며 실습에 지장이 없다.
 
 > 잘못된 이름으로 등록했다면 지우고 다시 넣는다.
+>
 > ```powershell
 > vagrant box remove <잘못된이름>
 > vagrant box add bento/ubuntu-24.04 ./5_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
 > ```
-
-# 전체 흐름
-
-```mermaid
-flowchart LR
-    A["① 프로그램 설치<br/>VirtualBox·Vagrant"] --> B["② Windows 설정<br/>Hyper-V 끄기"]
-    B --> C["③ box 등록<br/>+ 소스 확인"]
-    C --> D["④ VM 4대<br/>vagrant up"]
-    D --> E["⑤ Kubernetes<br/>inventory + Kubespray"]
-```
-
-| 단계  | 무엇을 하나                             | 문서                                                                  |
-| :---: | :-------------------------------------- | :-------------------------------------------------------------------- |
-| **1** | `_prgs` 로 프로그램 설치 · Hyper-V 끄기 | 이 문서 0장                                                           |
-| **2** | Vagrant box 등록 · 소스 확인            | 이 문서 0~1장                                                         |
-| **3** | VM 4대 생성 (`i1`·`vm01`~`vm03`)        | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 2장                     |
-| **4** | hosts·inventory·환경 점검               | [2.pc.InstanceForKubernetes](../2.pc.InstanceForKubernetes/README.md) |
-| **5** | Kubespray 실행 · 설치 확인              | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 7~10장                  |
-
-* **AWS 갈래와 달리 계정·키 발급이 없다.** 내 PC 에 만들기 때문이며, 그만큼 1단계가 곧 시작이다.
-* 장 번호는 두 문서에 걸쳐 이어진다 — 이 문서가 0~1장, [1.pc.byVagrant](../1.pc.byVagrant/README.md) 가 2장부터다.
 
 # 1. 소스 확인
 
