@@ -186,7 +186,7 @@ box 하나가 621MB 이므로 20명이면 12GB 가 한꺼번에 흐른다. 두 �
 `check_update` 는 파일을 받는 것은 아니지만 `vagrant up` 마다 외부 요청이 나가므로,
 여러 명이 동시에 시작하는 순간 그 요청이 겹친다. 강사가 새 box 를 받아 볼 때만 `true` 로 바꾼다.
 
-수강생 안내는 `_prgs/README.md` 에 별도로 들어 있다.
+수강생 안내는 [Install_Kubernetes_only_PC.md](../../Install_Kubernetes_only_PC.md) 0장에 들어 있다 — 배포 폴더 구성·설치 순서·box 등록이 그곳에 있다.
 
 # 문제가 생기면
 
