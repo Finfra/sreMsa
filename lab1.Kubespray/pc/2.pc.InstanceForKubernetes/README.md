@@ -28,7 +28,7 @@ cd lab1.Kubespray\pc\1.pc.byVagrant
 repo 는 i1 안에서 `/sreMsa` 로 마운트되어 있으므로 이 폴더의 경로는 아래가 된다.
 
 ```
-/sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes
+/sreMsa/lab1.Kubespray/pc/2.pc.InstanceForKubernetes
 ```
 
 # 스크립트
@@ -42,7 +42,7 @@ repo 는 i1 안에서 `/sreMsa` 로 마운트되어 있으므로 이 폴더의 �
 ## 실행 순서
 
 ```bash
-BASE=/sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes
+BASE=/sreMsa/lab1.Kubespray/pc/2.pc.InstanceForKubernetes
 
 bash $BASE/doSetHosts.sh        # 1) 이름 해석
 bash $BASE/doMakeInventory.sh   # 2) inventory 생성
