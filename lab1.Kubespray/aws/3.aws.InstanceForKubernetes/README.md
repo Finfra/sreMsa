@@ -23,7 +23,7 @@ ssh-keygen -f ~/.ssh/id_rsa -N ''
 ```
 cd
 git clone https://github.com/Finfra/sreMsa
-cd ~/sreMsa/lab1.Kubespray/3.InstanceForKubernetes
+cd ~/sreMsa/lab1.Kubespray/aws/3.aws.InstanceForKubernetes
 #terraform destroy -auto-approve
 terraform init
 terraform apply --auto-approve
@@ -40,7 +40,7 @@ aws configure
     AWS Secret Access Key [None]: xxxxxxxxxxxxxxxxxxx
     Default region name [None]: ap-northeast-2
     Default output format [None]: text
-cd ~/sreMsa/lab1.Kubespray/3.InstanceForKubernetes
+cd ~/sreMsa/lab1.Kubespray/aws/3.aws.InstanceForKubernetes
 # rm -rf ~/.ssh/known_hosts
 bash doSetHosts.sh
 ```

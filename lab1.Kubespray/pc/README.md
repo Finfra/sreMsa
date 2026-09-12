@@ -6,10 +6,10 @@ date: 2026.08.31
 
 # 두 가지 구현
 
-같은 클러스터를 만드는 방법이 둘이다. **대부분은 [1.vm4](1.vm4/) 를 쓴다.**
+같은 클러스터를 만드는 방법이 둘이다. **대부분은 [vm_x_4](vm_x_4/) 를 쓴다.**
 
 ```
-[ 1.vm4 ]  호스트가 VM 4대를 직접        [ 2.inVm ]  VM 1대 안에 전부
+[ vm_x_4 ]  호스트가 VM 4대를 직접        [ inVm ]  VM 1대 안에 전부
 
 Windows                                   Windows
 └ VirtualBox                              └ VirtualBox
@@ -24,7 +24,7 @@ Windows                                   Windows
 
 # 어느 쪽을 고를 것인가
 
-|                        | [1.vm4](1.vm4/) | [2.inVm](2.inVm/) |
+|                        | [vm_x_4](vm_x_4/) | [inVm](inVm/) |
 | :--------------------- | :-------------- | :---------------- |
 | 배포 단위              | VM 4대          | **VM 1대**        |
 | 호스트 메모리          | **16GB**        | 24GB 권장         |
@@ -32,9 +32,9 @@ Windows                                   Windows
 | 속도                   | 기준            | 느리다            |
 | 검증 상태              | 검증 완료       | 검증 완료         |
 
-**수강생 배포를 VM 하나로 끝내야 하는 상황이 아니라면 [1.vm4](1.vm4/) 가 안전하다.** 16GB PC 에서 실측으로 전 과정을 통과한 경로이며, 수강생용 단계별 절차인 [2.Install_k8s_on_PC.md](../2.Install_k8s_on_PC.md) 도 이 폴더를 기준으로 쓰여 있다.
+**수강생 배포를 VM 하나로 끝내야 하는 상황이 아니라면 [vm_x_4](vm_x_4/) 가 안전하다.** 16GB PC 에서 실측으로 전 과정을 통과한 경로이며, 수강생용 단계별 절차인 [2.Install_k8s_on_PC.md](2.Install_k8s_on_PC.md) 도 이 폴더를 기준으로 쓰여 있다.
 
-## 2.inVm 을 고려할 때 확인할 것
+## inVm 을 고려할 때 확인할 것
 
 호스트 CPU 가 게스트에 VT-x 를 넘겨 줄 수 있어야 한다. 확인은 30초면 된다.
 
@@ -49,7 +49,7 @@ ls -la /dev/kvm                   # 이 장치가 있어야 실제로 동작한�
 
 ## 두 폴더가 나눠 쓰는 것
 
-[2.inVm](2.inVm/) 의 안쪽 노드는 [1.vm4/scripts/common.sh](1.vm4/scripts/common.sh)·[node.sh](1.vm4/scripts/node.sh) 를 **그대로 쓴다.** 복제하지 않으므로 한쪽을 고치면 양쪽에 반영된다.
+[inVm](inVm/) 의 안쪽 노드는 [vm_x_4/scripts/common.sh](vm_x_4/scripts/common.sh)·[node.sh](vm_x_4/scripts/node.sh) 를 **그대로 쓴다.** 복제하지 않으므로 한쪽을 고치면 양쪽에 반영된다.
 
 `.gitignore` 도 이 폴더에 하나만 두어 두 구현의 산출물(`.vagrant/`·`.keys/`·`hosts.generated`)을 함께 걸러 낸다.
 
@@ -69,11 +69,11 @@ pip install -U pip
 pip install -r ~/kubespray/requirements.txt   # ansible 9.13.0 = core 2.16.19
 ```
 
-[2.inVm](2.inVm/) 은 [doInner.sh](2.inVm/inner/doInner.sh) 가 이 venv 를 자동으로 만든다.
-[1.vm4](1.vm4/) 는 수강생이 직접 만든다 — 절차는 [2.Install_k8s_on_PC.md](../2.Install_k8s_on_PC.md) 9.1 절에 있다.
+[inVm](inVm/) 은 [doInner.sh](inVm/inner/doInner.sh) 가 이 venv 를 자동으로 만든다.
+[vm_x_4](vm_x_4/) 는 수강생이 직접 만든다 — 절차는 [2.Install_k8s_on_PC.md](2.Install_k8s_on_PC.md) 9.1 절에 있다.
 
 ⚠️ venv 는 **터미널마다** 켜야 한다. i1 에 다시 접속했다면 `cluster.yml` 전에 `source ~/ksvenv/bin/activate` 를 한 번 더 실행한다.
 
 ## motd 를 꺼 두었다
 
-Ubuntu 의 동적 motd 8개가 로그인마다 약 30초를 먹고, `pam_motd` 는 **비대화형 ssh 에도** 걸려 ansible 이 노드에 붙을 때마다 그 비용을 낸다. [common.sh](1.vm4/scripts/common.sh) 가 전 노드에서 이를 끈다 — 실측 **30초 → 0.3초**.
+Ubuntu 의 동적 motd 8개가 로그인마다 약 30초를 먹고, `pam_motd` 는 **비대화형 ssh 에도** 걸려 ansible 이 노드에 붙을 때마다 그 비용을 낸다. [common.sh](vm_x_4/scripts/common.sh) 가 전 노드에서 이를 끈다 — 실측 **30초 → 0.3초**.

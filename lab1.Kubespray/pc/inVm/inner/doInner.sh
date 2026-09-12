@@ -1,7 +1,7 @@
 #!/bin/bash
 # 바깥 VM(i1) 안에서 실행 — 안쪽 노드 vm01~vm03 을 만들고 Kubespray 까지 준비한다.
 #
-#   bash /sreMsa/lab1.Kubespray/0.VagrantForLocal/2.inVm/inner/doInner.sh
+#   bash /sreMsa/lab1.Kubespray/pc/inVm/inner/doInner.sh
 #
 # 하는 일
 #   1) 바깥 VM 의 ubuntu 공개키를 .keys/ 에 둔다 (안쪽 노드가 이 키를 신뢰한다)
@@ -16,11 +16,11 @@
 
 set -uo pipefail
 
-SRC="$(cd "$(dirname "$0")" && pwd)"          # 공유 폴더 안의 원본 (2.inVm/inner)
-INVM="$(cd "$SRC/.." && pwd)"                 # 2.inVm
-# 프로비저닝 스크립트(common.sh·node.sh)는 이웃 폴더 1.vm4 것을 그대로 쓴다.
-# 복제하지 않으므로 1.vm4 를 고치면 이쪽에도 반영된다.
-export SREMSA_LOCAL="$(cd "$INVM/../1.vm4" && pwd)"
+SRC="$(cd "$(dirname "$0")" && pwd)"          # 공유 폴더 안의 원본 (inVm/inner)
+INVM="$(cd "$SRC/.." && pwd)"                 # inVm
+# 프로비저닝 스크립트(common.sh·node.sh)는 이웃 폴더 vm_x_4 것을 그대로 쓴다.
+# 복제하지 않으므로 vm_x_4 를 고치면 이쪽에도 반영된다.
+export SREMSA_LOCAL="$(cd "$INVM/../vm_x_4" && pwd)"
 
 # ⚠️ 작업 폴더는 반드시 로컬 디스크여야 한다.
 #    공유 폴더(vboxsf)에서 `vagrant up` 하면 이렇게 죽는다 (2026-08-30 실측):
@@ -219,7 +219,7 @@ echo "  다음 단계 — 안쪽 노드에 Kubernetes 를 올린다:"
 echo ""
 echo "    source ~/ksvenv/bin/activate"
 echo "    cd ~/kubespray"
-echo "    SREMSA_CP_COUNT=1 bash /sreMsa/lab1.Kubespray/0.VagrantForLocal/1.vm4/doMakeInventory.sh"
+echo "    SREMSA_CP_COUNT=1 bash /sreMsa/lab1.Kubespray/pc/vm_x_4/doMakeInventory.sh"
 echo "      (중첩은 노드가 1 vCPU 라 control-plane 을 1대로 둔다 — join 이 20분 걸린다)"
 echo "    ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \\"
 echo "      -i inventory/inventory.ini --private-key ~/.ssh/id_rsa cluster.yml"

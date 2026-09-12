@@ -237,7 +237,7 @@ grep -q '^UserKnownHostsFile' /etc/ssh/ssh_config || echo 'UserKnownHostsFile /d
 
 # ---------------------------------------------------------------- 6) Kubespray 도구
 say "6/6 Kubespray 도구 설치"
-INSTALLER=/sreMsa/lab1.Kubespray/1.InstanceForTerraform/installOnEc2.sh
+INSTALLER=/sreMsa/lab1.Kubespray/aws/1.aws.byTerraform/installOnEc2.sh
 if [ -f "$INSTALLER" ]; then
   echo "  ${INSTALLER} 실행 (5~10분)"
   bash "$INSTALLER" 2>&1 | tail -5
@@ -248,4 +248,4 @@ fi
 echo ""
 say "완료"
 echo "  다음: vagrant ssh   (ubuntu 계정으로 들어간다)"
-echo "        그 안에서  bash /sreMsa/lab1.Kubespray/0.VagrantForLocal/2.inVm/inner/doInner.sh"
+echo "        그 안에서  bash /sreMsa/lab1.Kubespray/pc/inVm/inner/doInner.sh"
