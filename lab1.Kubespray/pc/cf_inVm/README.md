@@ -5,10 +5,10 @@ date: 2026.08.30
 ---
 # 무엇이 다른가
 
-이웃 폴더([vm_x_4](../vm_x_4/))는 호스트가 VM 을 **4대** 만든다. 이 폴더는 **1대**만 만들고 나머지를 그 안에서 만든다.
+이웃 폴더([1.pc.byVagrant](../1.pc.byVagrant/))는 호스트가 VM 을 **4대** 만든다. 이 폴더는 **1대**만 만들고 나머지를 그 안에서 만든다.
 
 ```
-[ vm_x_4 ]                          [ inVm ]
+[ 1.pc.byVagrant ]                          [ cf_inVm ]
 
 Windows                            Windows
 └ VirtualBox                       └ VirtualBox
@@ -19,7 +19,7 @@ Windows                            Windows
                                           └ vm03
 ```
 
-**안쪽에서 보는 구조는 이웃 폴더(vm_x_4)와 완전히 같다.** 노드명·IP·계정·inventory 가 동일하므로 lab2 이후의 실습 명령을 한 글자도 바꾸지 않고 쓸 수 있다.
+**안쪽에서 보는 구조는 이웃 폴더(1.pc.byVagrant)와 완전히 같다.** 노드명·IP·계정·inventory 가 동일하므로 lab2 이후의 실습 명령을 한 글자도 바꾸지 않고 쓸 수 있다.
 
 # 전제 — 호스트가 중첩 가상화를 지원해야 한다
 
@@ -33,13 +33,13 @@ lscpu | grep -i virtualization    # VT-x 또는 AMD-V 가 보여야 한다
 ls -la /dev/kvm                   # 이 장치가 있어야 실제로 동작한다
 ```
 
-jpc1(Intel i7-6700T · Skylake)에서 둘 다 확인했다. 지원하지 않는 호스트라면 이웃 폴더(vm_x_4)를 쓴다.
+jpc1(Intel i7-6700T · Skylake)에서 둘 다 확인했다. 지원하지 않는 호스트라면 이웃 폴더(1.pc.byVagrant)를 쓴다.
 
 # 자원 요구 — 이쪽이 더 빡빡하다
 
-이웃 폴더(vm_x_4)는 호스트가 4대에 나눠 주지만, 여기서는 **VM 한 대에 전부 몰아줘야** 한다.
+이웃 폴더(1.pc.byVagrant)는 호스트가 4대에 나눠 주지만, 여기서는 **VM 한 대에 전부 몰아줘야** 한다.
 
-|                             | 이웃 폴더(vm_x_4) |             이 폴더 |
+|                             | 이웃 폴더(1.pc.byVagrant) |             이 폴더 |
 | :-------------------------- | ---------------: | ------------------: |
 | vm01 · vm02 · vm03          |          8,704MB |             8,704MB |
 | i1                          |          1,024MB | — (바깥 VM 이 겸함) |
@@ -56,17 +56,17 @@ jpc1(Intel i7-6700T · Skylake)에서 둘 다 확인했다. 지원하지 않는 
 ## 1. 바깥 VM 만들기 — Windows 에서
 
 ```bash
-cd lab1.Kubespray/pc/inVm
+cd lab1.Kubespray/pc/cf_cf_inVm
 vagrant up
 ```
 
-VirtualBox·Vagrant 설치가 포함되어 이웃 폴더(vm_x_4)보다 오래 걸린다.
+VirtualBox·Vagrant 설치가 포함되어 이웃 폴더(1.pc.byVagrant)보다 오래 걸린다.
 
 ## 2. 안쪽 노드 만들기 — 바깥 VM 안에서
 
 ```bash
 vagrant ssh                    # ubuntu 계정으로 들어간다
-bash /sreMsa/lab1.Kubespray/pc/inVm/inner/doInner.sh
+bash /sreMsa/lab1.Kubespray/pc/cf_cf_inVm/inner/doInner.sh
 ```
 
 이 스크립트가 키 배치 · box 확보 · `vagrant up` · Kubespray 준비를 한 번에 한다.
@@ -76,7 +76,7 @@ bash /sreMsa/lab1.Kubespray/pc/inVm/inner/doInner.sh
 ```bash
 source ~/ksvenv/bin/activate
 cd ~/kubespray
-bash /sreMsa/lab1.Kubespray/pc/vm_x_4/doMakeInventory.sh
+bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doMakeInventory.sh
 ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
   -i inventory/inventory.ini --private-key ~/.ssh/id_rsa cluster.yml
 ```
@@ -98,7 +98,7 @@ fatal: "Ansible must be between 2.16.4 and 2.17.0 exclusive - you have 2.17.14"
 
 `installOnEc2.sh` 가 깔아 주는 ansible 은 **core 2.17.x** 인데 kubespray `release-2.28` 은 **2.16.x** 를 요구한다. `requirements.txt` 가 `ansible==9.13.0` 을 고정하므로 전용 venv 로 맞춘다 — `doInner.sh` 가 자동으로 만든다.
 
-이것은 이웃 폴더(vm_x_4) 방식에도 똑같이 해당한다(2026-08-30 실측).
+이것은 이웃 폴더(1.pc.byVagrant) 방식에도 똑같이 해당한다(2026-08-30 실측).
 
 ## Ubuntu 24.04 리포에는 `vagrant` 가 없다
 
@@ -114,11 +114,11 @@ fatal: "Ansible must be between 2.16.4 and 2.17.0 exclusive - you have 2.17.14"
 | [inner/doInner.sh](inner/doInner.sh)   | 바깥 VM   | 안쪽 노드 생성 진입점                                   |
 | [inner/Vagrantfile](inner/Vagrantfile) | 바깥 VM   | vm01~vm0N 정의                                          |
 
-안쪽 노드의 프로비저닝은 이웃 폴더(vm_x_4)의 [scripts/common.sh](../vm_x_4/scripts/common.sh)·[scripts/node.sh](../vm_x_4/scripts/node.sh) 를 **그대로 쓴다.** 복제하지 않으므로 이웃 폴더(vm_x_4)를 고치면 이쪽에도 반영된다.
+안쪽 노드의 프로비저닝은 이웃 폴더(1.pc.byVagrant)의 [scripts/common.sh](../1.pc.byVagrant/scripts/common.sh)·[scripts/node.sh](../1.pc.byVagrant/scripts/node.sh) 를 **그대로 쓴다.** 복제하지 않으므로 이웃 폴더(1.pc.byVagrant)를 고치면 이쪽에도 반영된다.
 
 # 어느 쪽을 쓸 것인가
 
-|               | 이웃 폴더(vm_x_4) | 이 폴더    |
+|               | 이웃 폴더(1.pc.byVagrant) | 이 폴더    |
 | :------------ | :--------------- | :--------- |
 | 배포 단위     | VM 4대           | **VM 1대** |
 | 호스트 메모리 | 16GB             | 20GB 권장  |
@@ -126,4 +126,4 @@ fatal: "Ansible must be between 2.16.4 and 2.17.0 exclusive - you have 2.17.14"
 | 성능          | 기준             | 느리다     |
 | 검증 상태     | 설치 확인        | 설치 확인  |
 
-수강생 배포를 VM 하나로 끝내야 하는 상황이 아니라면 이웃 폴더(vm_x_4)가 안전하다.
+수강생 배포를 VM 하나로 끝내야 하는 상황이 아니라면 이웃 폴더(1.pc.byVagrant)가 안전하다.

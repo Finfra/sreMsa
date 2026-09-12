@@ -2,7 +2,7 @@
 # i1 에서 vm01~vm0N 으로 Ansible 이 실제로 동작하는지 확인한다.
 # i1 안에서 ubuntu 계정으로 실행한다.
 #
-#   bash /vagrant/doVerify.sh
+#   bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doVerify.sh
 #
 # Kubespray 를 돌리기 전에 이것부터 통과시킨다.
 # 여기서 걸리는 문제는 cluster.yml 을 20분 돌린 뒤 실패하는 것보다 훨씬 싸다.

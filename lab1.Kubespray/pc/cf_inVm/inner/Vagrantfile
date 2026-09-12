@@ -3,7 +3,7 @@
 #
 # 안쪽 노드 vm01~vm0N — **바깥 VM(i1) 안에서** 실행한다.
 #
-# 이웃 폴더(vm_x_4)의 Vagrantfile 에서 i1 정의만 뺀 것이다.
+# 이웃 폴더(1.pc.byVagrant)의 Vagrantfile 에서 i1 정의만 뺀 것이다.
 # 노드명·IP·계정·프로비저닝 스크립트가 전부 같으므로, 안쪽에서 보는 구조는
 # 상위 폴더 방식과 구별되지 않는다. lab2 이후 실습 명령이 그대로 통한다.
 #
@@ -27,7 +27,7 @@ S      = YAML.load_file(File.join(BASE, "settings.yml"))
 INNER  = S["inner"]
 
 # 상위 폴더 경로. doInner.sh 가 SREMSA_LOCAL 로 넘긴다.
-LOCAL  = ENV["SREMSA_LOCAL"] || "/sreMsa/lab1.Kubespray/pc/vm_x_4"
+LOCAL  = ENV["SREMSA_LOCAL"] || "/sreMsa/lab1.Kubespray/pc/1.pc.byVagrant"
 
 NET        = INNER["subnet"]
 I1_HOST    = INNER["i1_host"]
