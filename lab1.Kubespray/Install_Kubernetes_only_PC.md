@@ -6,13 +6,13 @@ Kubespray 를 실행하는 부분은 [3.InstanceForKubernetes/README.md](3.Insta
 
 만들어지는 것은 VM 네 대다.
 
-| VM   | 역할                                                           | IP            | vCPU | 메모리 |
-| :--- | :------------------------------------------------------------- | :------------ | ---: | -----: |
-| i1   | 콘솔 서버. 여기서 Kubespray 를 실행한다 (Kubernetes 노드 아님) | 192.168.56.10 | 1 | 1024MB |
-| vm01 | control plane + etcd + **worker**                              | 192.168.56.11 | 2 | 3072MB |
-| vm02 | control plane + worker                                         | 192.168.56.12 | 2 | 3072MB |
-| vm03 | worker                                                         | 192.168.56.13 | 2 | 2560MB |
-| | | **합계** | **7** | **9728MB** |
+| VM   | 역할                                                           | IP            |  vCPU |     메모리 |
+| :--- | :------------------------------------------------------------- | :------------ | ----: | ---------: |
+| i1   | 콘솔 서버. 여기서 Kubespray 를 실행한다 (Kubernetes 노드 아님) | 192.168.56.10 |     1 |     1024MB |
+| vm01 | control plane + etcd + **worker**                              | 192.168.56.11 |     2 |     3072MB |
+| vm02 | control plane + worker                                         | 192.168.56.12 |     2 |     3072MB |
+| vm03 | worker                                                         | 192.168.56.13 |     2 |     2560MB |
+|      |                                                                | **합계**      | **7** | **9728MB** |
 
 > 이전 판까지 쓰던 `rayshoo/vansinetes` 는 더 이상 동작하지 않는다.
 > 폐쇄된 `apt.kubernetes.io` 저장소에서 Kubernetes 1.20.2 를 받으려 하기 때문이며, 주소를 바꿔도 살아나지 않는다.
@@ -33,22 +33,42 @@ Kubespray 를 실행하는 부분은 [3.InstanceForKubernetes/README.md](3.Insta
 
 **인터넷에서 직접 받지 말 것.** 강사가 배포하는 **`_prgs`** 폴더에 필요한 파일이 모두 들어 있다.
 
-| `_prgs` 안의 파일 | 크기 | 용도 |
-| :--- | ---: | :--- |
-| `bento-ubuntu-24.04-*-virtualbox-amd64.box` | 621 MB | **Vagrant box** — VM 의 기반 이미지 |
-| `VirtualBox-7.2.16-*-Win.exe` | 170 MB | VirtualBox |
-| `vagrant_2.4.9_windows_amd64.msi` | 236 MB | Vagrant |
-| `Git-2.55.0.5-64-bit.exe` | 62 MB | Git for Windows |
-| **`vc_redist.x64.exe`** | 25 MB | **Visual C++ 재배포 패키지 — VirtualBox 의 전제조건** |
-| `SHA256SUMS.txt` | — | 무결성 검증용 |
-| 합계 | **약 1.1 GB** | |
+**파일 이름 앞의 번호가 곧 설치 순서다.** 1~5 를 차례로 설치하고, 6 은 설치가 아니라 **등록**한다(아래 "Vagrant box 등록" 절).
+
+| 순서  | `_prgs` 안의 파일                                       |          크기 | 용도                                                     |
+| :---: | :------------------------------------------------------ | ------------: | :------------------------------------------------------- |
+| **1** | `1_VSCodeUserSetup-x64-1.137.0.exe`                     |        224 MB | Visual Studio Code — YAML·매니페스트 편집용              |
+| **2** | **`2_vc_redist.x64.exe`**                               |         25 MB | **Visual C++ 재배포 — 바로 다음 VirtualBox 의 전제조건** |
+| **3** | `3_VirtualBox-7.2.16-174877-Win.exe`                    |        170 MB | VirtualBox 7.2.16                                        |
+| **4** | `4_vagrant_2.4.9_windows_amd64.msi`                     |        236 MB | Vagrant 2.4.9                                            |
+| **5** | `5_Git-2.55.0.5-64-bit.exe`                             |         62 MB | Git for Windows 2.55.0                                   |
+| **6** | `6_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box` |        621 MB | **Vagrant box** — 설치가 아니라 **등록**한다             |
+| 나중  | `docker/` (deb 4개)                                     |         73 MB | **Docker Engine — VM 안의 Ubuntu 에 설치**한다(11장)     |
+|   —   | `SHA256SUMS.txt`                                        |             — | 무결성 검증용 체크섬                                     |
+|       | 합계                                                    | **약 1.4 GB** |                                                          |
 
 수강생 전원이 같은 파일을 동시에 내려받으면 교육장 회선이 막혀 실습을 시작조차 못 한다.
 box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 미리 받아 배포한다.
 
-`_prgs` 안의 **`vc_redist.x64.exe` → VirtualBox → Vagrant → Git** 순서로 설치한다. 옵션은 기본값 그대로 둔다.
+**구글 드라이브에서 바로 실행하지 말고 로컬(`~/Downloads`)로 복사한 뒤 쓴다.** 드라이브에서 직접 실행하면
+파일을 그때그때 내려받느라 느리고, 회선이 끊기면 설치가 중단된다.
 
-> ★ **`vc_redist.x64.exe` 를 먼저 설치해야 한다.** VirtualBox 는 Visual C++ 재배포 패키지를 요구하는데,
+> ⚠️ **`docker/` 는 이 단계에서 설치하지 않는다.** VM 안의 Ubuntu 에 까는 것이며 11장에서 쓴다.
+> **내 PC(Windows)에 Docker Desktop 을 설치하지 말 것** — Hyper-V 가 켜져 VirtualBox 가 VM 을 띄우지 못하게 된다.
+
+설치 옵션은 전부 기본값 그대로 둔다.
+
+**설치 전에 파일이 온전히 복사됐는지 확인한다.** 복사 도중 끊기면 설치가 알 수 없는 오류로 실패한다.
+
+```bash
+cd ~/Downloads/_prgs
+sha256sum -c SHA256SUMS.txt
+```
+
+전부 `OK` 가 나와야 한다. 하나라도 `FAILED` 면 그 파일을 다시 복사받는다.
+(이 명령은 Git 설치 후 Git Bash 에서 쓸 수 있다. 그 전이라면 5번까지 설치한 뒤 확인해도 된다.)
+
+> ★ **`2_vc_redist.x64.exe` 를 `3_VirtualBox` 보다 먼저 설치해야 한다.** VirtualBox 는 Visual C++ 재배포 패키지를 요구하는데,
 > Windows 를 새로 설치한 PC 에는 이것이 없다. 없는 상태로 VirtualBox 를 실행하면 이렇게 막힌다.
 >
 > ```
@@ -58,6 +78,7 @@ box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 
 >
 > 다른 프로그램을 쓰다 보면 대개 딸려 들어오기 때문에 기존 PC 에서는 잘 드러나지 않는다.
 > **갓 설치한 Windows 에서만 나타나는 함정**이라 실기에서 처음 확인했다.
+
 Git Bash 를 쓴다. PowerShell·cmd 로도 되지만 이 문서의 명령은 Git Bash 기준이다.
 
 설치 후 터미널을 새로 열어 확인한다.
@@ -146,8 +167,11 @@ git config --global --get core.autocrlf
 Git Bash 에서 `_prgs` 폴더로 이동한 뒤 실행한다.
 
 ```bash
-vagrant box add bento/ubuntu-24.04 ./bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
+cd ~/Downloads/_prgs
+vagrant box add bento/ubuntu-24.04 ./6_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
 ```
+
+* **주의 : 파일 이름 앞의 `6_` 까지 그대로 적는다.** 번호를 빼면 파일을 찾지 못한다.
 
 **이름을 `bento/ubuntu-24.04` 로 등록해야 한다.** 이름이 다르면 `vagrant up` 이 이 box 를 찾지 못하고
 인터넷에서 다시 받으려 한다. 등록됐는지 확인한다.
@@ -170,11 +194,24 @@ bento/ubuntu-24.04 (virtualbox, 0, (amd64))
 
 # 1. 소스 내려받기
 
+**Git Bash 에서 실행한다.** 바로 위 "Vagrant box 등록" 과 같은 창이면 된다.
+
 ```bash
 cd ~
 git clone https://github.com/Finfra/sreMsa
 cd sreMsa/lab1.Kubespray/0.VagrantForLocal/1.vm4
 ```
+
+* 확인 : 소스가 받아졌는지 본다.
+```bash
+ls ~/sreMsa
+```
+```
+lab1.Kubespray  lab2.Kubernetes  lab3.Istio  lab4.ArgoCd  lab5.Zipkin  lab6.Serverless  README.md
+```
+
+> ⚠️ **"Git 줄바꿈 설정" 을 먼저 하고 받아야 한다.** 순서가 바뀌면 셸 스크립트가 CRLF 로 받아져
+> 실습 중에 `\r` 오류를 낸다. 이미 받았다면 `rm -rf ~/sreMsa` 로 지우고 설정한 뒤 다시 받는다.
 
 # 2. VM 만들기
 
@@ -251,13 +288,13 @@ vagrant ssh i1
 내장 플러그인 수십 개를 매번 새로 로드하는 구조 때문이고, **VM 이나 PC 가 느린 것이 아니다.**
 실기(Windows 10 · i7-6700T · 16GB)에서 측정한 값이다.
 
-| 명령 | 소요 |
-| :--- | ---: |
-| `vagrant ssh i1 -c true` | 6.8초 |
-| `vagrant status` | 9.0초 |
-| `vagrant --help` | 11.3초 |
+| 명령                       |       소요 |
+| :------------------------- | ---------: |
+| `vagrant ssh i1 -c true`   |      6.8초 |
+| `vagrant status`           |      9.0초 |
+| `vagrant --help`           |     11.3초 |
 | **`ssh -F ssh-config i1`** | **0.12초** |
-| `VBoxManage showvminfo` | 0.08초 |
+| `VBoxManage showvminfo`    |     0.08초 |
 
 같은 폴더의 **`doSsh.sh`** 는 접속 정보를 한 번만 뽑아 두고 그 다음부터 `ssh` 를 직접 쓴다.
 자주 드나드는 실습에서는 이쪽이 훨씬 편하다.
@@ -440,7 +477,42 @@ sudo -i
 kubectl get nodes
 ```
 
-# 11. 정리
+# 11. Docker 설치 (VM 안) ★ lab2 준비
+
+lab2 의 `docker build`·`docker run` 실습은 **콘솔 서버 i1 안에서** 한다.
+`_prgs/docker/` 의 deb 로 **오프라인 설치**하므로 인터넷을 쓰지 않는다.
+
+> ⚠️ **내 PC(Windows)에 Docker Desktop 을 설치하지 말 것.**
+> Hyper-V 가 켜져 VirtualBox 가 VM 을 띄우지 못하게 된다. 이 실습의 컨테이너는 전부 VM 안에서 돈다.
+
+먼저 Git Bash(내 PC)에서 deb 를 소스 폴더로 옮긴다. 소스 폴더는 VM 안에서 `/sreMsa` 로 보인다.
+
+```bash
+cp -r ~/Downloads/_prgs/docker ~/sreMsa/
+```
+
+i1 에 접속해 설치한다.
+
+```bash
+cd ~/sreMsa/lab1.Kubespray/0.VagrantForLocal/1.vm4
+./doSsh.sh i1
+
+# --- 여기부터 i1 안 ---
+sudo dpkg -i /sreMsa/docker/*.deb
+sudo usermod -aG docker $USER
+newgrp docker
+docker version
+```
+
+`dpkg` 가 의존성 오류를 내면 아래 한 줄로 정리된다(이 경우에만 인터넷을 쓴다).
+
+```bash
+sudo apt-get -f install -y
+```
+
+* 확인 : `docker version` 이 Client·Server 양쪽을 보여주면 된다. Server 가 안 나오면 `sudo systemctl status docker` 로 데몬을 확인한다.
+
+# 12. 정리
 
 ## 잠시 멈추기 (다음에 이어서)
 
@@ -459,19 +531,19 @@ vagrant destroy -f
 
 # 자주 막히는 곳
 
-| 증상 | 원인·해결 |
-| :--- | :--- |
-| `vagrant up` 이 VM 을 못 띄운다 | Hyper-V·메모리 무결성이 켜져 있다. 0장의 사전 작업을 다시 확인한다. `HypervisorPresent` 가 `False` 인지 볼 것 |
-| `Timed out while waiting for the machine to boot` | **VM 이 죽은 것이 아닐 수 있다.** 아래 "부팅이 오래 걸릴 때" 참조 |
-| `vagrant up` 이 box 를 내려받으려 한다 | box 등록을 건너뛰었거나 이름이 다르다. `vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다 |
-| 스크립트가 `\r` 오류를 낸다 | `core.autocrlf` 를 끄지 않고 clone 했다. `git config --global core.autocrlf false` 후 다시 clone |
-| i1 에서 `ssh vm01` 이 암호를 묻는다 | 호스트에서 `vagrant provision vm01` |
-| `ansible ping` 이 실패한다 | i1 에서 `bash /vagrant/doVerify.sh` — 어느 단계에서 끊기는지 나온다 |
-| 노드가 전부 10.0.2.15 로 보인다 | inventory 에 `ip=` 가 빠졌다. `bash /vagrant/doMakeInventory.sh` |
-| Windows 에서 `curl vm01:...` 이 안 된다 | 3장의 hosts 파일 등록을 빠뜨렸다 |
-| `Ansible must be between 2.16.4 and 2.17.0` 로 즉시 멈춘다 | venv 를 켜지 않았다. 9.1 참조 — `source ~/ksvenv/bin/activate` 후 다시 실행 |
-| cluster.yml 이 중간에 멈춘다 | fact 캐시를 지우고 재실행 (9장 참조) |
-| 메모리가 모자라 PC 가 멈춘다 | [0.VagrantForLocal/1.vm4/README.md](0.VagrantForLocal/1.vm4/README.md) 의 "메모리가 부족할 때" |
+| 증상                                                       | 원인·해결                                                                                                     |
+| :--------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------ |
+| `vagrant up` 이 VM 을 못 띄운다                            | Hyper-V·메모리 무결성이 켜져 있다. 0장의 사전 작업을 다시 확인한다. `HypervisorPresent` 가 `False` 인지 볼 것 |
+| `Timed out while waiting for the machine to boot`          | **VM 이 죽은 것이 아닐 수 있다.** 아래 "부팅이 오래 걸릴 때" 참조                                             |
+| `vagrant up` 이 box 를 내려받으려 한다                     | box 등록을 건너뛰었거나 이름이 다르다. `vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다               |
+| 스크립트가 `\r` 오류를 낸다                                | `core.autocrlf` 를 끄지 않고 clone 했다. `git config --global core.autocrlf false` 후 다시 clone              |
+| i1 에서 `ssh vm01` 이 암호를 묻는다                        | 호스트에서 `vagrant provision vm01`                                                                           |
+| `ansible ping` 이 실패한다                                 | i1 에서 `bash /vagrant/doVerify.sh` — 어느 단계에서 끊기는지 나온다                                           |
+| 노드가 전부 10.0.2.15 로 보인다                            | inventory 에 `ip=` 가 빠졌다. `bash /vagrant/doMakeInventory.sh`                                              |
+| Windows 에서 `curl vm01:...` 이 안 된다                    | 3장의 hosts 파일 등록을 빠뜨렸다                                                                              |
+| `Ansible must be between 2.16.4 and 2.17.0` 로 즉시 멈춘다 | venv 를 켜지 않았다. 9.1 참조 — `source ~/ksvenv/bin/activate` 후 다시 실행                                   |
+| cluster.yml 이 중간에 멈춘다                               | fact 캐시를 지우고 재실행 (9장 참조)                                                                          |
+| 메모리가 모자라 PC 가 멈춘다                               | [0.VagrantForLocal/1.vm4/README.md](0.VagrantForLocal/1.vm4/README.md) 의 "메모리가 부족할 때"                |
 
 ## 부팅이 오래 걸릴 때
 
