@@ -339,7 +339,6 @@ lab2 의 `docker build`·`docker run` 실습은 **콘솔 서버 i1 안에서** �
 
 > ⚠️ **내 PC(Windows)에 Docker Desktop 을 설치하지 말 것.**
 > Hyper-V 가 켜져 VirtualBox 가 VM 을 띄우지 못하게 된다. 이 실습의 컨테이너는 전부 VM 안에서 돈다.
-> Vagrant 자체를 쓸 수 없는 PC 라면 [cf_install_DockerDesktop.md](../cf_install_DockerDesktop.md) 의 대체 경로(Docker + kind)를 본다.
 
 먼저 내 PC 에서 deb 를 소스 폴더로 옮긴다(탐색기로 복사해도 된다). 소스 폴더는 VM 안에서 `/sreMsa` 로 보인다.
 
@@ -411,7 +410,7 @@ vagrant destroy -f
 | cluster.yml 이 중간에 멈춘다                                        | fact 캐시를 지우고 재실행 (9장 참조)                                                                                                                                           |
 | 메모리가 모자라 PC 가 멈춘다                                        | 아래 참고 자료의 "자원 → 메모리가 부족할 때"                                                                                                                                   |
 | **VirtualBox 설치가 1초 만에 실패한다**                             | `2_vc_redist.x64.exe` 를 `3_VirtualBox` 보다 먼저 설치하지 않았다. `msiexec` 오류 1603 이 그 증상이다                                                                          |
-| **Docker Desktop 을 깔았더니 `vagrant up` 이 안 된다**              | Hyper-V 가 켜졌다. **이 실습에 Docker Desktop 은 필요 없다** — 컨테이너는 VM 안에서 돈다. 관리자 PowerShell 에서 `bcdedit /set hypervisorlaunchtype off` 후 재부팅([되돌리는 절차](../cf_install_DockerDesktop.md)) |
+| **Docker Desktop 을 깔았더니 `vagrant up` 이 안 된다**              | Hyper-V 가 켜졌다. **이 실습에 Docker Desktop 은 필요 없다** — 컨테이너는 VM 안에서 돈다. 관리자 PowerShell 에서 `bcdedit /set hypervisorlaunchtype off` 후 재부팅             |
 | **Docker Desktop 이 `Virtualization support not detected` 로 뜬다** | Hyper-V 를 껐기 때문이며 **정상이다.** Docker Desktop 은 이 실습에서 쓰지 않는다 — 컨테이너 실습은 11장처럼 VM(i1) 안의 Docker 로 한다                                         |
 | **VM 이 깨졌거나 설치가 끝나지 않았다**                             | 배포 폴더의 `_vm` 안에 완성본이 있다. **강사 안내를 받고 진행한다** — 그 안의 `README.md` 에 절차가 있다                                                                       |
 
