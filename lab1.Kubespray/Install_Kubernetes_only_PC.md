@@ -18,226 +18,24 @@ Kubespray 를 실행하는 부분은 [3.InstanceForKubernetes/README.md](3.Insta
 > 폐쇄된 `apt.kubernetes.io` 저장소에서 Kubernetes 1.20.2 를 받으려 하기 때문이며, 주소를 바꿔도 살아나지 않는다.
 > 그 경로는 이 문서로 대체되었다.
 
-# 0. 준비물
+# 0~1. 시작하기 전에 — 기본 설치를 먼저 끝낸다 ★
 
-## 하드웨어
+프로그램 설치·Windows 사전 작업·소스 내려받기는 **[install_basic.md](install_basic.md)** 로 분리했다.
+강사 배포 폴더 `_prgs` 안에도 같은 문서가 들어 있다.
 
-* 메모리 **16GB 최소**, 24GB 이상 권장 — VM 이 합계 **9.5GB** 를 쓴다
-* CPU **논리 프로세서 8개 이상 권장** — VM 이 합계 7개를 가져간다. 4개뿐이면 느려진다
-* 디스크 여유 **60GB 이상**
-* CPU 가상화 지원 (요즘 PC 는 모두 지원한다)
+| 장  | install_basic.md 가 다루는 것                                                                                                     |
+| :-- | :-------------------------------------------------------------------------------------------------------------------------------- |
+| 0   | 하드웨어 요건 · 배포 폴더 3개(`sreMsa`·`_prgs`·`_vm`) · `_prgs` 프로그램 설치 · Hyper-V 끄기 · Git 줄바꿈 설정 · Vagrant box 등록 |
+| 1   | 소스 내려받기 (`git clone`)                                                                                                       |
 
-메모리가 부족하면 [0.VagrantForLocal/1.vm4/README.md](0.VagrantForLocal/1.vm4/README.md) 의 "메모리가 부족할 때" 절을 본다.
-
-## 배포 폴더 3개를 `다운로드` 에 복사한다 ★
-
-강사가 배포하는 폴더는 셋이다. **전부 `다운로드`(Downloads) 폴더에 복사**한다.
-
-```
-C:\Users\<계정>\Downloads\
-├── sreMsa\   ← 실습 소스 (여기서 vagrant up 을 한다)
-├── _prgs\    ← 설치 파일
-└── _vm\      ← 완성된 VM 백업 (문제가 생겼을 때만 쓴다)
-```
-
-| 폴더     | 언제 쓰나                                                                            |
-| :------- | :----------------------------------------------------------------------------------- |
-| `sreMsa` | **수업 내내.** 실습은 전부 여기서 한다                                               |
-| `_prgs`  | **맨 처음 한 번.** 프로그램 설치와 box 등록에 쓴다                                   |
-| `_vm`    | **문제가 생겼을 때만.** VM 이 깨지거나 설치가 끝나지 않은 경우 강사 안내에 따라 쓴다 |
-
-> `sreMsa` 는 1장에서 `git clone` 으로 직접 받아도 된다. 회선이 나쁜 교육장에서는 복사본을 쓰는 편이 빠르다.
-
-## 소프트웨어 — 강사가 제공하는 `_prgs` 폴더를 쓴다 ★
-
-**인터넷에서 직접 받지 말 것.** 강사가 배포하는 **`_prgs`** 폴더에 필요한 파일이 모두 들어 있다.
-
-**파일 이름 앞의 번호가 곧 설치 순서다.** 1~5 를 차례로 설치하고, 6 은 설치가 아니라 **등록**한다(아래 "Vagrant box 등록" 절).
-
-| 순서  | `_prgs` 안의 파일                                       |          크기 | 용도                                                     |
-| :---: | :------------------------------------------------------ | ------------: | :------------------------------------------------------- |
-| **1** | `1_VSCodeUserSetup-x64-1.137.0.exe`                     |        224 MB | Visual Studio Code — YAML·매니페스트 편집용              |
-| **2** | **`2_vc_redist.x64.exe`**                               |         25 MB | **Visual C++ 재배포 — 바로 다음 VirtualBox 의 전제조건** |
-| **3** | `3_VirtualBox-7.2.16-174877-Win.exe`                    |        170 MB | VirtualBox 7.2.16                                        |
-| **4** | `4_vagrant_2.4.9_windows_amd64.msi`                     |        236 MB | Vagrant 2.4.9                                            |
-| **5** | `5_Git-2.55.0.5-64-bit.exe`                             |         62 MB | Git for Windows 2.55.0                                   |
-| **6** | `6_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box` |        621 MB | **Vagrant box** — 설치가 아니라 **등록**한다             |
-| 나중  | `docker/` (deb 4개)                                     |         73 MB | **Docker Engine — VM 안의 Ubuntu 에 설치**한다(11장)     |
-|   —   | `SHA256SUMS.txt`                                        |             — | 무결성 검증용 체크섬                                     |
-|       | 합계                                                    | **약 1.4 GB** |                                                          |
-
-수강생 전원이 같은 파일을 동시에 내려받으면 교육장 회선이 막혀 실습을 시작조차 못 한다.
-box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 미리 받아 배포한다.
-
-**구글 드라이브에서 바로 실행하지 말고 로컬(`~/Downloads`)로 복사한 뒤 쓴다.** 드라이브에서 직접 실행하면
-파일을 그때그때 내려받느라 느리고, 회선이 끊기면 설치가 중단된다.
-
-> ⚠️ **`docker/` 는 이 단계에서 설치하지 않는다.** VM 안의 Ubuntu 에 까는 것이며 11장에서 쓴다.
-> **내 PC(Windows)에 Docker Desktop 을 설치하지 말 것** — Hyper-V 가 켜져 VirtualBox 가 VM 을 띄우지 못하게 된다.
-
-설치 옵션은 전부 기본값 그대로 둔다.
-
-**설치 전에 파일이 온전히 복사됐는지 확인한다.** 복사 도중 끊기면 설치가 알 수 없는 오류로 실패한다.
+**그 문서를 마치고 돌아온다.** 아래 상태여야 이어서 진행할 수 있다.
 
 ```bash
-cd ~/Downloads/_prgs
-sha256sum -c SHA256SUMS.txt
+cd ~/sreMsa/lab1.Kubespray/0.VagrantForLocal/1.vm4
+vagrant box list      # bento/ubuntu-24.04 가 보여야 한다
 ```
 
-전부 `OK` 가 나와야 한다. 하나라도 `FAILED` 면 그 파일을 다시 복사받는다.
-(이 명령은 Git 설치 후 Git Bash 에서 쓸 수 있다. 그 전이라면 5번까지 설치한 뒤 확인해도 된다.)
-
-설치가 끝나면 곧바로 다음 절로 간다. **재부팅은 "Windows 만의 사전 작업" 에서 한 번에 처리**한다.
-
-> ★ **`2_vc_redist.x64.exe` 를 `3_VirtualBox` 보다 먼저 설치해야 한다.** VirtualBox 는 Visual C++ 재배포 패키지를 요구하는데,
-> Windows 를 새로 설치한 PC 에는 이것이 없다. 없는 상태로 VirtualBox 설치를 실행하면 아래 메시지와 함께
-> **`msiexec` 오류 1603 으로 1초 만에 끝나 버린다.**
->
-> ```
-> Oracle VirtualBox 7.2.16 needs the Microsoft Visual C++ 2019
-> Redistributable Package being installed first.
-> ```
->
-> 다른 프로그램을 쓰다 보면 대개 딸려 들어오기 때문에 기존 PC 에서는 잘 드러나지 않는다.
-> **갓 설치한 Windows 에서만 나타나는 함정**이라 실기에서 처음 확인했다.
-
-Git Bash 를 쓴다. PowerShell·cmd 로도 되지만 이 문서의 명령은 Git Bash 기준이다.
-
-설치 후 터미널을 새로 열어 확인한다.
-
-```bash
-VBoxManage --version
-vagrant --version
-git --version
-```
-
-**Vagrant 플러그인은 하나도 설치하지 않는다.** 이 실습은 플러그인 없이 동작하도록 만들었다.
-예전 자료들이 Windows 에 `vagrant-winnfsd` 를 필수로 안내하는 경우가 있는데,
-그것은 공유 폴더를 NFS 로 쓰던 시절의 이야기이고 여기서는 VirtualBox 기본 공유를 쓴다.
-
-```bash
-vagrant plugin list
-```
-
-```
-No plugins installed.
-```
-
-이렇게 나오는 것이 정상이다. 이미 설치된 플러그인이 있어도 대개 무해하지만,
-`vagrant-triggers` 는 Vagrant 내장 기능과 충돌하므로 있으면 지운다(`vagrant plugin uninstall vagrant-triggers`).
-
-> 이미 같은 버전을 설치해 두었다면 그대로 써도 된다.
-> 다만 **Vagrant box 만큼은 반드시 `_prgs` 것을 쓴다**(아래 "Vagrant box 등록" 절).
-> 회선을 가장 많이 잡아먹는 것이 box 이기 때문이다.
->
-> 인터넷에서 직접 받아야 하는 상황이라면 아래가 원본 주소다.
-> VirtualBox https://www.virtualbox.org/wiki/Downloads ·
-> Vagrant https://developer.hashicorp.com/vagrant/downloads ·
-> Git https://git-scm.com/download/win
-
-## Windows 만의 사전 작업 ★ 여기서 가장 많이 막힌다
-
-VirtualBox 는 Hyper-V 가 켜져 있으면 VM 을 띄우지 못한다.
-Docker Desktop·WSL2 를 쓴 적이 있거나, Windows 11 이라면 대개 켜져 있다.
-
-**관리자 권한 PowerShell** 에서 실행한 뒤 재부팅한다.
-
-```powershell
-bcdedit /set hypervisorlaunchtype off
-shutdown -r -t 0
-```
-
-Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격리)** 이 기본으로 켜져 있어 같은 증상이 난다.
-`Windows 보안 → 장치 보안 → 코어 격리 세부 정보` 에서 **메모리 무결성**을 끄고 재부팅한다.
-
-> 되돌리려면 `bcdedit /set hypervisorlaunchtype auto` + 재부팅.
-> Docker Desktop·WSL2 를 다시 쓸 때 필요하다.
-
-**재부팅한 뒤 실제로 꺼졌는지 확인한다.** 설정값만 보면 안 된다 — 재부팅 전에도 `Off` 로 보이기 때문이다.
-
-```powershell
-(Get-CimInstance Win32_ComputerSystem).HypervisorPresent
-```
-
-`False` 가 나와야 VirtualBox 가 VM 을 띄울 수 있다. `True` 면 아직 Hyper-V 가 올라와 있는 것이므로
-메모리 무결성까지 껐는지 다시 확인하고 재부팅한다.
-
-**Docker Desktop 을 쓴 적이 있다면 이 절이 특히 중요하다.** 그것이 Hyper-V 를 켜 두기 때문이다.
-이 실습은 Hyper-V 를 **끈 상태로 끝까지** 진행한다 — 컨테이너 실습도 VM 안에서 하므로(11장) 중간에 다시 켤 일이 없다.
-
-## Git 줄바꿈 설정
-
-Windows 의 Git 은 기본으로 줄바꿈을 CRLF 로 바꾼다. 셸 스크립트가 그대로 깨진다.
-**소스를 내려받기 전에** 설정한다.
-
-**Git 이 설치돼 있어야 하는 단계다.** 시작 메뉴에서 **Git Bash** 를 열고 실행한다 — 바로 앞 절은 PowerShell 이므로 창을 바꾼다.
-
-```bash
-git config --global core.autocrlf false
-git config --global core.eol lf
-```
-
-* 확인 : `false` 가 나와야 한다.
-```bash
-git config --global --get core.autocrlf
-```
-
-> ⚠️ `git: command not found` 가 나오면 Git 설치가 안 된 것이다. 0장의 프로그램 설치를 확인한다.
-> PowerShell 에서도 `git` 이 동작하기는 하나 **Git 설치 전에 열어 둔 창에서는 경로가 잡히지 않아** 같은 오류가 난다.
-
-## Vagrant box 등록 ★ 이 절을 건너뛰면 인터넷에서 621MB 를 받는다
-
-`_prgs` 의 `.box` 파일을 Vagrant 에 등록한다. **인터넷을 쓰지 않는다.**
-
-Git Bash 에서 `_prgs` 폴더로 이동한 뒤 실행한다.
-
-```bash
-cd ~/Downloads/_prgs
-vagrant box add bento/ubuntu-24.04 ./6_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
-```
-
-* **주의 : 파일 이름 앞의 `6_` 까지 그대로 적는다.** 번호를 빼면 파일을 찾지 못한다.
-
-**이름을 `bento/ubuntu-24.04` 로 등록해야 한다.** 이름이 다르면 `vagrant up` 이 이 box 를 찾지 못하고
-인터넷에서 다시 받으려 한다. 등록됐는지 확인한다.
-
-```bash
-vagrant box list
-```
-
-```
-bento/ubuntu-24.04 (virtualbox, 0, (amd64))
-```
-
-버전이 `0` 으로 보이는 것이 정상이다. 로컬 파일에서 추가하면 버전 정보가 없기 때문이며 실습에 지장이 없다.
-[settings.yml](0.VagrantForLocal/1.vm4/settings.yml) 의 `box.version` 을 비워 둔 것도 이 때문이다.
-
-> 잘못된 이름으로 등록했다면 지우고 다시 넣는다.
-> ```bash
-> vagrant box remove <잘못된이름>
-> vagrant box add bento/ubuntu-24.04 ./6_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
-> ```
-
-# 1. 소스 내려받기
-
-**Git Bash 에서 실행한다.** 바로 위 "Vagrant box 등록" 과 같은 창이면 된다.
-
-```bash
-cd ~
-git clone https://github.com/Finfra/sreMsa
-cd sreMsa/lab1.Kubespray/0.VagrantForLocal/1.vm4
-```
-
-* 확인 : 소스가 받아졌는지 본다.
-```bash
-ls ~/sreMsa
-```
-```
-lab1.Kubespray  lab2.Kubernetes  lab3.Istio  lab4.ArgoCd  lab5.Zipkin  lab6.Serverless  README.md
-```
-
-> ⚠️ **"Git 줄바꿈 설정" 을 먼저 하고 받아야 한다.** 순서가 바뀌면 셸 스크립트가 CRLF 로 받아져
-> 실습 중에 `\r` 오류를 낸다. 이미 받았다면 `rm -rf ~/sreMsa` 로 지우고 설정한 뒤 다시 받는다.
+이 문서는 **2장(VM 만들기)부터** 시작한다.
 
 # 2. VM 만들기
 
@@ -565,7 +363,7 @@ vagrant destroy -f
 
 | 증상                                                                | 원인·해결                                                                                                                                                          |
 | :------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `vagrant up` 이 VM 을 못 띄운다                                     | Hyper-V·메모리 무결성이 켜져 있다. 0장의 사전 작업을 다시 확인한다. `HypervisorPresent` 가 `False` 인지 볼 것                                                      |
+| `vagrant up` 이 VM 을 못 띄운다                                     | Hyper-V·메모리 무결성이 켜져 있다. [install_basic.md](install_basic.md) 의 "Windows 만의 사전 작업" 을 다시 확인한다. `HypervisorPresent` 가 `False` 인지 볼 것    |
 | `Timed out while waiting for the machine to boot`                   | **VM 이 죽은 것이 아닐 수 있다.** 아래 "부팅이 오래 걸릴 때" 참조                                                                                                  |
 | `vagrant up` 이 box 를 내려받으려 한다                              | box 등록을 건너뛰었거나 이름이 다르다. `vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다                                                                    |
 | 스크립트가 `\r` 오류를 낸다                                         | `core.autocrlf` 를 끄지 않고 clone 했다. `git config --global core.autocrlf false` 후 다시 clone                                                                   |
