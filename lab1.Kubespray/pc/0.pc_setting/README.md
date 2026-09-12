@@ -42,8 +42,7 @@ C:\Users\<계정>\Downloads\
 
 **인터넷에서 직접 받지 말 것.** 강사가 배포하는 **`_prgs`** 폴더에 필요한 파일이 모두 들어 있다.
 
-**파일 이름 앞의 번호가 곧 설치 순서다.** 1~4 를 차례로 설치하고, 6 은 설치가 아니라 **등록**한다(아래 "Vagrant box 등록" 절).
-번호 5(Git)는 **더 이상 쓰지 않는다** — 아래 표에 없는 이유다.
+**파일 이름 앞의 번호가 곧 설치 순서다.** 1~4 를 차례로 설치하고, 5 는 설치가 아니라 **등록**한다(아래 "Vagrant box 등록" 절).
 
 | 순서  | `_prgs` 안의 파일                                       |          크기 | 용도                                                      |
 | :---: | :------------------------------------------------------ | ------------: | :-------------------------------------------------------- |
@@ -51,7 +50,7 @@ C:\Users\<계정>\Downloads\
 | **2** | **`2_vc_redist.x64.exe`**                               |         25 MB | **Visual C++ 재배포 — 바로 다음 VirtualBox 의 전제조건**  |
 | **3** | `3_VirtualBox-7.2.16-174877-Win.exe`                    |        170 MB | VirtualBox 7.2.16                                         |
 | **4** | `4_vagrant_2.4.9_windows_amd64.msi`                     |        236 MB | Vagrant 2.4.9                                             |
-| **6** | `6_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box` |        621 MB | **Vagrant box** — 설치가 아니라 **등록**한다              |
+| **5** | `5_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box` |        621 MB | **Vagrant box** — 설치가 아니라 **등록**한다              |
 | 나중  | `docker/` (deb 4개)                                     |         73 MB | **Docker Engine — VM 안의 Ubuntu 에 설치**한다(정본 11장) |
 |   —   | `SHA256SUMS.txt`                                        |             — | 무결성 검증용 체크섬                                      |
 |       | 합계                                                    | **약 1.4 GB** |                                                           |
@@ -162,10 +161,10 @@ PowerShell 에서 `_prgs` 폴더로 이동한 뒤 실행한다.
 
 ```powershell
 cd $env:USERPROFILE\Downloads\_prgs
-vagrant box add bento/ubuntu-24.04 ./6_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
+vagrant box add bento/ubuntu-24.04 ./5_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
 ```
 
-* **주의 : 파일 이름 앞의 `6_` 까지 그대로 적는다.** 번호를 빼면 파일을 찾지 못한다.
+* **주의 : 파일 이름 앞의 `5_` 까지 그대로 적는다.** 번호를 빼면 파일을 찾지 못한다.
 
 **이름을 `bento/ubuntu-24.04` 로 등록해야 한다.** 이름이 다르면 `vagrant up` 이 이 box 를 찾지 못하고
 인터넷에서 다시 받으려 한다. 등록됐는지 확인한다.
@@ -184,7 +183,7 @@ bento/ubuntu-24.04 (virtualbox, 0, (amd64))
 > 잘못된 이름으로 등록했다면 지우고 다시 넣는다.
 > ```powershell
 > vagrant box remove <잘못된이름>
-> vagrant box add bento/ubuntu-24.04 ./6_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
+> vagrant box add bento/ubuntu-24.04 ./5_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
 > ```
 
 # 1. 소스 확인
