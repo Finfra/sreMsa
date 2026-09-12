@@ -29,6 +29,25 @@ Kubespray 를 실행하는 부분은 [3.InstanceForKubernetes/README.md](3.Insta
 
 메모리가 부족하면 [0.VagrantForLocal/1.vm4/README.md](0.VagrantForLocal/1.vm4/README.md) 의 "메모리가 부족할 때" 절을 본다.
 
+## 배포 폴더 3개를 `다운로드` 에 복사한다 ★
+
+강사가 배포하는 폴더는 셋이다. **전부 `다운로드`(Downloads) 폴더에 복사**한다.
+
+```
+C:\Users\<계정>\Downloads\
+├── sreMsa\   ← 실습 소스 (여기서 vagrant up 을 한다)
+├── _prgs\    ← 설치 파일
+└── _vm\      ← 완성된 VM 백업 (문제가 생겼을 때만 쓴다)
+```
+
+| 폴더     | 언제 쓰나                                                                            |
+| :------- | :----------------------------------------------------------------------------------- |
+| `sreMsa` | **수업 내내.** 실습은 전부 여기서 한다                                               |
+| `_prgs`  | **맨 처음 한 번.** 프로그램 설치와 box 등록에 쓴다                                   |
+| `_vm`    | **문제가 생겼을 때만.** VM 이 깨지거나 설치가 끝나지 않은 경우 강사 안내에 따라 쓴다 |
+
+> `sreMsa` 는 1장에서 `git clone` 으로 직접 받아도 된다. 회선이 나쁜 교육장에서는 복사본을 쓰는 편이 빠르다.
+
 ## 소프트웨어 — 강사가 제공하는 `_prgs` 폴더를 쓴다 ★
 
 **인터넷에서 직접 받지 말 것.** 강사가 배포하는 **`_prgs`** 폴더에 필요한 파일이 모두 들어 있다.
@@ -68,8 +87,11 @@ sha256sum -c SHA256SUMS.txt
 전부 `OK` 가 나와야 한다. 하나라도 `FAILED` 면 그 파일을 다시 복사받는다.
 (이 명령은 Git 설치 후 Git Bash 에서 쓸 수 있다. 그 전이라면 5번까지 설치한 뒤 확인해도 된다.)
 
+설치가 끝나면 곧바로 다음 절로 간다. **재부팅은 "Windows 만의 사전 작업" 에서 한 번에 처리**한다.
+
 > ★ **`2_vc_redist.x64.exe` 를 `3_VirtualBox` 보다 먼저 설치해야 한다.** VirtualBox 는 Visual C++ 재배포 패키지를 요구하는데,
-> Windows 를 새로 설치한 PC 에는 이것이 없다. 없는 상태로 VirtualBox 를 실행하면 이렇게 막힌다.
+> Windows 를 새로 설치한 PC 에는 이것이 없다. 없는 상태로 VirtualBox 설치를 실행하면 아래 메시지와 함께
+> **`msiexec` 오류 1603 으로 1초 만에 끝나 버린다.**
 >
 > ```
 > Oracle VirtualBox 7.2.16 needs the Microsoft Visual C++ 2019
@@ -140,6 +162,9 @@ Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격
 `False` 가 나와야 VirtualBox 가 VM 을 띄울 수 있다. `True` 면 아직 Hyper-V 가 올라와 있는 것이므로
 메모리 무결성까지 껐는지 다시 확인하고 재부팅한다.
 
+**Docker Desktop 을 쓴 적이 있다면 이 절이 특히 중요하다.** 그것이 Hyper-V 를 켜 두기 때문이다.
+이 실습은 Hyper-V 를 **끈 상태로 끝까지** 진행한다 — 컨테이너 실습도 VM 안에서 하므로(11장) 중간에 다시 켤 일이 없다.
+
 ## Git 줄바꿈 설정
 
 Windows 의 Git 은 기본으로 줄바꿈을 CRLF 로 바꾼다. 셸 스크립트가 그대로 깨진다.
@@ -190,6 +215,7 @@ bento/ubuntu-24.04 (virtualbox, 0, (amd64))
 > 잘못된 이름으로 등록했다면 지우고 다시 넣는다.
 > ```bash
 > vagrant box remove <잘못된이름>
+> vagrant box add bento/ubuntu-24.04 ./6_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
 > ```
 
 # 1. 소스 내려받기
@@ -529,21 +555,31 @@ VM 을 다시 켠 뒤 Kubernetes 가 올라오는 데 1~2분 걸린다.
 vagrant destroy -f
 ```
 
+## 설치 파일을 지워도 되나
+
+실습이 끝난 뒤에는 `_prgs` 를 지워도 된다. 다만 VM 을 다시 만들 일이 있으면 box 는 남겨 두는 편이 낫다.
+
+* 등록된 box 는 `C:\Users\<계정>\.vagrant.d\boxes\` 로 복사되므로, **등록을 마쳤다면 `_prgs` 의 `.box` 파일 자체는 지워도** 실습에 지장이 없다.
+
 # 자주 막히는 곳
 
-| 증상                                                       | 원인·해결                                                                                                     |
-| :--------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------ |
-| `vagrant up` 이 VM 을 못 띄운다                            | Hyper-V·메모리 무결성이 켜져 있다. 0장의 사전 작업을 다시 확인한다. `HypervisorPresent` 가 `False` 인지 볼 것 |
-| `Timed out while waiting for the machine to boot`          | **VM 이 죽은 것이 아닐 수 있다.** 아래 "부팅이 오래 걸릴 때" 참조                                             |
-| `vagrant up` 이 box 를 내려받으려 한다                     | box 등록을 건너뛰었거나 이름이 다르다. `vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다               |
-| 스크립트가 `\r` 오류를 낸다                                | `core.autocrlf` 를 끄지 않고 clone 했다. `git config --global core.autocrlf false` 후 다시 clone              |
-| i1 에서 `ssh vm01` 이 암호를 묻는다                        | 호스트에서 `vagrant provision vm01`                                                                           |
-| `ansible ping` 이 실패한다                                 | i1 에서 `bash /vagrant/doVerify.sh` — 어느 단계에서 끊기는지 나온다                                           |
-| 노드가 전부 10.0.2.15 로 보인다                            | inventory 에 `ip=` 가 빠졌다. `bash /vagrant/doMakeInventory.sh`                                              |
-| Windows 에서 `curl vm01:...` 이 안 된다                    | 3장의 hosts 파일 등록을 빠뜨렸다                                                                              |
-| `Ansible must be between 2.16.4 and 2.17.0` 로 즉시 멈춘다 | venv 를 켜지 않았다. 9.1 참조 — `source ~/ksvenv/bin/activate` 후 다시 실행                                   |
-| cluster.yml 이 중간에 멈춘다                               | fact 캐시를 지우고 재실행 (9장 참조)                                                                          |
-| 메모리가 모자라 PC 가 멈춘다                               | [0.VagrantForLocal/1.vm4/README.md](0.VagrantForLocal/1.vm4/README.md) 의 "메모리가 부족할 때"                |
+| 증상                                                                | 원인·해결                                                                                                                                                          |
+| :------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `vagrant up` 이 VM 을 못 띄운다                                     | Hyper-V·메모리 무결성이 켜져 있다. 0장의 사전 작업을 다시 확인한다. `HypervisorPresent` 가 `False` 인지 볼 것                                                      |
+| `Timed out while waiting for the machine to boot`                   | **VM 이 죽은 것이 아닐 수 있다.** 아래 "부팅이 오래 걸릴 때" 참조                                                                                                  |
+| `vagrant up` 이 box 를 내려받으려 한다                              | box 등록을 건너뛰었거나 이름이 다르다. `vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다                                                                    |
+| 스크립트가 `\r` 오류를 낸다                                         | `core.autocrlf` 를 끄지 않고 clone 했다. `git config --global core.autocrlf false` 후 다시 clone                                                                   |
+| i1 에서 `ssh vm01` 이 암호를 묻는다                                 | 호스트에서 `vagrant provision vm01`                                                                                                                                |
+| `ansible ping` 이 실패한다                                          | i1 에서 `bash /vagrant/doVerify.sh` — 어느 단계에서 끊기는지 나온다                                                                                                |
+| 노드가 전부 10.0.2.15 로 보인다                                     | inventory 에 `ip=` 가 빠졌다. `bash /vagrant/doMakeInventory.sh`                                                                                                   |
+| Windows 에서 `curl vm01:...` 이 안 된다                             | 3장의 hosts 파일 등록을 빠뜨렸다                                                                                                                                   |
+| `Ansible must be between 2.16.4 and 2.17.0` 로 즉시 멈춘다          | venv 를 켜지 않았다. 9.1 참조 — `source ~/ksvenv/bin/activate` 후 다시 실행                                                                                        |
+| cluster.yml 이 중간에 멈춘다                                        | fact 캐시를 지우고 재실행 (9장 참조)                                                                                                                               |
+| 메모리가 모자라 PC 가 멈춘다                                        | [0.VagrantForLocal/1.vm4/README.md](0.VagrantForLocal/1.vm4/README.md) 의 "메모리가 부족할 때"                                                                     |
+| **VirtualBox 설치가 1초 만에 실패한다**                             | `2_vc_redist.x64.exe` 를 `3_VirtualBox` 보다 먼저 설치하지 않았다. `msiexec` 오류 1603 이 그 증상이다                                                              |
+| **Docker Desktop 을 깔았더니 `vagrant up` 이 안 된다**              | Hyper-V 가 켜졌다. **이 실습에 Docker Desktop 은 필요 없다** — 컨테이너는 VM 안에서 돈다. 관리자 PowerShell 에서 `bcdedit /set hypervisorlaunchtype off` 후 재부팅 |
+| **Docker Desktop 이 `Virtualization support not detected` 로 뜬다** | Hyper-V 를 껐기 때문이며 **정상이다.** Docker Desktop 은 이 실습에서 쓰지 않는다 — 컨테이너 실습은 11장처럼 VM(i1) 안의 Docker 로 한다                             |
+| **VM 이 깨졌거나 설치가 끝나지 않았다**                             | 배포 폴더의 `_vm` 안에 완성본이 있다. **강사 안내를 받고 진행한다** — 그 안의 `README.md` 에 절차가 있다                                                           |
 
 ## 부팅이 오래 걸릴 때
 
