@@ -26,14 +26,13 @@ Windows                                   Windows
 
 AWS 경로와 같은 번호 체계다. 진입점 문서 둘이 이 폴더 직하에 있고, 번호 폴더가 그 상세를 담는다.
 
-| 폴더·파일                                                  | 무엇인가                                                            |
-| :--------------------------------------------------------- | :------------------------------------------------------------------ |
-| [0.pc_setting/README.md](0.pc_setting/README.md)           | **① 기본 설치** — 프로그램·Windows 설정·소스 내려받기               |
-| [1.pc.byVagrant/README.md](1.pc.byVagrant/README.md)       | **② 단계별 절차서** — VM 만들기부터 Kubespray 까지                  |
-| [1.pc.byVagrant](1.pc.byVagrant/)                          | VM 4대 생성·프로비저닝. **호스트(Windows)에서** 실행                |
-| [2.pc.InstanceForKubernetes](2.pc.InstanceForKubernetes/)  | inventory·hosts·점검. **i1 안에서** 실행                            |
-| [cf_install_DockerDesktop.md](cf_install_DockerDesktop.md) | **대체 경로** — Vagrant 를 쓸 수 없는 PC 에서 Docker + kind 로 진행 |
-| [cf_inVm](cf_inVm/)                                        | 참고용 — VM 1대 안에 전부 넣는 중첩 방식                            |
+| 폴더·파일                                                 | 무엇인가                                              |
+| :-------------------------------------------------------- | :---------------------------------------------------- |
+| [0.pc_setting/README.md](0.pc_setting/README.md)          | **① 기본 설치** — 프로그램·Windows 설정·소스 내려받기 |
+| [1.pc.byVagrant/README.md](1.pc.byVagrant/README.md)      | **② 단계별 절차서** — VM 만들기부터 Kubespray 까지    |
+| [1.pc.byVagrant](1.pc.byVagrant/)                         | VM 4대 생성·프로비저닝. **호스트(Windows)에서** 실행  |
+| [2.pc.InstanceForKubernetes](2.pc.InstanceForKubernetes/) | inventory·hosts·점검. **i1 안에서** 실행              |
+| [cf_inVm](cf_inVm/)                                       | 참고용 — VM 1대 안에 전부 넣는 중첩 방식              |
 
 * **AWS 경로의 `2.aws.Create_IAM_Key` 에 해당하는 것이 없다.** 자격증명이 필요 없는 로컬 환경이라 폴더가 둘뿐이다.
 * 번호는 **진행 순서**다 — `1.*` 이 VM 을 만들고 `2.*` 가 클러스터를 구성한다.
