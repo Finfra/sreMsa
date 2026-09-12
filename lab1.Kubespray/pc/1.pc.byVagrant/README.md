@@ -52,8 +52,8 @@ config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 
 **그 문서를 마치고 돌아온다.** 아래 상태여야 이어서 진행할 수 있다.
 
-```bash
-cd ~/sreMsa/lab1.Kubespray/pc/1.pc.byVagrant
+```powershell
+cd $env:USERPROFILE\Downloads\sreMsa\lab1.Kubespray\pc\1.pc.byVagrant
 vagrant box list      # bento/ubuntu-24.04 가 보여야 한다
 ```
 
@@ -341,14 +341,15 @@ lab2 의 `docker build`·`docker run` 실습은 **콘솔 서버 i1 안에서** �
 
 먼저 내 PC 에서 deb 를 소스 폴더로 옮긴다(탐색기로 복사해도 된다). 소스 폴더는 VM 안에서 `/sreMsa` 로 보인다.
 
-```bash
-cp -r ~/Downloads/_prgs/docker ~/sreMsa/
+```powershell
+Copy-Item -Recurse $env:USERPROFILE\Downloads\_prgs\docker `
+          $env:USERPROFILE\Downloads\sreMsa\
 ```
 
 i1 에 접속해 설치한다.
 
-```bash
-cd ~/sreMsa/lab1.Kubespray/pc/1.pc.byVagrant
+```powershell
+cd $env:USERPROFILE\Downloads\sreMsa\lab1.Kubespray\pc\1.pc.byVagrant
 .\doSsh.ps1 i1
 
 # --- 여기부터 i1 안 ---

@@ -59,7 +59,7 @@ C:\Users\<계정>\Downloads\
 수강생 전원이 같은 파일을 동시에 내려받으면 교육장 회선이 막혀 실습을 시작조차 못 한다.
 box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 미리 받아 배포한다.
 
-**구글 드라이브에서 바로 실행하지 말고 로컬(`~/Downloads`)로 복사한 뒤 쓴다.** 드라이브에서 직접 실행하면
+**구글 드라이브에서 바로 실행하지 말고 로컬(`다운로드` 폴더)로 복사한 뒤 쓴다.** 드라이브에서 직접 실행하면
 파일을 그때그때 내려받느라 느리고, 회선이 끊기면 설치가 중단된다.
 
 > ⚠️ **`docker/` 는 이 단계에서 설치하지 않는다.** VM 안의 Ubuntu 에 까는 것이며 [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 11장에서 쓴다.
@@ -69,8 +69,8 @@ box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 
 
 **설치 전에 파일이 온전히 복사됐는지 확인한다.** 복사 도중 끊기면 설치가 알 수 없는 오류로 실패한다.
 
-```bash
-cd ~/Downloads/_prgs
+```powershell
+cd $env:USERPROFILE\Downloads\_prgs
 Get-FileHash *.exe,*.msi,*.box -Algorithm SHA256 |
   ForEach-Object { "{0}  {1}" -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) }
 ```
