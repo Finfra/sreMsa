@@ -12,7 +12,7 @@ date: 2026.08.30
 
 Windows                            Windows
 └ VirtualBox                       └ VirtualBox
-  ├ i1                               └ i1  ← 이 한 대만 배포하면 된다
+  ├ i1                               └ i1  ← 이 한 대만 만들면 된다
   ├ vm01                                ├ VirtualBox + Vagrant
   ├ vm02                                └ ├ vm01
   └ vm03                                  ├ vm02
@@ -38,7 +38,7 @@ lscpu | grep -i virtualization    # VT-x 또는 AMD-V 가 보여야 한다
 ls -la /dev/kvm                   # 이 장치가 있어야 실제로 동작한다
 ```
 
-jpc1(Intel i7-6700T · Skylake)에서 둘 다 확인했다. 지원하지 않는 호스트라면 이웃 폴더(1.pc.byVagrant)를 쓴다.
+둘 다 보이면 이 폴더를 쓸 수 있다. 하나라도 없으면 이웃 폴더(1.pc.byVagrant)를 쓴다.
 
 # 자원 요구 — 이쪽이 더 빡빡하다
 
@@ -103,7 +103,7 @@ fatal: "Ansible must be between 2.16.4 and 2.17.0 exclusive - you have 2.17.14"
 
 `installOnEc2.sh` 가 깔아 주는 ansible 은 **core 2.17.x** 인데 kubespray `release-2.28` 은 **2.16.x** 를 요구한다. `requirements.txt` 가 `ansible==9.13.0` 을 고정하므로 전용 venv 로 맞춘다 — `doInner.sh` 가 자동으로 만든다.
 
-이것은 이웃 폴더(1.pc.byVagrant) 방식에도 똑같이 해당한다(2026-08-30 실측).
+이것은 이웃 폴더(1.pc.byVagrant) 방식에도 똑같이 해당한다.
 
 ## Ubuntu 24.04 리포에는 `vagrant` 가 없다
 

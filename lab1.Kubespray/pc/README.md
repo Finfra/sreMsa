@@ -8,7 +8,7 @@ date: 2026.09.12
 
 **[0.pc_setting/README.md](0.pc_setting/README.md) 를 연다.** 프로그램 설치부터 소스 준비까지 그 문서가 다루고, 이어서 [1.pc.byVagrant/README.md](1.pc.byVagrant/README.md) 가 VM 만들기부터 Kubernetes 설치까지 이어 간다.
 
-나머지 폴더는 진입점이 필요한 대목에서 불러 쓰는 **상세 절차서**다. 직접 열어서 시작하지 않는다.
+나머지 폴더는 진행 중에 필요할 때 열게 된다. **직접 열어서 시작하지 않는다.**
 
 | 폴더                                                      | 무엇이 들어 있나                                                   |
 | :-------------------------------------------------------- | :----------------------------------------------------------------- |
@@ -17,6 +17,6 @@ date: 2026.09.12
 | [2.pc.InstanceForKubernetes](2.pc.InstanceForKubernetes/) | inventory·hosts·점검. **i1 안에서** 실행                           |
 | [cf_inVm](cf_inVm/)                                       | 참고 — VM 1대 안에 전부 넣는 중첩 방식                             |
 
-* AWS 갈래의 `2.aws.Create_IAM_Key` 에 해당하는 것이 없다. 자격증명이 필요 없는 로컬 환경이다.
-* 수업은 **`1.pc.byVagrant`** 로 진행한다. `cf_inVm` 은 VM 하나로 배포해야 할 때를 위한 참고 구현이며, 고르는 기준은 [cf_inVm/README.md](cf_inVm/README.md) 에 있다.
-* AWS 계정으로 실습하려면 이 갈래 대신 [aws](../aws/README.md) 로 간다.
+* **수업은 `1.pc.byVagrant` 로 진행한다.** `cf_inVm` 은 강사 안내가 있을 때만 쓴다.
+* 내 PC 에 만들기 때문에 AWS 계정이나 키는 필요 없다.
+* AWS 계정으로 실습하는 경우라면 이 갈래 대신 [aws](../aws/README.md) 로 간다.

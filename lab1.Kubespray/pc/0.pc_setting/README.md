@@ -88,8 +88,8 @@ Get-FileHash *.exe,*.msi,*.box -Algorithm SHA256 |
 > Redistributable Package being installed first.
 > ```
 >
-> 다른 프로그램을 쓰다 보면 대개 딸려 들어오기 때문에 기존 PC 에서는 잘 드러나지 않는다.
-> **갓 설치한 Windows 에서만 나타나는 함정**이라 실기에서 처음 확인했다.
+> 다른 프로그램을 쓰다 보면 대개 딸려 들어오므로 기존 PC 에서는 잘 드러나지 않는다.
+> **갓 설치한 Windows 에서 특히 자주 만난다.**
 
 **PowerShell 을 쓴다.** 이 문서의 명령은 모두 PowerShell 기준이며, 별도 터미널을 설치하지 않는다.
 
@@ -117,7 +117,7 @@ No plugins installed.
 
 > 이미 같은 버전을 설치해 두었다면 그대로 써도 된다.
 > 다만 **Vagrant box 만큼은 반드시 `_prgs` 것을 쓴다**(아래 "Vagrant box 등록" 절).
-> 회선을 가장 많이 잡아먹는 것이 box 이기 때문이다.
+> 인터넷에서 받으면 621MB 를 내려받게 된다.
 >
 > 인터넷에서 직접 받아야 하는 상황이라면 아래가 원본 주소다.
 > VirtualBox https://www.virtualbox.org/wiki/Downloads ·
@@ -177,8 +177,7 @@ vagrant box list
 bento/ubuntu-24.04 (virtualbox, 0, (amd64))
 ```
 
-버전이 `0` 으로 보이는 것이 정상이다. 로컬 파일에서 추가하면 버전 정보가 없기 때문이며 실습에 지장이 없다.
-[settings.yml](../1.pc.byVagrant/settings.yml) 의 `box.version` 을 비워 둔 것도 이 때문이다.
+버전이 `0` 으로 보이는 것이 정상이다. 로컬 파일에서 추가하면 버전 정보가 없으며 실습에 지장이 없다.
 
 > 잘못된 이름으로 등록했다면 지우고 다시 넣는다.
 > ```powershell
@@ -210,10 +209,8 @@ flowchart LR
 # 1. 소스 확인
 
 **따로 내려받지 않는다.** 0장에서 `다운로드` 로 복사한 `sreMsa` 폴더가 곧 실습 소스다.
-`git clone` 을 쓰던 절차는 없앴다 — 배포 폴더에 같은 내용이 이미 들어 있고,
-교육장 회선으로 20명이 동시에 받으면 그것대로 막히기 때문이다.
 
-PowerShell 에서 폴더가 제대로 복사됐는지만 본다.
+PowerShell 에서 폴더가 제대로 복사됐는지 확인한다.
 
 ```powershell
 cd $env:USERPROFILE\Downloads\sreMsa
@@ -225,10 +222,6 @@ lab1.Kubespray  lab2.Kubernetes  lab3.Istio  lab4.ArgoCd  lab5.Zipkin  lab6.Serv
 ```
 
 이 여섯 폴더가 보이면 된다. 하나라도 없으면 복사가 덜 끝난 것이므로 `다운로드` 폴더를 다시 확인한다.
-
-> **Git 을 설치하지 않는 이유** — 소스를 복사해 쓰므로 `git clone` 이 필요 없고,
-> 실습 중 호스트에서 쓰는 명령은 PowerShell 과 Windows 기본 `ssh` 로 모두 된다.
-> 설치 프로그램이 하나 줄면 교육장에서 막힐 자리도 하나 준다.
 
 # 다음 단계
 

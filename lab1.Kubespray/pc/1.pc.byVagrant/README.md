@@ -19,10 +19,10 @@ AWS 없이 PC 한 대에서 Kubernetes 클러스터를 만든다.
 ```
 
 Windows 호스트에는 **VirtualBox 와 Vagrant 만** 있으면 된다.
-Ansible 은 호스트가 아니라 i1 안에서 돈다. **Vagrant 플러그인도 쓰지 않는다** — `vagrant plugin list` 가
-`No plugins installed` 인 상태로 4대가 동작하는 것을 실기에서 확인했다(2026-08-26).
-예전 자료들이 Windows 에 `vagrant-winnfsd` 를 필수로 안내하는 것은 공유 폴더를 NFS 로 쓰던 시절의 이야기이고,
-여기서는 VirtualBox 기본 공유를 쓴다. 수강생에게 배포하는 환경일수록 설치 단계와 버전 충돌 지점을 줄이는 편이 낫다.
+Ansible 은 호스트가 아니라 i1 안에서 돈다. **Vagrant 플러그인은 설치하지 않는다** — `vagrant plugin list` 가
+`No plugins installed` 인 상태로 실습이 끝까지 진행된다.
+예전 자료들이 Windows 에 `vagrant-winnfsd` 를 안내하는 경우가 있는데, 그것은 공유 폴더를 NFS 로 쓰던 방식이고
+여기서는 VirtualBox 기본 공유를 쓰므로 필요 없다.
 
 [Vagrantfile](Vagrantfile) 의 아래 한 줄은 플러그인을 요구하는 것이 아니라,
 **이미 설치돼 있는 경우에만** 그 동작을 끄는 가드다.
@@ -40,10 +40,6 @@ config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 | vm02 | control plane + worker                                         | 192.168.56.12 |     2 |     3072MB |
 | vm03 | worker                                                         | 192.168.56.13 |     2 |     2560MB |
 |      |                                                                | **합계**      | **7** | **9728MB** |
-
-> 이전 판까지 쓰던 `rayshoo/vansinetes` 는 더 이상 동작하지 않는다.
-> 폐쇄된 `apt.kubernetes.io` 저장소에서 Kubernetes 1.20.2 를 받으려 하기 때문이며, 주소를 바꿔도 살아나지 않는다.
-> 그 경로는 이 문서로 대체되었다.
 
 # 시작하기 전에 — 기본 설치를 먼저 끝낸다 ★
 
@@ -65,25 +61,31 @@ vagrant box list      # bento/ubuntu-24.04 가 보여야 한다
 vagrant up
 ```
 
-* 앞에서 box 를 등록해 두었으므로 **이미지 다운로드는 일어나지 않는다.**
-  VM 4대를 만들고 프로비저닝하는 데 **20~40분** 을 예상한다(i1 의 도구 설치가 대부분이다).
-* `vagrant up` 이 box 를 받으려 한다면 등록이 안 된 것이다. `vagrant box list` 로 이름을 확인한다.
-* box 업데이트 확인도 꺼 두었다([settings.yml](settings.yml) 의 `box.check_update`).
-  교육장에서 여러 명이 동시에 `vagrant up` 을 할 때 그 조회가 겹치는 것을 막기 위함이다.
-* i1 이 가장 먼저 만들어진다. i1 이 ssh 키를 만들어야 vm01~vm03 이 그 키를 받기 때문에 순서가 중요하다.
-  `vagrant up` 을 그냥 실행하면 순서는 알아서 지켜진다.
-* 중간에 실패하면 그 VM 만 다시 만든다.
+**20~40분 걸린다.** VM 4대를 만들고 그 안에 도구를 설치하는 시간이다. 중간에 화면이 멈춘 듯 보여도 기다린다.
+
+* 만들어지는 순서(i1 → vm01~vm03)는 신경 쓰지 않아도 된다. `vagrant up` 이 알아서 지킨다.
+* **box 를 인터넷에서 받으려 하면 멈추고** `vagrant box list` 로 `bento/ubuntu-24.04` 가 있는지 본다. 없으면 0장의 box 등록을 다시 한다.
+* 한 대만 실패했다면 그 VM 만 다시 만든다.
 
 ```powershell
 vagrant destroy -f vm02
 vagrant up vm02
 ```
 
-만들어진 VM 을 확인한다.
+* 확인 : 네 대가 모두 `running` 이면 된다.
 
 ```powershell
 vagrant status
 ```
+
+```
+i1                        running (virtualbox)
+vm01                      running (virtualbox)
+vm02                      running (virtualbox)
+vm03                      running (virtualbox)
+```
+
+하나라도 `poweroff` 나 `not created` 면 그 VM 만 다시 만든다.
 
 # 3. Windows 의 hosts 파일에 등록
 
@@ -124,16 +126,15 @@ vagrant ssh i1
 ```
 
 접속하면 **`ubuntu` 계정으로 바로 들어간다.** 이 실습의 명령이 전부 ubuntu 기준이라
-프로비저닝이 그렇게 맞춰 두었다. `sudo su - ubuntu` 를 따로 칠 필요가 없다.
+`sudo su - ubuntu` 를 따로 칠 필요가 없다.
 
 > AWS 경로의 [aws/3.aws.InstanceForKubernetes/README.md](../../aws/3.aws.InstanceForKubernetes/README.md) 0단계 `su - ubuntu` 에 해당한다.
 > AWS 키 설정(`TF_VAR_AWS_ACCESS_KEY` 등)은 로컬에서 필요 없으므로 건너뛴다.
 
 ## 접속이 느리다면 — `doSsh.ps1` 를 쓴다 ★
 
-`vagrant ssh` 는 명령 하나에 **5~10초**가 걸린다. Vagrant CLI 가 Ruby 런타임과
-내장 플러그인 수십 개를 매번 새로 로드하는 구조 때문이고, **VM 이나 PC 가 느린 것이 아니다.**
-실기(Windows 10 · i7-6700T · 16GB)에서 측정한 값이다.
+`vagrant ssh` 는 명령 하나에 **5~10초**가 걸린다. Vagrant 가 명령마다 자기 런타임을 새로 띄우기 때문이며,
+**VM 이나 PC 가 느린 것이 아니다.** 자주 드나들 때는 아래 방법이 훨씬 빠르다.
 
 | 명령                       |       소요 |
 | :------------------------- | ---------: |
@@ -294,8 +295,8 @@ ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
   cluster.yml
 ```
 
-* **15~20분** 걸린다. 16GB·8코어 PC 에서 `cluster.yml` 만 **15분 20초**, `vagrant up` 부터 세면 **24분 15초** 였다(2026-08-30·08-31 두 차례 실측).
-  PC 가 느리면 더 걸릴 수 있으나, 45분을 넘기면 정상 진행이 아니라고 보고 아래 "자주 막히는 곳" 을 확인한다.
+* **15~20분** 걸린다(16GB·8코어 기준). PC 가 느리면 더 걸릴 수 있다.
+  **45분을 넘기면** 정상 진행이 아니므로 아래 "자주 막히는 곳" 을 확인한다.
 * 두 번째 설치라면 먼저 캐시를 지운다 (AWS 경로 3.1 절과 동일).
 
 ```bash
@@ -461,8 +462,8 @@ Get-Counter "\PhysicalDisk(_Total)\Avg. Disk sec/Transfer"
 
 # ─────────── 여기부터는 참고 자료 ───────────
 
-아래는 실습 중에 순서대로 읽는 내용이 아니라, **이 폴더가 어떻게 구성돼 있고 왜 그런지**를
-알아야 할 때 보는 절이다.
+아래는 순서대로 따라가는 내용이 아니다. **막혔을 때나 더 알고 싶을 때** 찾아보면 된다 —
+어떤 파일이 무슨 일을 하는지, AWS 경로와 무엇이 같고 다른지, 자원을 어떻게 나눠 쓰는지가 들어 있다.
 
 # 파일
 
@@ -603,26 +604,10 @@ vagrant up vm04
 vagrant provision          # 전 노드 /etc/hosts 갱신
 ```
 
-# 교육장 회선 보호
+# 로그인 메시지를 꺼 두었다
 
-수강생이 동시에 실습하면 같은 파일을 여러 명이 한꺼번에 내려받아 회선이 막힌다.
-box 하나가 621MB 이므로 20명이면 12GB 가 한꺼번에 흐른다. 두 가지로 막는다.
-
-| 수단                                        | 무엇을 막는가                                                            |
-| :------------------------------------------ | :----------------------------------------------------------------------- |
-| 강사 제공 `_prgs` 폴더                      | box·설치 파일 다운로드 자체. `vagrant box add` 로 로컬 파일에서 등록한다 |
-| `settings.yml` 의 `box.check_update: false` | `vagrant up` 마다 Vagrant Cloud 에 새 버전을 물어보는 조회               |
-
-`check_update` 는 파일을 받는 것은 아니지만 `vagrant up` 마다 외부 요청이 나가므로,
-여러 명이 동시에 시작하는 순간 그 요청이 겹친다. 강사가 새 box 를 받아 볼 때만 `true` 로 바꾼다.
-
-수강생 안내는 [0.pc_setting/README.md](../0.pc_setting/README.md) 에 들어 있다 — 배포 폴더 구성·설치 순서·box 등록이 그곳에 있다.
-
-# motd 를 꺼 두었다
-
-Ubuntu 의 동적 motd 8개가 로그인마다 약 30초를 먹는다. `pam_motd` 는 **비대화형 ssh 에도** 걸리므로
-ansible 이 노드에 붙을 때마다 그 비용을 낸다. [scripts/common.sh](scripts/common.sh) 가 전 노드에서
-이를 끈다 — 실측 **30초 → 0.3초**.
+Ubuntu 의 접속 안내(motd)는 로그인마다 시간을 잡아먹고 ansible 이 노드에 붙을 때마다 그 비용을 낸다.
+[scripts/common.sh](scripts/common.sh) 가 전 노드에서 이를 꺼 둔다. 접속했을 때 안내 문구가 없는 것이 정상이다.
 
 # 이 폴더와 cf_inVm 이 나눠 쓰는 것
 

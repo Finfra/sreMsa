@@ -4,15 +4,15 @@ description: 로컬 경로의 클러스터 구성 스크립트 — i1 안에서 
 date: 2026.09.12
 ---
 
-# 이 폴더는 무엇인가
+# 여기서 하는 일
 
-AWS 경로의 [3.aws.InstanceForKubernetes](../../aws/3.aws.InstanceForKubernetes/) 에 대응하는 **로컬판**이다.
-노드를 만드는 일은 [1.pc.byVagrant](../1.pc.byVagrant/) 가 이미 끝냈고, 여기서는 **Kubespray 를 돌릴 수 있는 상태로 다듬는다.**
+VM 은 [1.pc.byVagrant](../1.pc.byVagrant/) 에서 이미 만들었다. 이 폴더에서는 **Kubespray 를 돌릴 수 있는 상태로 맞춘다.**
 
-| 경로     | 인스턴스를 만드는 것       | 클러스터를 구성하는 것                  |
-| :------- | :------------------------- | :-------------------------------------- |
-| AWS      | Terraform (`*.tf`)         | `3.aws.InstanceForKubernetes` 의 절차서 |
-| 로컬(PC) | Vagrant (`1.pc.byVagrant`) | **이 폴더**                             |
+| 순서  | 하는 일                                |
+| :---: | :------------------------------------- |
+| **1** | 노드 이름을 `/etc/hosts` 에 넣는다     |
+| **2** | Kubespray inventory 를 만든다          |
+| **3** | 24개 항목으로 준비가 끝났는지 점검한다 |
 
 # ⚠️ 실행 위치 — 전부 i1 **안에서** 돈다
 
@@ -46,20 +46,28 @@ BASE=/sreMsa/lab1.Kubespray/pc/2.pc.InstanceForKubernetes
 
 bash $BASE/doSetHosts.sh        # 1) 이름 해석
 bash $BASE/doMakeInventory.sh   # 2) inventory 생성
-bash $BASE/doVerify.sh          # 3) 점검 — 24/24 면 준비 완료
+bash $BASE/doVerify.sh          # 3) 점검
 ```
 
-`doSetHosts.sh` 가 읽는 `hosts.generated` 는 Vagrant 가 **`1.pc.byVagrant` 폴더에** 만들고, 그 폴더가 i1 안에서 `/vagrant` 로 보인다. 그래서 스크립트는 이 폴더에 있으면서도 `/vagrant/hosts.generated` 를 참조한다.
+* 확인 : 마지막 점검에서 **실패가 0** 이면 준비가 끝난 것이다.
 
-# AWS 경로와 다른 점
+```
+==============================================
+ 통과 24 · 실패 0
+==============================================
+ 모두 통과. Kubespray 를 진행해도 된다.
+```
 
-| 항목      | AWS                         | 로컬                                    |
-| :-------- | :-------------------------- | :-------------------------------------- |
-| 노드 생성 | `terraform apply`           | `vagrant up` (1.pc.byVagrant)           |
-| hosts     | `doSetHosts.sh` (같은 폴더) | `doSetHosts.sh` (이 폴더) — 내용도 같다 |
-| inventory | Kubespray 샘플 복사 후 편집 | `doMakeInventory.sh` 가 `ip=` 까지 생성 |
+실패가 있으면 그 항목이 `[FAIL]` 로 표시되고 이유가 함께 나온다. 그 줄을 보고 해당 단계를 다시 실행한다.
+`ansible ping` 에서 막히면 [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 의 "자주 막히는 곳" 을 본다.
 
-inventory 에 `ip=` 를 넣는 것이 **로컬 경로에서 가장 자주 걸리는 지점**이다. NAT 때문에 노드가 전부 `10.0.2.15` 로 보이므로, 이것을 넣지 않으면 Kubespray 가 세 노드를 한 대로 인식한다. 자세한 근거는 [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 의 "AWS 경로와의 대조" 절에 있다.
+# ⚠️ 가장 자주 걸리는 곳 — inventory 의 `ip=`
+
+VirtualBox VM 은 네트워크 카드가 두 장이고, 그중 첫 번째(NAT)의 주소가 **모든 VM 에서 `10.0.2.15` 로 같다.**
+`ip=` 를 주지 않으면 Kubespray 가 세 노드를 한 대로 인식해 클러스터가 만들어지지 않는다.
+
+`doMakeInventory.sh` 가 이것을 자동으로 넣어 주므로 **그 스크립트를 쓰면 걸릴 일이 없다.**
+손으로 inventory 를 고쳤다면 각 줄에 `ip=` 가 있는지 확인한다.
 
 # 다음 단계
 
