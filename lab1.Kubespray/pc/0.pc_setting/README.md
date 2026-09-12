@@ -4,7 +4,7 @@
 프로그램을 깔고, Windows 설정을 바꾸고, 실습 소스를 받는 데까지를 다룬다.
 
 * **이 문서만 마치면** VM 을 만들 준비가 끝난다. 그 다음은
-  [2.Install_k8s_on_PC.md](2.Install_k8s_on_PC.md) **2장** 부터 이어서 진행한다.
+  [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 의 **2장** 부터 이어서 진행한다.
 * 장 번호는 그 문서와 이어진다 — 여기가 0~1장, 거기가 2장부터다.
 * 이 문서는 강사 배포 폴더 `_prgs` 안에도 같은 내용으로 들어 있다.
 
@@ -62,7 +62,7 @@ box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 
 **구글 드라이브에서 바로 실행하지 말고 로컬(`~/Downloads`)로 복사한 뒤 쓴다.** 드라이브에서 직접 실행하면
 파일을 그때그때 내려받느라 느리고, 회선이 끊기면 설치가 중단된다.
 
-> ⚠️ **`docker/` 는 이 단계에서 설치하지 않는다.** VM 안의 Ubuntu 에 까는 것이며 [2.Install_k8s_on_PC.md](2.Install_k8s_on_PC.md) 11장에서 쓴다.
+> ⚠️ **`docker/` 는 이 단계에서 설치하지 않는다.** VM 안의 Ubuntu 에 까는 것이며 [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 11장에서 쓴다.
 > **내 PC(Windows)에 Docker Desktop 을 설치하지 말 것** — Hyper-V 가 켜져 VirtualBox 가 VM 을 띄우지 못하게 된다.
 
 설치 옵션은 전부 기본값 그대로 둔다.
@@ -153,7 +153,7 @@ Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격
 메모리 무결성까지 껐는지 다시 확인하고 재부팅한다.
 
 **Docker Desktop 을 쓴 적이 있다면 이 절이 특히 중요하다.** 그것이 Hyper-V 를 켜 두기 때문이다.
-이 실습은 Hyper-V 를 **끈 상태로 끝까지** 진행한다 — 컨테이너 실습도 VM 안에서 하므로([2.Install_k8s_on_PC.md](2.Install_k8s_on_PC.md) 11장) 중간에 다시 켤 일이 없다.
+이 실습은 Hyper-V 를 **끈 상태로 끝까지** 진행한다 — 컨테이너 실습도 VM 안에서 하므로([1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 11장) 중간에 다시 켤 일이 없다.
 
 ## Git 줄바꿈 설정
 
@@ -237,5 +237,5 @@ lab1.Kubespray  lab2.Kubernetes  lab3.Istio  lab4.ArgoCd  lab5.Zipkin  lab6.Serv
 cd ~/sreMsa/lab1.Kubespray/pc/1.pc.byVagrant
 ```
 
-→ [2.Install_k8s_on_PC.md](2.Install_k8s_on_PC.md) 의 **2. VM 만들기** 로 이어서 진행한다.
+→ [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 의 **2. VM 만들기** 로 이어서 진행한다.
 
