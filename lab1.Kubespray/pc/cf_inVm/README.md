@@ -81,7 +81,7 @@ bash /sreMsa/lab1.Kubespray/pc/cf_inVm/inner/doInner.sh
 ```bash
 source ~/ksvenv/bin/activate
 cd ~/kubespray
-bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doMakeInventory.sh
+bash /sreMsa/lab1.Kubespray/pc/2.pc.InstanceForKubernetes/doMakeInventory.sh
 ansible-playbook --flush-cache -u ubuntu -b --become --become-user=root \
   -i inventory/inventory.ini --private-key ~/.ssh/id_rsa cluster.yml
 ```

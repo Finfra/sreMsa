@@ -16,8 +16,8 @@
 | **②** | [pc/1.pc.byVagrant/README.md](pc/1.pc.byVagrant/README.md) | 단계별 절차서 — VM 만들기부터 Kubespray 까지 (2장~)     |
 
 * ①은 강사 배포 폴더 `_prgs` 안에도 같은 내용으로 동봉된다.
-* ①②가 참조하는 상세 폴더는 둘이다 — `1.pc.byVagrant`(VM 생성, 호스트에서) · `3.pc.InstanceForKubernetes`(inventory·점검, i1 안에서).
-  AWS 의 `2.aws.Create_IAM_Key` 는 자격증명 발급이라 로컬에 대응물이 없어 **번호 2를 비워 두었다.**
+* ①②가 참조하는 상세 폴더는 둘이다 — `1.pc.byVagrant`(VM 생성, 호스트에서) · `2.pc.InstanceForKubernetes`(inventory·점검, i1 안에서).
+  AWS 의 `2.aws.Create_IAM_Key`(자격증명 발급)에 해당하는 것이 로컬에는 없으므로 폴더가 둘뿐이다.
 * **수업은 `1.pc.byVagrant` 로 진행한다.** VM 1대 안에 전부 넣는 `cf_inVm` 은 참고용이며, 고르는 기준은 [pc/README.md](pc/README.md) 에 있다.
 * Windows 호스트에는 VirtualBox·Vagrant 만 있으면 된다. Ansible 은 i1 안에서 돈다.
 

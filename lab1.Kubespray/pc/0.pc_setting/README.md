@@ -63,6 +63,7 @@ box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 
 
 > ⚠️ **`docker/` 는 이 단계에서 설치하지 않는다.** VM 안의 Ubuntu 에 까는 것이며 [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 11장에서 쓴다.
 > **내 PC(Windows)에 Docker Desktop 을 설치하지 말 것** — Hyper-V 가 켜져 VirtualBox 가 VM 을 띄우지 못하게 된다.
+> 다른 일로 꼭 필요하다면 [cf_install_DockerDesktop.md](cf_install_DockerDesktop.md) 에 설치와 **되돌리는** 절차가 있다.
 
 설치 옵션은 전부 기본값 그대로 둔다.
 
@@ -139,7 +140,7 @@ Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격
 `Windows 보안 → 장치 보안 → 코어 격리 세부 정보` 에서 **메모리 무결성**을 끄고 재부팅한다.
 
 > 되돌리려면 `bcdedit /set hypervisorlaunchtype auto` + 재부팅.
-> Docker Desktop·WSL2 를 다시 쓸 때 필요하다.
+> Docker Desktop·WSL2 를 다시 쓸 때 필요하며, 그 절차는 [cf_install_DockerDesktop.md](cf_install_DockerDesktop.md) 에 있다.
 
 **재부팅한 뒤 실제로 꺼졌는지 확인한다.** 설정값만 보면 안 된다 — 재부팅 전에도 `Off` 로 보이기 때문이다.
 
