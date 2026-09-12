@@ -1,4 +1,10 @@
 # Node 추가
+
+> ⚠️ **아래는 AWS 경로의 절차다.** 로컬 PC 방식으로 실습 중이라면
+> [lab1.Kubespray/pc/1.pc.byVagrant/README.md](../../lab1.Kubespray/pc/1.pc.byVagrant/README.md) 의
+> **"노드 추가 실습"** 절을 따른다 — `vars.tf` 대신 `settings.yml` 의 `nodes.count` 를 고치고
+> `terraform apply` 대신 `vagrant up vm04` 를 쓴다. 클러스터 반영부터는 양쪽이 같다.
+
 ## Terraform 작업
 1. Terraform 파일 수정 (실습용 Console서버)
 ```

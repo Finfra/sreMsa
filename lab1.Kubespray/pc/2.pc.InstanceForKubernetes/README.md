@@ -7,6 +7,7 @@ date: 2026.09.12
 # 여기서 하는 일
 
 VM 은 [1.pc.byVagrant](../1.pc.byVagrant/) 에서 이미 만들었다. 이 폴더에서는 **Kubespray 를 돌릴 수 있는 상태로 맞춘다.**
+Kubernetes 가 문제없이 동작한다면 생략해도 된다.
 
 | 순서  | 하는 일                                |
 | :---: | :------------------------------------- |
@@ -21,11 +22,12 @@ VM 은 [1.pc.byVagrant](../1.pc.byVagrant/) 에서 이미 만들었다. 이 폴�
 
 ```powershell
 # 호스트에서 i1 로 들어간 뒤
+cd $env:USERPROFILE\Downloads\sreMsa\
 cd lab1.Kubespray\pc\1.pc.byVagrant
 .\doSsh.ps1 i1
 ```
 
-repo 는 i1 안에서 `/sreMsa` 로 마운트되어 있으므로 이 폴더의 경로는 아래가 된다.
+repo 는 i1 안에서 `/sreMsa` 로 마운트되어 있으므로 이 폴더의 경로로 접근 가능하다.
 
 ```
 /sreMsa/lab1.Kubespray/pc/2.pc.InstanceForKubernetes

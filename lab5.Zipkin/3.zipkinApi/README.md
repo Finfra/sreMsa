@@ -8,7 +8,7 @@
 cd ~/brave-example/webmvc4-boot/
 mvn compile exec:java -Dexec.mainClass=brave.example.Backend
 ```
-![](img/2.png)
+<!-- img/2.png 은 저장소에 커밋된 적이 없다(삭제 이력 없음). 백엔드 실행 화면 캡처를 넣을 자리. -->
 
 3. Front End Server에 접근합니다.
   - http://console:8081/
