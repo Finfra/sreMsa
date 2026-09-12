@@ -2,11 +2,17 @@
 실습 환경은 두 갈래다. **둘 다 Kubespray 로 설치하며 명령도 거의 같다.**
 
 ## AWS 경로 (기본)
-| Folder                                             | Contents                                                      |
-| -------------------------------------------------- | ------------------------------------------------------------- |
-| [1.InstanceForTerraform](1.InstanceForTerraform)   | 실습용 Terraform Instance(i1) 구성                            |
-| [2.Create_IAM_Key](2.Create_IAM_Key)               | IAM Key생성                                                   |
-| [3.InstanceForKubernetes](3.InstanceForKubernetes) | Terraform으로 K8s용으로 사용할 Instance 생성 + Kubespray 설치 |
+| Folder                                             | Contents                                                                 |
+| -------------------------------------------------- | ------------------------------------------------------------------------ |
+| [1.Install_app_on_aws.md](1.Install_app_on_aws.md) | **① 환경 준비** — AWS 계정·IAM 키·콘솔 서버(i1) 생성과 도구 설치         |
+| [2.Install_k8s_on_aws.md](2.Install_k8s_on_aws.md) | **② Kubernetes 설치** — Terraform 으로 노드 생성 + Kubespray             |
+| [2.Create_IAM_Key](2.Create_IAM_Key)               | IAM Key생성 (①이 참조)                                                   |
+| [1.InstanceForTerraform](1.InstanceForTerraform)   | 실습용 Terraform Instance(i1) 구성 (①이 참조)                            |
+| [3.InstanceForKubernetes](3.InstanceForKubernetes) | Terraform으로 K8s용으로 사용할 Instance 생성 + Kubespray 설치 (②가 참조) |
+
+* **①②가 진입점**이고 나머지 셋은 그 안에서 참조하는 상세 절차다.
+* ⚠️ **폴더 번호와 진행 순서가 다르다** — 키가 없으면 Terraform 이 아무것도 못 만들므로
+  `2.Create_IAM_Key` 를 `1.InstanceForTerraform` 보다 **먼저** 한다. ①이 그 순서로 안내한다.
 
 ## 로컬 PC 경로 (AWS 계정이 없을 때)
 | Folder                                           | Contents                                                                                                                                                                                |
