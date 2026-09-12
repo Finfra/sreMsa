@@ -80,7 +80,12 @@ kubectl get deploy -n openfaas-fn nodeinfo
 
 * 함수마다 최소·최대 개수를 지정할 수 있습니다. 라벨로 줍니다.
 
+* **주의 : 이미 떠 있는 함수에는 라벨이 갱신되지 않습니다.** 먼저 지우고 새로 배포해야 합니다.
+
 ```
+faas-cli remove nodeinfo
+sleep 10
+
 faas-cli store deploy nodeinfo \
   --label com.openfaas.scale.min=2 \
   --label com.openfaas.scale.max=6
@@ -90,7 +95,7 @@ faas-cli store deploy nodeinfo \
 ```
 kubectl get deploy -n openfaas-fn nodeinfo
 ```
-* `min=2` 로 주면 부하가 없어도 2개가 유지됩니다. **콜드 스타트를 줄이려고 최소 개수를 올리는 것**이 강의에서 말한 "최소 인스턴스 상시 유지" 입니다.
+* `min=2` 로 주면 부하가 없어도 2개가 유지됩니다. 실측에서 `2/2` 를 확인했습니다 — **지우지 않고 라벨만 덧붙이면 `1/1` 그대로입니다.** **콜드 스타트를 줄이려고 최소 개수를 올리는 것**이 강의에서 말한 "최소 인스턴스 상시 유지" 입니다.
 * ⚠️ 최소 개수를 올리면 **쉬는 동안에도 자원을 쓴다**는 뜻입니다. 강의의 비용 그래프에서 *"안 써도 나가는 비용"* 쪽으로 옮겨 가는 셈이니, 어디까지 올릴지는 트레이드오프입니다.
 
 ## 7. 실습 정리 [vm01에서 실행]

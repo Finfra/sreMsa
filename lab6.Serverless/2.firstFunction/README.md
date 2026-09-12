@@ -103,12 +103,34 @@ sudo docker info | grep -A2 "Insecure Registries"
 
 * **주의 : 로그아웃 후 다시 접속해야 `sudo` 없이 `docker` 를 쓸 수 있습니다.** 그 전까지는 `sudo docker` 로 실행하십시오.
 
-## 4. 함수 만들기 [i1에서 실행]
+## 4. i1 에 faas-cli 설치와 로그인 [i1에서 실행]
+
+* `1.openfaasInstall` 에서 깐 `faas-cli` 는 **vm01 에 있습니다.** 빌드는 i1 에서 하므로 여기에도 깝니다.
 
 ```
-faas-cli login --username admin --password-stdin   # 비밀번호는 1.openfaasInstall 참고
+curl -sSL https://cli.openfaas.com | sudo sh
+faas-cli version --short-version
+```
+
+* 로그인에 쓸 비밀번호는 **vm01 의 쿠버네티스 시크릿**에 있습니다. i1 에는 `kubectl` 이 없으므로 vm01 에서 가져옵니다.
+
+```
 export OPENFAAS_URL=http://192.168.56.11:31112
 
+PASSWORD=$(ssh vm01 "kubectl get secret -n openfaas basic-auth -o jsonpath='{.data.basic-auth-password}'" | base64 --decode)
+echo -n "$PASSWORD" | faas-cli login --username admin --password-stdin
+```
+
+* 확인 :
+```
+credentials saved for admin http://192.168.56.11:31112
+```
+
+* cf) `ssh vm01` 이 암호를 물으면 i1 의 키가 노드에 안 심긴 것입니다. lab1 의 환경 점검을 다시 확인하십시오.
+
+## 5. 함수 만들기 [i1에서 실행]
+
+```
 mkdir -p ~/fnlab && cd ~/fnlab
 faas-cli template pull
 faas-cli new hi --lang node20
@@ -135,7 +157,7 @@ module.exports = async (event, context) => {
 
 * ★ **12줄입니다.** 서버 설정도, 포트 바인딩도, 프레임워크 초기화도 없습니다. 강의에서 말한 *"애플리케이션만 남는다"* 가 이것입니다.
 
-## 5. 저장소 주소 지정 [i1에서 실행]
+## 6. 저장소 주소 지정 [i1에서 실행]
 
 * 만들어진 `stack.yaml` 의 이미지 이름을 **우리 저장소 주소로** 바꿉니다.
 
@@ -158,7 +180,7 @@ functions:
 
 * **주의 : 이미지 이름 앞에 저장소 주소가 붙어야 합니다.** `hi:latest` 로 두면 Docker Hub 로 올리려다 실패합니다.
 
-## 6. 빌드·배포·호출 [i1에서 실행]
+## 7. 빌드·배포·호출 [i1에서 실행]
 
 ```
 faas-cli up -f stack.yaml
@@ -188,7 +210,7 @@ curl http://192.168.56.11:30500/v2/_catalog
 {"repositories":["hi"]}
 ```
 
-## 7. 코드를 고쳐 다시 올리기 [i1에서 실행]
+## 8. 코드를 고쳐 다시 올리기 [i1에서 실행]
 
 * 함수는 고쳐서 다시 올리는 것이 빠릅니다. 직접 해 봅니다.
 
@@ -217,7 +239,7 @@ curl -H "Content-Type: application/json" -d '{"name":"sreMsa"}' $OPENFAAS_URL/fu
 
 * ★ **이 핸들러는 8줄입니다.** 고치고 → 올리고 → 확인하는 순환이 이 실습의 핵심입니다.
 
-## 8. 참고 — 다른 언어 템플릿
+## 9. 참고 — 다른 언어 템플릿
 
 ```
 faas-cli template store list
@@ -227,6 +249,6 @@ faas-cli template store list
 * ⚠️ **`java11`·`java17` 템플릿은 현재 둘 다 빌드되지 않습니다.** 템플릿이 쓰는 베이스 이미지(`openjdk:17-jdk-slim`·`openjdk:11-jre-slim`)가 Docker Hub 에서 사라졌기 때문입니다 — **openjdk 공식 이미지가 deprecated 되면서 태그들이 정리**됐습니다. 이 실습에서 `node20` 을 쓰는 이유입니다.
     - cf) 이런 일은 드물지 않습니다. **외부 이미지·저장소에 의존하면 어느 날 조용히 죽습니다.** 운영에서 이미지를 자체 저장소에 미러링하는 이유이기도 합니다.
 
-## 9. 다음 단계
+## 10. 다음 단계
 
 * `3.coldStart` — 첫 호출이 왜 느린지 직접 재 봅니다.

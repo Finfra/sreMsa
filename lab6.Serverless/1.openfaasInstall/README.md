@@ -46,13 +46,27 @@ helm version --short
 
 ## 3. OpenFaaS CE 설치 [vm01에서 실행]
 
+* **네임스페이스를 먼저 두 개 만듭니다.** 이것을 건너뛰면 설치가 실패합니다.
+
+```
+kubectl create namespace openfaas
+kubectl create namespace openfaas-fn
+```
+
+> ⚠️ **`--create-namespace` 만 믿으면 안 됩니다.** 그 옵션은 `--namespace` 로 지정한 `openfaas` 하나만 만들고,
+> 함수가 들어갈 `openfaas-fn` 은 만들어 주지 않습니다. 그래서 설치가 아래 오류로 멈춥니다.
+>
+> ```
+> Error: failed to create resource: server-side apply failed for object
+> openfaas-fn/openfaas-controller ... namespaces "openfaas-fn" not found
+> ```
+
 ```
 helm repo add openfaas https://openfaas.github.io/faas-netes/
 helm repo update
 
 helm upgrade openfaas --install openfaas/openfaas \
   --namespace openfaas \
-  --create-namespace \
   --set functionNamespace=openfaas-fn \
   --set generateBasicAuth=true \
   --set gateway.replicas=1 \
