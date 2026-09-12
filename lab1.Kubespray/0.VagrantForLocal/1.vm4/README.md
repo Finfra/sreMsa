@@ -31,21 +31,21 @@ Ansible 은 호스트가 아니라 i1 안에서 돈다. **Vagrant 플러그인�
 config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 ```
 
-수강생용 단계별 절차는 [Install_Kubernetes_only_PC.md](../../Install_Kubernetes_only_PC.md) 에 있다.
+수강생용 단계별 절차는 [2.Install_k8s_on_PC.md](../../2.Install_k8s_on_PC.md) 에 있다.
 이 문서는 이 폴더의 구성과 AWS 경로와의 차이를 설명한다.
 
 # 파일
 
-| 파일 | 실행 위치 | 하는 일 |
-| :--- | :--- | :--- |
-| [settings.yml](settings.yml) | — | 노드 수·자원·IP 대역. **고칠 파일은 이것 하나뿐이다** |
-| [Vagrantfile](Vagrantfile) | 호스트 | settings.yml 을 읽어 i1·vm01~vm0N 을 만든다 |
-| [scripts/common.sh](scripts/common.sh) | 전 노드 | /etc/hosts, ubuntu 계정, swap off, 방화벽 off |
-| [scripts/i1.sh](scripts/i1.sh) | i1 | ssh 키 생성 + `installOnEc2.sh` 실행 |
-| [scripts/node.sh](scripts/node.sh) | vm0N | i1 공개키 등록 |
-| [doSetHosts.sh](doSetHosts.sh) | i1 | AWS 동명 스크립트의 로컬판. hosts 확인·known_hosts 정리 |
-| [doMakeInventory.sh](doMakeInventory.sh) | i1 | kubespray inventory 생성 (`ip=` 자동 기입) |
-| [doVerify.sh](doVerify.sh) | i1 | **Ansible 이 i1→vm0N 으로 실제 동작하는지 점검** |
+| 파일                                     | 실행 위치 | 하는 일                                                 |
+| :--------------------------------------- | :-------- | :------------------------------------------------------ |
+| [settings.yml](settings.yml)             | —         | 노드 수·자원·IP 대역. **고칠 파일은 이것 하나뿐이다**   |
+| [Vagrantfile](Vagrantfile)               | 호스트    | settings.yml 을 읽어 i1·vm01~vm0N 을 만든다             |
+| [scripts/common.sh](scripts/common.sh)   | 전 노드   | /etc/hosts, ubuntu 계정, swap off, 방화벽 off           |
+| [scripts/i1.sh](scripts/i1.sh)           | i1        | ssh 키 생성 + `installOnEc2.sh` 실행                    |
+| [scripts/node.sh](scripts/node.sh)       | vm0N      | i1 공개키 등록                                          |
+| [doSetHosts.sh](doSetHosts.sh)           | i1        | AWS 동명 스크립트의 로컬판. hosts 확인·known_hosts 정리 |
+| [doMakeInventory.sh](doMakeInventory.sh) | i1        | kubespray inventory 생성 (`ip=` 자동 기입)              |
+| [doVerify.sh](doVerify.sh)               | i1        | **Ansible 이 i1→vm0N 으로 실제 동작하는지 점검**        |
 
 `hosts.generated`·`.keys/`·`.vagrant/` 는 `vagrant up` 이 만드는 산출물이라 git 에 넣지 않는다.
 
@@ -53,15 +53,15 @@ config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 
 ## 같은 것
 
-| 항목 | 값 |
-| :--- | :--- |
-| 노드 이름 | `i1`, `vm01`, `vm02`, `vm03` |
-| 계정 | `ubuntu` (sudo 무암호) |
-| i1 → 노드 접속 | i1 의 `~/.ssh/id_rsa` 키 기반 무암호 ssh |
-| i1 의 도구 | [installOnEc2.sh](../../1.InstanceForTerraform/installOnEc2.sh) **동일 파일을 그대로 실행** |
-| Kubespray | `release-2.28` (Kubernetes 1.32.13) |
-| inventory 역할 배치 | `kube_control_plane` = vm01·vm02 / `etcd` = vm01 / `kube_node` = **전 노드** |
-| 설치 명령 | `ansible-playbook ... cluster.yml` — 문장까지 동일 |
+| 항목                | 값                                                                                           |
+| :------------------ | :------------------------------------------------------------------------------------------- |
+| 노드 이름           | `i1`, `vm01`, `vm02`, `vm03`                                                                 |
+| 계정                | `ubuntu` (sudo 무암호)                                                                       |
+| i1 → 노드 접속      | i1 의 `~/.ssh/id_rsa` 키 기반 무암호 ssh                                                     |
+| i1 의 도구          | [installOnEc2.sh](../../1.InstanceForTerraform/installOnEc2.sh) **동일 파일을 그대로 실행**  |
+| Kubespray           | `release-2.28` (Kubernetes 1.32.13)                                                          |
+| inventory 역할 배치 | `kube_control_plane` = vm01·vm02 / `etcd` = vm01 / `kube_node` = **전 노드**                 |
+| 설치 명령           | `ansible-playbook ... cluster.yml` — 문장까지 동일                                           |
 | ansible 버전 맞추기 | 양쪽 다 `requirements.txt` 를 깔아야 한다. 로컬은 venv 로 한다 ([상위 README](../README.md)) |
 
 `kube_node` 에 vm01 이 들어 있다. **vm01 은 control plane 이자 etcd 이자 워커 노드다.**
@@ -73,10 +73,10 @@ config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 
 VirtualBox VM 은 네트워크 인터페이스가 두 개다.
 
-| 인터페이스 | 용도 | 주소 |
-| :--- | :--- | :--- |
-| eth0 | NAT (인터넷 나가는 길) | **모든 VM 이 10.0.2.15 로 같다** |
-| eth1 | host-only (VM 끼리·호스트와 통신) | 192.168.56.11, .12, .13 … |
+| 인터페이스 | 용도                              | 주소                             |
+| :--------- | :-------------------------------- | :------------------------------- |
+| eth0       | NAT (인터넷 나가는 길)            | **모든 VM 이 10.0.2.15 로 같다** |
+| eth1       | host-only (VM 끼리·호스트와 통신) | 192.168.56.11, .12, .13 …        |
 
 `ip=` 를 주지 않으면 Kubespray 가 첫 번째 인터페이스인 eth0 의 주소를 노드 주소로 잡는다.
 그러면 **모든 노드가 10.0.2.15 라는 같은 주소를 갖게 되어 클러스터가 성립하지 않는다.**
@@ -101,27 +101,27 @@ AWS 는 IP 가 생성 시점에 정해지므로 `doSetHosts.sh` 가 `aws ec2 des
 
 ## Terraform 과의 대응
 
-| Terraform | Vagrant | 비고 |
-| :--- | :--- | :--- |
-| `var.instance_count` | `nodes.count` | 노드 수 |
-| `var.instance_type` (t3.small) | `nodes.cpu` / `nodes.memory` | 로컬은 노드별로 다르게 줄 수 있다 |
-| `tags.Name = format("vm0%d", i+1)` | `format("vm%02d", i)` | 1~9 는 완전히 같다. 10 이상은 Terraform 이 `vm010` 이 되는데 강의는 3~4대라 닿지 않는다 |
-| `aws_key_pair` (i1 의 공개키 등록) | `scripts/node.sh` | 같은 목적 — i1 키를 노드에 심는다 |
-| `provisioner "remote-exec"` → `script.sh` | `scripts/common.sh` | 로컬 쪽이 하는 일이 더 많다 (hosts·계정·swap·방화벽) |
-| `aws_security_group` (전체 허용) | host-only 네트워크 + ufw 비활성 | 로컬은 외부에 열리지 않는다 |
-| `root_block_device` 100GB | box 기본 디스크 | bento/ubuntu-24.04 기본값으로 충분하다 |
+| Terraform                                 | Vagrant                         | 비고                                                                                    |
+| :---------------------------------------- | :------------------------------ | :-------------------------------------------------------------------------------------- |
+| `var.instance_count`                      | `nodes.count`                   | 노드 수                                                                                 |
+| `var.instance_type` (t3.small)            | `nodes.cpu` / `nodes.memory`    | 로컬은 노드별로 다르게 줄 수 있다                                                       |
+| `tags.Name = format("vm0%d", i+1)`        | `format("vm%02d", i)`           | 1~9 는 완전히 같다. 10 이상은 Terraform 이 `vm010` 이 되는데 강의는 3~4대라 닿지 않는다 |
+| `aws_key_pair` (i1 의 공개키 등록)        | `scripts/node.sh`               | 같은 목적 — i1 키를 노드에 심는다                                                       |
+| `provisioner "remote-exec"` → `script.sh` | `scripts/common.sh`             | 로컬 쪽이 하는 일이 더 많다 (hosts·계정·swap·방화벽)                                    |
+| `aws_security_group` (전체 허용)          | host-only 네트워크 + ufw 비활성 | 로컬은 외부에 열리지 않는다                                                             |
+| `root_block_device` 100GB                 | box 기본 디스크                 | bento/ubuntu-24.04 기본값으로 충분하다                                                  |
 
 # 자원
 
 기본값 합계는 **7 vCPU · 9.5GB** 다.
 
-| VM | vCPU | 메모리 | 역할 |
-| :--- | ---: | ---: | :--- |
-| i1 | 1 | 1024MB | Ansible 실행 (Kubernetes 노드 아님) |
-| vm01 | 2 | 3072MB | control plane + etcd + worker |
-| vm02 | 2 | 3072MB | control plane + worker |
-| vm03 | 2 | 2560MB | worker |
-| **합계** | **7** | **9728MB** | |
+| VM       |  vCPU |     메모리 | 역할                                |
+| :------- | ----: | ---------: | :---------------------------------- |
+| i1       |     1 |     1024MB | Ansible 실행 (Kubernetes 노드 아님) |
+| vm01     |     2 |     3072MB | control plane + etcd + worker       |
+| vm02     |     2 |     3072MB | control plane + worker              |
+| vm03     |     2 |     2560MB | worker                              |
+| **합계** | **7** | **9728MB** |                                     |
 
 * 호스트 **16GB** — 가능하되 브라우저·IDE 를 닫는 편이 좋다
 * 호스트 **24GB 이상** — 권장. 노드 추가 실습(vm04, +2560MB)까지 여유롭다
@@ -137,10 +137,10 @@ i1 은 Kubernetes 노드가 아니라 Ansible 만 돌리므로 1 vCPU · 1GB 로
 Kubernetes 노드는 kubelet 이 swap 을 거부하므로 반대로 반드시 꺼야 한다.
 같은 스크립트가 호스트명을 보고 갈라 처리한다.
 
-| 대상 | swap | 이유 |
-| :--- | :--- | :--- |
-| i1 | **2GB 생성** | kubelet 이 없다. 작은 메모리의 완충이 된다 |
-| vm01~vm0N | **끔** | kubelet 이 swap 이 켜져 있으면 뜨지 않는다 |
+| 대상      | swap         | 이유                                       |
+| :-------- | :----------- | :----------------------------------------- |
+| i1        | **2GB 생성** | kubelet 이 없다. 작은 메모리의 완충이 된다 |
+| vm01~vm0N | **끔**       | kubelet 이 swap 이 켜져 있으면 뜨지 않는다 |
 
 i1 에서 메모리 부족이 실제로 보이면 settings.yml 의 `i1.memory` 를 2048 로 되돌린다.
 
@@ -155,13 +155,13 @@ settings.yml 의 `overrides` 에서 vm02 항목을 지우고, inventory 의 `[ku
 
 AWS 경로와 절차가 같다. 다른 것은 첫 줄뿐이다.
 
-| 단계 | AWS | 로컬 |
-| :--- | :--- | :--- |
-| VM 추가 | `vars.tf` 의 `instance_count` 를 4 → `terraform apply` | `settings.yml` 의 `nodes.count` 를 4 → `vagrant up vm04` |
-| hosts | `bash doSetHosts.sh` | `bash /vagrant/doSetHosts.sh` |
-| inventory | vm04 추가 | `bash /vagrant/doMakeInventory.sh` (또는 손으로 추가) |
-| 클러스터 반영 | `ansible-playbook ... cluster.yml` | **동일** |
-| 확인 | `kubectl get nodes` | **동일** |
+| 단계          | AWS                                                    | 로컬                                                     |
+| :------------ | :----------------------------------------------------- | :------------------------------------------------------- |
+| VM 추가       | `vars.tf` 의 `instance_count` 를 4 → `terraform apply` | `settings.yml` 의 `nodes.count` 를 4 → `vagrant up vm04` |
+| hosts         | `bash doSetHosts.sh`                                   | `bash /vagrant/doSetHosts.sh`                            |
+| inventory     | vm04 추가                                              | `bash /vagrant/doMakeInventory.sh` (또는 손으로 추가)    |
+| 클러스터 반영 | `ansible-playbook ... cluster.yml`                     | **동일**                                                 |
+| 확인          | `kubectl get nodes`                                    | **동일**                                                 |
 
 `nodes.count` 를 바꾼 뒤에는 **기존 VM 을 지우지 않는다.** `vagrant up vm04` 만 실행하면 된다.
 새로 만든 vm04 의 /etc/hosts 에는 4대가 모두 들어가지만 기존 3대에는 vm04 가 없으므로,
@@ -178,24 +178,24 @@ vagrant provision          # 전 노드 /etc/hosts 갱신
 수강생이 동시에 실습하면 같은 파일을 여러 명이 한꺼번에 내려받아 회선이 막힌다.
 box 하나가 621MB 이므로 20명이면 12GB 가 한꺼번에 흐른다. 두 가지로 막는다.
 
-| 수단 | 무엇을 막는가 |
-| :--- | :--- |
-| 강사 제공 `_prgs` 폴더 | box·설치 파일 다운로드 자체. `vagrant box add` 로 로컬 파일에서 등록한다 |
-| `settings.yml` 의 `box.check_update: false` | `vagrant up` 마다 Vagrant Cloud 에 새 버전을 물어보는 조회 |
+| 수단                                        | 무엇을 막는가                                                            |
+| :------------------------------------------ | :----------------------------------------------------------------------- |
+| 강사 제공 `_prgs` 폴더                      | box·설치 파일 다운로드 자체. `vagrant box add` 로 로컬 파일에서 등록한다 |
+| `settings.yml` 의 `box.check_update: false` | `vagrant up` 마다 Vagrant Cloud 에 새 버전을 물어보는 조회               |
 
 `check_update` 는 파일을 받는 것은 아니지만 `vagrant up` 마다 외부 요청이 나가므로,
 여러 명이 동시에 시작하는 순간 그 요청이 겹친다. 강사가 새 box 를 받아 볼 때만 `true` 로 바꾼다.
 
-수강생 안내는 [install_basic.md](../../install_basic.md) 에 들어 있다 — 배포 폴더 구성·설치 순서·box 등록이 그곳에 있다.
+수강생 안내는 [1.install_APP_on_PC.md](../../1.install_APP_on_PC.md) 에 들어 있다 — 배포 폴더 구성·설치 순서·box 등록이 그곳에 있다.
 
 # 문제가 생기면
 
-| 증상 | 확인 |
-| :--- | :--- |
-| i1 에서 `ssh vm01` 이 암호를 묻는다 | 호스트에서 `vagrant provision vm01` — i1 키를 다시 심는다 |
-| `ansible ping` 이 실패한다 | i1 에서 `bash /vagrant/doVerify.sh` — 어느 단계에서 끊기는지 나온다 |
-| 노드가 전부 10.0.2.15 로 보인다 | inventory 에 `ip=` 가 빠졌다. `doMakeInventory.sh` 로 다시 만든다 |
-| `/vagrant` 가 비어 있다 | 공유 폴더 미마운트. `vagrant reload` 후 재시도 |
-| box 를 인터넷에서 받으려 한다 | `vagrant box list` 로 이름이 `bento/ubuntu-24.04` 인지 확인. 다르면 지우고 다시 등록 |
+| 증상                                                                                     | 확인                                                                                                                                       |
+| :--------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
+| i1 에서 `ssh vm01` 이 암호를 묻는다                                                      | 호스트에서 `vagrant provision vm01` — i1 키를 다시 심는다                                                                                  |
+| `ansible ping` 이 실패한다                                                               | i1 에서 `bash /vagrant/doVerify.sh` — 어느 단계에서 끊기는지 나온다                                                                        |
+| 노드가 전부 10.0.2.15 로 보인다                                                          | inventory 에 `ip=` 가 빠졌다. `doMakeInventory.sh` 로 다시 만든다                                                                          |
+| `/vagrant` 가 비어 있다                                                                  | 공유 폴더 미마운트. `vagrant reload` 후 재시도                                                                                             |
+| box 를 인터넷에서 받으려 한다                                                            | `vagrant box list` 로 이름이 `bento/ubuntu-24.04` 인지 확인. 다르면 지우고 다시 등록                                                       |
 | `cluster.yml` 이 **첫 태스크에서** `Ansible must be between 2.16.4 and 2.17.0` 로 끝난다 | venv 를 켜지 않았다. i1 에서 `source ~/ksvenv/bin/activate` — 만든 적이 없으면 [상위 README](../README.md) "Kubespray 는 venv 가 필요하다" |
-| cluster.yml 이 중간에 멈춘다 | i1 에서 `rm -rf /tmp/ansible_facts* ~/.ansible/tmp/*` 후 재실행 (AWS README 3.1 절과 동일) |
+| cluster.yml 이 중간에 멈춘다                                                             | i1 에서 `rm -rf /tmp/ansible_facts* ~/.ansible/tmp/*` 후 재실행 (AWS README 3.1 절과 동일)                                                 |

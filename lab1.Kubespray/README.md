@@ -9,11 +9,11 @@
 | [3.InstanceForKubernetes](3.InstanceForKubernetes) | Terraform으로 K8s용으로 사용할 Instance 생성 + Kubespray 설치 |
 
 ## 로컬 PC 경로 (AWS 계정이 없을 때)
-| Folder                                                         | Contents                                                                                                                                                                                |
-| -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [install_basic.md](install_basic.md)                           | **① 기본 설치** — 프로그램·Windows 설정·소스 내려받기 (0~1장). `_prgs` 폴더에도 동봉                                                                                                    |
-| [Install_Kubernetes_only_PC.md](Install_Kubernetes_only_PC.md) | **② 단계별 절차서** — VM 만들기부터 Kubespray 까지 (2장~)                                                                                                                               |
-| [0.VagrantForLocal](0.VagrantForLocal)                         | 로컬(PC) 실습 환경. 구현 두 가지 — [1.vm4](0.VagrantForLocal/1.vm4)(VM 4대·기본) · [2.inVm](0.VagrantForLocal/2.inVm)(VM 1대·중첩). 고르는 기준은 [README](0.VagrantForLocal/README.md) |
+| Folder                                           | Contents                                                                                                                                                                                |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [1.install_APP_on_PC.md](1.install_APP_on_PC.md) | **① 기본 설치** — 프로그램·Windows 설정·소스 내려받기 (0~1장). `_prgs` 폴더에도 동봉                                                                                                    |
+| [2.Install_k8s_on_PC.md](2.Install_k8s_on_PC.md) | **② 단계별 절차서** — VM 만들기부터 Kubespray 까지 (2장~)                                                                                                                               |
+| [0.VagrantForLocal](0.VagrantForLocal)           | 로컬(PC) 실습 환경. 구현 두 가지 — [1.vm4](0.VagrantForLocal/1.vm4)(VM 4대·기본) · [2.inVm](0.VagrantForLocal/2.inVm)(VM 1대·중첩). 고르는 기준은 [README](0.VagrantForLocal/README.md) |
 
 * Terraform 이 하던 일(인스턴스 생성)을 Vagrant 가 대신하고, **Kubespray 를 실행하는 부분은 AWS 경로와 동일**하다.
 * 노드 이름(`i1`·`vm01`~`vm03`)·계정(`ubuntu`)·inventory 역할 배치가 양쪽 같으므로 lab2~lab5 는 구분 없이 진행된다.
