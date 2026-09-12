@@ -29,7 +29,7 @@ AWS 경로와 같은 번호 체계다. 진입점 문서 둘이 이 폴더 직하
 | 폴더·파일                                                 | 무엇인가                                              |
 | :-------------------------------------------------------- | :---------------------------------------------------- |
 | [0.pc_setting/README.md](0.pc_setting/README.md)          | **① 기본 설치** — 프로그램·Windows 설정·소스 내려받기 |
-| [1.pc.byVagrant/README.md](1.pc.byVagrant/README.md)          | **② 단계별 절차서** — VM 만들기부터 Kubespray 까지    |
+| [1.pc.byVagrant/README.md](1.pc.byVagrant/README.md)      | **② 단계별 절차서** — VM 만들기부터 Kubespray 까지    |
 | [1.pc.byVagrant](1.pc.byVagrant/)                         | VM 4대 생성·프로비저닝. **호스트(Windows)에서** 실행  |
 | [3.pc.InstanceForKubernetes](3.pc.InstanceForKubernetes/) | inventory·hosts·점검. **i1 안에서** 실행              |
 | [cf_inVm](cf_inVm/)                                       | 참고용 — VM 1대 안에 전부 넣는 중첩 방식              |
@@ -53,9 +53,15 @@ AWS 경로와 같은 번호 체계다. 진입점 문서 둘이 이 폴더 직하
 
 호스트 CPU 가 게스트에 VT-x 를 넘겨 줄 수 있어야 한다. 확인은 30초면 된다.
 
-```bash
+호스트(Windows)에서 아무 VM 이나 하나 골라 중첩을 켠다.
+
+```powershell
 VBoxManage modifyvm <VM이름> --nested-hw-virt on
-# 그 게스트 안에서
+```
+
+그 VM 을 켜고 **게스트 안에서** 확인한다.
+
+```bash
 lscpu | grep -i virtualization    # VT-x 또는 AMD-V 가 보여야 한다
 ls -la /dev/kvm                   # 이 장치가 있어야 실제로 동작한다
 ```

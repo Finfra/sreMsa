@@ -61,7 +61,7 @@ vagrant box list      # bento/ubuntu-24.04 가 보여야 한다
 
 # 2. VM 만들기
 
-```bash
+```powershell
 vagrant up
 ```
 
@@ -74,13 +74,14 @@ vagrant up
   `vagrant up` 을 그냥 실행하면 순서는 알아서 지켜진다.
 * 중간에 실패하면 그 VM 만 다시 만든다.
 
-```bash
-vagrant destroy -f vm02 && vagrant up vm02
+```powershell
+vagrant destroy -f vm02
+vagrant up vm02
 ```
 
 만들어진 VM 을 확인한다.
 
-```bash
+```powershell
 vagrant status
 ```
 
@@ -91,7 +92,7 @@ vagrant status
 
 `vagrant up` 이 만들어 둔 `hosts.generated` 파일의 내용을 그대로 쓴다.
 
-```bash
+```powershell
 cat hosts.generated
 ```
 
@@ -110,7 +111,7 @@ C:\Windows\System32\drivers\etc\hosts
 
 확인한다.
 
-```bash
+```powershell
 ping -n 1 vm01
 ```
 
@@ -118,7 +119,7 @@ ping -n 1 vm01
 
 여기서부터는 **AWS 경로와 같다.** 하는 일이 같을 뿐 아니라 명령도 같다.
 
-```bash
+```powershell
 vagrant ssh i1
 ```
 
@@ -179,7 +180,7 @@ bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doVerify.sh
 전부 `[ OK ]` 가 나와야 다음으로 간다.
 `ssh` 나 `ansible ping` 이 실패하면 호스트(내 PC)의 PowerShell 로 돌아가 키를 다시 심는다.
 
-```bash
+```powershell
 vagrant provision vm01 vm02 vm03
 ```
 
@@ -351,8 +352,11 @@ i1 에 접속해 설치한다.
 ```powershell
 cd $env:USERPROFILE\Downloads\sreMsa\lab1.Kubespray\pc\1.pc.byVagrant
 .\doSsh.ps1 i1
+```
 
-# --- 여기부터 i1 안 ---
+접속되면 **여기부터는 i1 안**이다.
+
+```bash
 sudo dpkg -i /sreMsa/docker/*.deb
 sudo usermod -aG docker $USER
 newgrp docker
@@ -371,7 +375,7 @@ sudo apt-get -f install -y
 
 ## 잠시 멈추기 (다음에 이어서)
 
-```bash
+```powershell
 vagrant halt          # 전부 정지
 vagrant up            # 다시 시작
 ```
@@ -380,7 +384,7 @@ VM 을 다시 켠 뒤 Kubernetes 가 올라오는 데 1~2분 걸린다.
 
 ## 완전히 지우기
 
-```bash
+```powershell
 vagrant destroy -f
 ```
 
@@ -392,23 +396,23 @@ vagrant destroy -f
 
 # 자주 막히는 곳
 
-| 증상                                                                | 원인·해결                                                                                                                                                                   |
-| :------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 증상                                                                | 원인·해결                                                                                                                                                                      |
+| :------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `vagrant up` 이 VM 을 못 띄운다                                     | Hyper-V·메모리 무결성이 켜져 있다. [0.pc_setting/README.md](../0.pc_setting/README.md) 의 "Windows 만의 사전 작업" 을 다시 확인한다. `HypervisorPresent` 가 `False` 인지 볼 것 |
-| `Timed out while waiting for the machine to boot`                   | **VM 이 죽은 것이 아닐 수 있다.** 아래 "부팅이 오래 걸릴 때" 참조                                                                                                           |
-| `vagrant up` 이 box 를 내려받으려 한다                              | box 등록을 건너뛰었거나 이름이 다르다. `vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다                                                                             |
-| i1 에서 `ssh vm01` 이 암호를 묻는다                                 | 호스트에서 `vagrant provision vm01`                                                                                                                                         |
-| `/vagrant` 가 비어 있다                                             | 공유 폴더가 마운트되지 않았다. `vagrant reload` 후 재시도                                                                                                                   |
-| `ansible ping` 이 실패한다                                          | i1 에서 `bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doVerify.sh` — 어느 단계에서 끊기는지 나온다                                                                                                         |
-| 노드가 전부 10.0.2.15 로 보인다                                     | inventory 에 `ip=` 가 빠졌다. `bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doMakeInventory.sh`                                                                                                            |
-| Windows 에서 `curl vm01:...` 이 안 된다                             | 3장의 hosts 파일 등록을 빠뜨렸다                                                                                                                                            |
-| `Ansible must be between 2.16.4 and 2.17.0` 로 즉시 멈춘다          | venv 를 켜지 않았다. 9.1 참조 — `source ~/ksvenv/bin/activate` 후 다시 실행                                                                                                 |
-| cluster.yml 이 중간에 멈춘다                                        | fact 캐시를 지우고 재실행 (9장 참조)                                                                                                                                        |
-| 메모리가 모자라 PC 가 멈춘다                                        | 아래 참고 자료의 "자원 → 메모리가 부족할 때"                                                                              |
-| **VirtualBox 설치가 1초 만에 실패한다**                             | `2_vc_redist.x64.exe` 를 `3_VirtualBox` 보다 먼저 설치하지 않았다. `msiexec` 오류 1603 이 그 증상이다                                                                       |
-| **Docker Desktop 을 깔았더니 `vagrant up` 이 안 된다**              | Hyper-V 가 켜졌다. **이 실습에 Docker Desktop 은 필요 없다** — 컨테이너는 VM 안에서 돈다. 관리자 PowerShell 에서 `bcdedit /set hypervisorlaunchtype off` 후 재부팅          |
-| **Docker Desktop 이 `Virtualization support not detected` 로 뜬다** | Hyper-V 를 껐기 때문이며 **정상이다.** Docker Desktop 은 이 실습에서 쓰지 않는다 — 컨테이너 실습은 11장처럼 VM(i1) 안의 Docker 로 한다                                      |
-| **VM 이 깨졌거나 설치가 끝나지 않았다**                             | 배포 폴더의 `_vm` 안에 완성본이 있다. **강사 안내를 받고 진행한다** — 그 안의 `README.md` 에 절차가 있다                                                                    |
+| `Timed out while waiting for the machine to boot`                   | **VM 이 죽은 것이 아닐 수 있다.** 아래 "부팅이 오래 걸릴 때" 참조                                                                                                              |
+| `vagrant up` 이 box 를 내려받으려 한다                              | box 등록을 건너뛰었거나 이름이 다르다. `vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다                                                                                |
+| i1 에서 `ssh vm01` 이 암호를 묻는다                                 | 호스트에서 `vagrant provision vm01`                                                                                                                                            |
+| `/vagrant` 가 비어 있다                                             | 공유 폴더가 마운트되지 않았다. `vagrant reload` 후 재시도                                                                                                                      |
+| `ansible ping` 이 실패한다                                          | i1 에서 `bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doVerify.sh` — 어느 단계에서 끊기는지 나온다                                                                |
+| 노드가 전부 10.0.2.15 로 보인다                                     | inventory 에 `ip=` 가 빠졌다. `bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doMakeInventory.sh`                                                                   |
+| Windows 에서 `curl vm01:...` 이 안 된다                             | 3장의 hosts 파일 등록을 빠뜨렸다                                                                                                                                               |
+| `Ansible must be between 2.16.4 and 2.17.0` 로 즉시 멈춘다          | venv 를 켜지 않았다. 9.1 참조 — `source ~/ksvenv/bin/activate` 후 다시 실행                                                                                                    |
+| cluster.yml 이 중간에 멈춘다                                        | fact 캐시를 지우고 재실행 (9장 참조)                                                                                                                                           |
+| 메모리가 모자라 PC 가 멈춘다                                        | 아래 참고 자료의 "자원 → 메모리가 부족할 때"                                                                                                                                   |
+| **VirtualBox 설치가 1초 만에 실패한다**                             | `2_vc_redist.x64.exe` 를 `3_VirtualBox` 보다 먼저 설치하지 않았다. `msiexec` 오류 1603 이 그 증상이다                                                                          |
+| **Docker Desktop 을 깔았더니 `vagrant up` 이 안 된다**              | Hyper-V 가 켜졌다. **이 실습에 Docker Desktop 은 필요 없다** — 컨테이너는 VM 안에서 돈다. 관리자 PowerShell 에서 `bcdedit /set hypervisorlaunchtype off` 후 재부팅             |
+| **Docker Desktop 이 `Virtualization support not detected` 로 뜬다** | Hyper-V 를 껐기 때문이며 **정상이다.** Docker Desktop 은 이 실습에서 쓰지 않는다 — 컨테이너 실습은 11장처럼 VM(i1) 안의 Docker 로 한다                                         |
+| **VM 이 깨졌거나 설치가 끝나지 않았다**                             | 배포 폴더의 `_vm` 안에 완성본이 있다. **강사 안내를 받고 진행한다** — 그 안의 `README.md` 에 절차가 있다                                                                       |
 
 ## 부팅이 오래 걸릴 때
 
@@ -417,7 +421,7 @@ vagrant destroy -f
 
 먼저 VM 이 살아 있는지 본다.
 
-```bash
+```powershell
 vagrant status
 ```
 
@@ -437,7 +441,7 @@ INFO: task (networkd):532 blocked for more than 245 seconds
 이 실습은 [settings.yml](settings.yml) 에서 대기 시간을 **900초**로 늘려 두었으므로
 대개는 걸리지 않는다. 그래도 걸린다면 다시 시도한다.
 
-```bash
+```powershell
 vagrant halt vm02 -f
 vagrant up vm02
 ```
@@ -452,7 +456,7 @@ Get-Counter "\PhysicalDisk(_Total)\Avg. Disk sec/Transfer"
 # 더 볼 것
 
 * 이 문서 아래쪽 **참고 자료** — 구성 상세, AWS·Terraform 과의 대조표, 자원 산정, 노드 추가 실습
-* [aws/3.aws.InstanceForKubernetes/README.md](../../aws/3.aws.InstanceForKubernetes/README.md) — AWS 경로. 7~10장이 이 문서와 같은 내용이다
+* [aws/3.aws.InstanceForKubernetes/README.md](../../aws/3.aws.InstanceForKubernetes/README.md) — AWS 경로. 그 문서의 4~8장(git clone·inventory·Kubespray 실행)이 이 문서 7~10장과 같은 내용이다
 * [0.pc_setting/README.md](../0.pc_setting/README.md) — 0~1장. 프로그램 설치·Windows 설정·소스 내려받기
 
 # ─────────── 여기부터는 참고 자료 ───────────
@@ -462,13 +466,13 @@ Get-Counter "\PhysicalDisk(_Total)\Avg. Disk sec/Transfer"
 
 # 파일
 
-| 파일                                     | 실행 위치 | 하는 일                                                 |
-| :--------------------------------------- | :-------- | :------------------------------------------------------ |
-| [settings.yml](settings.yml)             | —         | 노드 수·자원·IP 대역. **고칠 파일은 이것 하나뿐이다**   |
-| [Vagrantfile](Vagrantfile)               | 호스트    | settings.yml 을 읽어 i1·vm01~vm0N 을 만든다             |
-| [scripts/common.sh](scripts/common.sh)   | 전 노드   | /etc/hosts, ubuntu 계정, swap off, 방화벽 off           |
-| [scripts/i1.sh](scripts/i1.sh)           | i1        | ssh 키 생성 + `installOnEc2.sh` 실행                    |
-| [scripts/node.sh](scripts/node.sh)       | vm0N      | i1 공개키 등록                                          |
+| 파일                                                                   | 실행 위치 | 하는 일                                                 |
+| :--------------------------------------------------------------------- | :-------- | :------------------------------------------------------ |
+| [settings.yml](settings.yml)                                           | —         | 노드 수·자원·IP 대역. **고칠 파일은 이것 하나뿐이다**   |
+| [Vagrantfile](Vagrantfile)                                             | 호스트    | settings.yml 을 읽어 i1·vm01~vm0N 을 만든다             |
+| [scripts/common.sh](scripts/common.sh)                                 | 전 노드   | /etc/hosts, ubuntu 계정, swap off, 방화벽 off           |
+| [scripts/i1.sh](scripts/i1.sh)                                         | i1        | ssh 키 생성 + `installOnEc2.sh` 실행                    |
+| [scripts/node.sh](scripts/node.sh)                                     | vm0N      | i1 공개키 등록                                          |
 | [doSetHosts.sh](../3.pc.InstanceForKubernetes/doSetHosts.sh)           | i1        | AWS 동명 스크립트의 로컬판. hosts 확인·known_hosts 정리 |
 | [doMakeInventory.sh](../3.pc.InstanceForKubernetes/doMakeInventory.sh) | i1        | kubespray inventory 생성 (`ip=` 자동 기입)              |
 | [doVerify.sh](../3.pc.InstanceForKubernetes/doVerify.sh)               | i1        | **Ansible 이 i1→vm0N 으로 실제 동작하는지 점검**        |
@@ -484,7 +488,7 @@ Get-Counter "\PhysicalDisk(_Total)\Avg. Disk sec/Transfer"
 | 노드 이름           | `i1`, `vm01`, `vm02`, `vm03`                                                                 |
 | 계정                | `ubuntu` (sudo 무암호)                                                                       |
 | i1 → 노드 접속      | i1 의 `~/.ssh/id_rsa` 키 기반 무암호 ssh                                                     |
-| i1 의 도구          | [installOnEc2.sh](../../aws/1.aws.byTerraform/installOnEc2.sh) **동일 파일을 그대로 실행**  |
+| i1 의 도구          | [installOnEc2.sh](../../aws/1.aws.byTerraform/installOnEc2.sh) **동일 파일을 그대로 실행**   |
 | Kubespray           | `release-2.28` (Kubernetes 1.32.13)                                                          |
 | inventory 역할 배치 | `kube_control_plane` = vm01·vm02 / `etcd` = vm01 / `kube_node` = **전 노드**                 |
 | 설치 명령           | `ansible-playbook ... cluster.yml` — 문장까지 동일                                           |
@@ -581,19 +585,19 @@ settings.yml 의 `overrides` 에서 vm02 항목을 지우고, inventory 의 `[ku
 
 AWS 경로와 절차가 같다. 다른 것은 첫 줄뿐이다.
 
-| 단계          | AWS                                                    | 로컬                                                     |
-| :------------ | :----------------------------------------------------- | :------------------------------------------------------- |
-| VM 추가       | `vars.tf` 의 `instance_count` 를 4 → `terraform apply` | `settings.yml` 의 `nodes.count` 를 4 → `vagrant up vm04` |
-| hosts         | `bash doSetHosts.sh`                                   | `bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doSetHosts.sh`                            |
-| inventory     | vm04 추가                                              | `bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doMakeInventory.sh` (또는 손으로 추가)    |
-| 클러스터 반영 | `ansible-playbook ... cluster.yml`                     | **동일**                                                 |
-| 확인          | `kubectl get nodes`                                    | **동일**                                                 |
+| 단계          | AWS                                                    | 로컬                                                                                              |
+| :------------ | :----------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
+| VM 추가       | `vars.tf` 의 `instance_count` 를 4 → `terraform apply` | `settings.yml` 의 `nodes.count` 를 4 → `vagrant up vm04`                                          |
+| hosts         | `bash doSetHosts.sh`                                   | `bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doSetHosts.sh`                         |
+| inventory     | vm04 추가                                              | `bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doMakeInventory.sh` (또는 손으로 추가) |
+| 클러스터 반영 | `ansible-playbook ... cluster.yml`                     | **동일**                                                                                          |
+| 확인          | `kubectl get nodes`                                    | **동일**                                                                                          |
 
 `nodes.count` 를 바꾼 뒤에는 **기존 VM 을 지우지 않는다.** `vagrant up vm04` 만 실행하면 된다.
 새로 만든 vm04 의 /etc/hosts 에는 4대가 모두 들어가지만 기존 3대에는 vm04 가 없으므로,
 `vagrant provision` 을 한 번 돌려 전 노드의 hosts 를 맞춘다.
 
-```bash
+```powershell
 # 호스트에서
 vagrant up vm04
 vagrant provision          # 전 노드 /etc/hosts 갱신
