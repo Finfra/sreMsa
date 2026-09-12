@@ -12,8 +12,8 @@
 
 | 순서  | 문서                                                   | 무엇을 하나                                             |
 | :---: | :----------------------------------------------------- | :------------------------------------------------------ |
-| **①** | [pc/1.install_APP_on_PC.md](pc/1.install_APP_on_PC.md) | 기본 설치 — 프로그램·Windows 설정·소스 내려받기 (0~1장) |
-| **②** | [pc/2.Install_k8s_on_PC.md](pc/2.Install_k8s_on_PC.md) | 단계별 절차서 — VM 만들기부터 Kubespray 까지 (2장~)     |
+| **①** | [pc/1.install_APP_on_PC.md](pc/0.pc_setting/1.install_APP_on_PC.md) | 기본 설치 — 프로그램·Windows 설정·소스 내려받기 (0~1장) |
+| **②** | [pc/2.Install_k8s_on_PC.md](pc/0.pc_setting/2.Install_k8s_on_PC.md) | 단계별 절차서 — VM 만들기부터 Kubespray 까지 (2장~)     |
 
 * ①은 강사 배포 폴더 `_prgs` 안에도 같은 내용으로 동봉된다.
 * ①②가 참조하는 상세 폴더는 둘이다 — `1.pc.byVagrant`(VM 생성, 호스트에서) · `3.pc.InstanceForKubernetes`(inventory·점검, i1 안에서).
@@ -25,8 +25,8 @@
 
 | 순서  | 문서                                                       | 무엇을 하나                                                |
 | :---: | :--------------------------------------------------------- | :--------------------------------------------------------- |
-| **①** | [aws/1.Install_app_on_aws.md](aws/1.Install_app_on_aws.md) | 환경 준비 — AWS 계정·IAM 키·콘솔 서버(i1) 생성과 도구 설치 |
-| **②** | [aws/2.Install_k8s_on_aws.md](aws/2.Install_k8s_on_aws.md) | Kubernetes 설치 — Terraform 으로 노드 생성 + Kubespray     |
+| **①** | [aws/0.pc_setting/1.Install_app_on_aws.md](aws/0.pc_setting/1.Install_app_on_aws.md) | 환경 준비 — AWS 계정·IAM 키·콘솔 서버(i1) 생성과 도구 설치 |
+| **②** | [aws/0.pc_setting/2.Install_k8s_on_aws.md](aws/0.pc_setting/2.Install_k8s_on_aws.md) | Kubernetes 설치 — Terraform 으로 노드 생성 + Kubespray     |
 
 * ①②가 참조하는 상세 절차서 3종(`1.aws.byTerraform`·`2.aws.Create_IAM_Key`·`3.aws.InstanceForKubernetes`)의
   역할과 호출 관계는 [aws/README.md](aws/README.md) 에 있다.

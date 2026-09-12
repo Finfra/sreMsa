@@ -62,4 +62,4 @@ inventory 에 `ip=` 를 넣는 것이 **로컬 경로에서 가장 자주 걸리
 
 # 다음 단계
 
-점검이 통과하면 [2.Install_k8s_on_PC.md](../2.Install_k8s_on_PC.md) 의 Kubespray 실행 절로 간다.
+점검이 통과하면 [2.Install_k8s_on_PC.md](../0.pc_setting/2.Install_k8s_on_PC.md) 의 Kubespray 실행 절로 간다.
