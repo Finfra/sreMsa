@@ -10,8 +10,8 @@
 
 ## 로컬 PC 경로 — [pc](pc/README.md)
 
-| 순서  | 문서                                                                             | 무엇을 하나                                             |
-| :---: | :------------------------------------------------------------------------------- | :------------------------------------------------------ |
+| 순서  | 문서                                                       | 무엇을 하나                                             |
+| :---: | :--------------------------------------------------------- | :------------------------------------------------------ |
 | **①** | [pc/0.pc_setting/README.md](pc/0.pc_setting/README.md)     | 기본 설치 — 프로그램·Windows 설정·소스 내려받기 (0~1장) |
 | **②** | [pc/1.pc.byVagrant/README.md](pc/1.pc.byVagrant/README.md) | 단계별 절차서 — VM 만들기부터 Kubespray 까지 (2장~)     |
 
@@ -23,15 +23,15 @@
 
 ## AWS 경로 — [aws](aws/README.md)
 
-| 순서  | 문서                                                                                 | 무엇을 하나                                                |
-| :---: | :----------------------------------------------------------------------------------- | :--------------------------------------------------------- |
-| **①** | [aws/0.pc_setting/1.Install_app_on_aws.md](aws/0.pc_setting/1.Install_app_on_aws.md) | 환경 준비 — AWS 계정·IAM 키·콘솔 서버(i1) 생성과 도구 설치 |
-| **②** | [aws/0.pc_setting/2.Install_k8s_on_aws.md](aws/0.pc_setting/2.Install_k8s_on_aws.md) | Kubernetes 설치 — Terraform 으로 노드 생성 + Kubespray     |
+진입점은 문서 하나다 — **[aws/0.pc_setting/README.md](aws/0.pc_setting/README.md)**.
+내 PC 에 설치할 것부터 AWS 계정·키, 콘솔 서버 `i1`, Kubernetes 설치까지 한 문서로 이어진다.
 
-* ①②가 참조하는 상세 절차서 3종(`1.aws.byTerraform`·`2.aws.Create_IAM_Key`·`3.aws.InstanceForKubernetes`)의
+* 그 문서가 참조하는 상세 절차서 3종(`1.aws.byTerraform`·`2.aws.Create_IAM_Key`·`3.aws.InstanceForKubernetes`)의
   역할과 호출 관계는 [aws/README.md](aws/README.md) 에 있다.
 * ⚠️ **폴더 번호와 진행 순서가 다르다** — 키가 없으면 Terraform 이 아무것도 못 만들므로
-  `2.aws.Create_IAM_Key` 를 `1.aws.byTerraform` 보다 **먼저** 한다. ①이 그 순서로 안내한다.
+  `2.aws.Create_IAM_Key` 를 `1.aws.byTerraform` 보다 **먼저** 한다. 진입점이 그 순서로 안내한다.
+* ⚠️ **`_prgs` 구성이 로컬 PC 방식과 다르다** — VirtualBox·Vagrant·box(약 1.1 GB)가 빠지고 **PuTTY** 가 들어간다.
+  로컬 PC 방식의 `_prgs` 를 그대로 쓰지 않는다.
 
 ## 두 경로의 공통점
 
