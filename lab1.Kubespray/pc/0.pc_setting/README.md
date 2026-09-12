@@ -36,13 +36,14 @@ C:\Users\<계정>\Downloads\
 | `_prgs`  | **맨 처음 한 번.** 프로그램 설치와 box 등록에 쓴다                                   |
 | `_vm`    | **문제가 생겼을 때만.** VM 이 깨지거나 설치가 끝나지 않은 경우 강사 안내에 따라 쓴다 |
 
-> `sreMsa` 는 아래 1장에서 `git clone` 으로 직접 받아도 된다. 회선이 나쁜 교육장에서는 복사본을 쓰는 편이 빠르다.
+> `sreMsa` 폴더가 곧 실습 소스다. **따로 내려받을 것이 없다.**
 
 ## 소프트웨어 — 강사가 제공하는 `_prgs` 폴더를 쓴다 ★
 
 **인터넷에서 직접 받지 말 것.** 강사가 배포하는 **`_prgs`** 폴더에 필요한 파일이 모두 들어 있다.
 
-**파일 이름 앞의 번호가 곧 설치 순서다.** 1~5 를 차례로 설치하고, 6 은 설치가 아니라 **등록**한다(아래 "Vagrant box 등록" 절).
+**파일 이름 앞의 번호가 곧 설치 순서다.** 1~4 를 차례로 설치하고, 6 은 설치가 아니라 **등록**한다(아래 "Vagrant box 등록" 절).
+번호 5(Git)는 **더 이상 쓰지 않는다** — 아래 표에 없는 이유다.
 
 | 순서  | `_prgs` 안의 파일                                       |          크기 | 용도                                                      |
 | :---: | :------------------------------------------------------ | ------------: | :-------------------------------------------------------- |
@@ -50,7 +51,6 @@ C:\Users\<계정>\Downloads\
 | **2** | **`2_vc_redist.x64.exe`**                               |         25 MB | **Visual C++ 재배포 — 바로 다음 VirtualBox 의 전제조건**  |
 | **3** | `3_VirtualBox-7.2.16-174877-Win.exe`                    |        170 MB | VirtualBox 7.2.16                                         |
 | **4** | `4_vagrant_2.4.9_windows_amd64.msi`                     |        236 MB | Vagrant 2.4.9                                             |
-| **5** | `5_Git-2.55.0.5-64-bit.exe`                             |         62 MB | Git for Windows 2.55.0                                    |
 | **6** | `6_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box` |        621 MB | **Vagrant box** — 설치가 아니라 **등록**한다              |
 | 나중  | `docker/` (deb 4개)                                     |         73 MB | **Docker Engine — VM 안의 Ubuntu 에 설치**한다(정본 11장) |
 |   —   | `SHA256SUMS.txt`                                        |             — | 무결성 검증용 체크섬                                      |
@@ -71,11 +71,12 @@ box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 
 
 ```bash
 cd ~/Downloads/_prgs
-sha256sum -c SHA256SUMS.txt
+Get-FileHash *.exe,*.msi,*.box -Algorithm SHA256 |
+  ForEach-Object { "{0}  {1}" -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) }
 ```
 
-전부 `OK` 가 나와야 한다. 하나라도 `FAILED` 면 그 파일을 다시 복사받는다.
-(이 명령은 Git 설치 후 Git Bash 에서 쓸 수 있다. 그 전이라면 5번까지 설치한 뒤 확인해도 된다.)
+출력된 해시를 `SHA256SUMS.txt` 의 값과 견준다. 다른 것이 있으면 그 파일을 다시 복사받는다.
+**PowerShell 에 기본으로 들어 있는 명령이라 따로 설치할 것이 없다.**
 
 설치가 끝나면 곧바로 다음 절로 간다. **재부팅은 "Windows 만의 사전 작업" 에서 한 번에 처리**한다.
 
@@ -91,14 +92,13 @@ sha256sum -c SHA256SUMS.txt
 > 다른 프로그램을 쓰다 보면 대개 딸려 들어오기 때문에 기존 PC 에서는 잘 드러나지 않는다.
 > **갓 설치한 Windows 에서만 나타나는 함정**이라 실기에서 처음 확인했다.
 
-Git Bash 를 쓴다. PowerShell·cmd 로도 되지만 이 문서의 명령은 Git Bash 기준이다.
+**PowerShell 을 쓴다.** 이 문서의 명령은 모두 PowerShell 기준이며, 별도 터미널을 설치하지 않는다.
 
 설치 후 터미널을 새로 열어 확인한다.
 
-```bash
+```powershell
 VBoxManage --version
 vagrant --version
-git --version
 ```
 
 **Vagrant 플러그인은 하나도 설치하지 않는다.** 이 실습은 플러그인 없이 동작하도록 만들었다.
@@ -122,8 +122,7 @@ No plugins installed.
 >
 > 인터넷에서 직접 받아야 하는 상황이라면 아래가 원본 주소다.
 > VirtualBox https://www.virtualbox.org/wiki/Downloads ·
-> Vagrant https://developer.hashicorp.com/vagrant/downloads ·
-> Git https://git-scm.com/download/win
+> Vagrant https://developer.hashicorp.com/vagrant/downloads
 
 ## Windows 만의 사전 작업 ★ 여기서 가장 많이 막힌다
 
@@ -155,34 +154,14 @@ Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격
 **Docker Desktop 을 쓴 적이 있다면 이 절이 특히 중요하다.** 그것이 Hyper-V 를 켜 두기 때문이다.
 이 실습은 Hyper-V 를 **끈 상태로 끝까지** 진행한다 — 컨테이너 실습도 VM 안에서 하므로([1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 11장) 중간에 다시 켤 일이 없다.
 
-## Git 줄바꿈 설정
-
-Windows 의 Git 은 기본으로 줄바꿈을 CRLF 로 바꾼다. 셸 스크립트가 그대로 깨진다.
-**소스를 내려받기 전에** 설정한다.
-
-**Git 이 설치돼 있어야 하는 단계다.** 시작 메뉴에서 **Git Bash** 를 열고 실행한다 — 바로 앞 절은 PowerShell 이므로 창을 바꾼다.
-
-```bash
-git config --global core.autocrlf false
-git config --global core.eol lf
-```
-
-* 확인 : `false` 가 나와야 한다.
-```bash
-git config --global --get core.autocrlf
-```
-
-> ⚠️ `git: command not found` 가 나오면 Git 설치가 안 된 것이다. 0장의 프로그램 설치를 확인한다.
-> PowerShell 에서도 `git` 이 동작하기는 하나 **Git 설치 전에 열어 둔 창에서는 경로가 잡히지 않아** 같은 오류가 난다.
-
 ## Vagrant box 등록 ★ 이 절을 건너뛰면 인터넷에서 621MB 를 받는다
 
 `_prgs` 의 `.box` 파일을 Vagrant 에 등록한다. **인터넷을 쓰지 않는다.**
 
-Git Bash 에서 `_prgs` 폴더로 이동한 뒤 실행한다.
+PowerShell 에서 `_prgs` 폴더로 이동한 뒤 실행한다.
 
-```bash
-cd ~/Downloads/_prgs
+```powershell
+cd $env:USERPROFILE\Downloads\_prgs
 vagrant box add bento/ubuntu-24.04 ./6_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
 ```
 
@@ -191,7 +170,7 @@ vagrant box add bento/ubuntu-24.04 ./6_bento-ubuntu-24.04-202510.26.0-virtualbox
 **이름을 `bento/ubuntu-24.04` 로 등록해야 한다.** 이름이 다르면 `vagrant up` 이 이 box 를 찾지 못하고
 인터넷에서 다시 받으려 한다. 등록됐는지 확인한다.
 
-```bash
+```powershell
 vagrant box list
 ```
 
@@ -203,39 +182,40 @@ bento/ubuntu-24.04 (virtualbox, 0, (amd64))
 [settings.yml](../1.pc.byVagrant/settings.yml) 의 `box.version` 을 비워 둔 것도 이 때문이다.
 
 > 잘못된 이름으로 등록했다면 지우고 다시 넣는다.
-> ```bash
+> ```powershell
 > vagrant box remove <잘못된이름>
 > vagrant box add bento/ubuntu-24.04 ./6_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
 > ```
 
-# 1. 소스 내려받기
+# 1. 소스 확인
 
-**Git Bash 에서 실행한다.** 바로 위 "Vagrant box 등록" 과 같은 창이면 된다.
+**따로 내려받지 않는다.** 0장에서 `다운로드` 로 복사한 `sreMsa` 폴더가 곧 실습 소스다.
+`git clone` 을 쓰던 절차는 없앴다 — 배포 폴더에 같은 내용이 이미 들어 있고,
+교육장 회선으로 20명이 동시에 받으면 그것대로 막히기 때문이다.
 
-```bash
-cd ~
-git clone https://github.com/Finfra/sreMsa
-cd sreMsa/lab1.Kubespray/pc/1.pc.byVagrant
+PowerShell 에서 폴더가 제대로 복사됐는지만 본다.
+
+```powershell
+cd $env:USERPROFILE\Downloads\sreMsa
+dir
 ```
 
-* 확인 : 소스가 받아졌는지 본다.
-```bash
-ls ~/sreMsa
-```
 ```
 lab1.Kubespray  lab2.Kubernetes  lab3.Istio  lab4.ArgoCd  lab5.Zipkin  lab6.Serverless  README.md
 ```
 
-> ⚠️ **"Git 줄바꿈 설정" 을 먼저 하고 받아야 한다.** 순서가 바뀌면 셸 스크립트가 CRLF 로 받아져
-> 실습 중에 `\r` 오류를 낸다. 이미 받았다면 `rm -rf ~/sreMsa` 로 지우고 설정한 뒤 다시 받는다.
+이 여섯 폴더가 보이면 된다. 하나라도 없으면 복사가 덜 끝난 것이므로 `다운로드` 폴더를 다시 확인한다.
+
+> **Git 을 설치하지 않는 이유** — 소스를 복사해 쓰므로 `git clone` 이 필요 없고,
+> 실습 중 호스트에서 쓰는 명령은 PowerShell 과 Windows 기본 `ssh` 로 모두 된다.
+> 설치 프로그램이 하나 줄면 교육장에서 막힐 자리도 하나 준다.
 
 # 다음 단계
 
-여기까지 마치면 **프로그램·소스·box 가 모두 준비된 상태**다. VM 만들기부터는 받은 소스 안의 문서를 따른다.
+여기까지 마치면 **프로그램·소스·box 가 모두 준비된 상태**다. VM 만들기부터는 복사한 소스 안의 문서를 따른다.
 
-```bash
-cd ~/sreMsa/lab1.Kubespray/pc/1.pc.byVagrant
+```powershell
+cd $env:USERPROFILE\Downloads\sreMsa\lab1.Kubespray\pc\1.pc.byVagrant
 ```
 
 → [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 의 **2. VM 만들기** 로 이어서 진행한다.
-

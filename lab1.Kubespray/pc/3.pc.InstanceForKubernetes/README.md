@@ -19,9 +19,10 @@ AWS 경로의 [3.aws.InstanceForKubernetes](../../aws/3.aws.InstanceForKubernete
 세 스크립트 모두 호스트(Windows)가 아니라 **i1 안에서 `ubuntu` 계정으로** 실행한다.
 호스트에서 실행하면 노드에 접근할 수 없어 의미가 없다.
 
-```bash
+```powershell
 # 호스트에서 i1 로 들어간 뒤
-cd lab1.Kubespray/pc/1.pc.byVagrant && ./doSsh.sh i1
+cd lab1.Kubespray\pc\1.pc.byVagrant
+.\doSsh.ps1 i1
 ```
 
 repo 는 i1 안에서 `/sreMsa` 로 마운트되어 있으므로 이 폴더의 경로는 아래가 된다.

@@ -248,4 +248,4 @@ fi
 echo ""
 say "완료"
 echo "  다음: vagrant ssh   (ubuntu 계정으로 들어간다)"
-echo "        그 안에서  bash /sreMsa/lab1.Kubespray/pc/cf_cf_inVm/inner/doInner.sh"
+echo "        그 안에서  bash /sreMsa/lab1.Kubespray/pc/cf_inVm/inner/doInner.sh"
