@@ -492,7 +492,7 @@ Get-Counter "\PhysicalDisk(_Total)\Avg. Disk sec/Transfer"
 | Kubespray           | `release-2.28` (Kubernetes 1.32.13)                                                          |
 | inventory 역할 배치 | `kube_control_plane` = vm01·vm02 / `etcd` = vm01 / `kube_node` = **전 노드**                 |
 | 설치 명령           | `ansible-playbook ... cluster.yml` — 문장까지 동일                                           |
-| ansible 버전 맞추기 | 양쪽 다 `requirements.txt` 를 깔아야 한다. 로컬은 venv 로 한다 ([상위 README](../README.md)) |
+| ansible 버전 맞추기 | 양쪽 다 `requirements.txt` 를 깔아야 한다. 로컬은 venv 로 한다 (9.1 절) |
 
 `kube_node` 에 vm01 이 들어 있다. **vm01 은 control plane 이자 etcd 이자 워커 노드다.**
 그래서 vm01 에는 다른 노드보다 메모리를 더 준다(settings.yml 의 `overrides`).
@@ -617,4 +617,17 @@ box 하나가 621MB 이므로 20명이면 12GB 가 한꺼번에 흐른다. 두 �
 여러 명이 동시에 시작하는 순간 그 요청이 겹친다. 강사가 새 box 를 받아 볼 때만 `true` 로 바꾼다.
 
 수강생 안내는 [0.pc_setting/README.md](../0.pc_setting/README.md) 에 들어 있다 — 배포 폴더 구성·설치 순서·box 등록이 그곳에 있다.
+
+# motd 를 꺼 두었다
+
+Ubuntu 의 동적 motd 8개가 로그인마다 약 30초를 먹는다. `pam_motd` 는 **비대화형 ssh 에도** 걸리므로
+ansible 이 노드에 붙을 때마다 그 비용을 낸다. [scripts/common.sh](scripts/common.sh) 가 전 노드에서
+이를 끈다 — 실측 **30초 → 0.3초**.
+
+# 이 폴더와 cf_inVm 이 나눠 쓰는 것
+
+[cf_inVm](../cf_inVm/) 의 안쪽 노드는 이 폴더의 [scripts/common.sh](scripts/common.sh)·[scripts/node.sh](scripts/node.sh) 를
+**그대로 쓴다.** 복제하지 않으므로 한쪽을 고치면 양쪽에 반영된다.
+
+`.gitignore` 도 상위 `pc/` 에 하나만 두어 두 구현의 산출물(`.vagrant/`·`.keys/`·`hosts.generated`)을 함께 걸러 낸다.
 

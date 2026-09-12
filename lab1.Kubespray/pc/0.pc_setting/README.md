@@ -186,6 +186,27 @@ bento/ubuntu-24.04 (virtualbox, 0, (amd64))
 > vagrant box add bento/ubuntu-24.04 ./5_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
 > ```
 
+# 전체 흐름
+
+```mermaid
+flowchart LR
+    A["① 프로그램 설치<br/>VirtualBox·Vagrant"] --> B["② Windows 설정<br/>Hyper-V 끄기"]
+    B --> C["③ box 등록<br/>+ 소스 확인"]
+    C --> D["④ VM 4대<br/>vagrant up"]
+    D --> E["⑤ Kubernetes<br/>inventory + Kubespray"]
+```
+
+| 단계  | 무엇을 하나                             | 문서                                                                  |
+| :---: | :-------------------------------------- | :-------------------------------------------------------------------- |
+| **1** | `_prgs` 로 프로그램 설치 · Hyper-V 끄기 | 이 문서 0장                                                           |
+| **2** | Vagrant box 등록 · 소스 확인            | 이 문서 0~1장                                                         |
+| **3** | VM 4대 생성 (`i1`·`vm01`~`vm03`)        | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 2장                     |
+| **4** | hosts·inventory·환경 점검               | [2.pc.InstanceForKubernetes](../2.pc.InstanceForKubernetes/README.md) |
+| **5** | Kubespray 실행 · 설치 확인              | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 7~10장                  |
+
+* **AWS 갈래와 달리 계정·키 발급이 없다.** 내 PC 에 만들기 때문이며, 그만큼 1단계가 곧 시작이다.
+* 장 번호는 두 문서에 걸쳐 이어진다 — 이 문서가 0~1장, [1.pc.byVagrant](../1.pc.byVagrant/README.md) 가 2장부터다.
+
 # 1. 소스 확인
 
 **따로 내려받지 않는다.** 0장에서 `다운로드` 로 복사한 `sreMsa` 폴더가 곧 실습 소스다.
