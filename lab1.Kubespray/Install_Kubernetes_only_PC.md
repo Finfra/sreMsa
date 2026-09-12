@@ -124,9 +124,20 @@ Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격
 Windows 의 Git 은 기본으로 줄바꿈을 CRLF 로 바꾼다. 셸 스크립트가 그대로 깨진다.
 **소스를 내려받기 전에** 설정한다.
 
+**Git 이 설치돼 있어야 하는 단계다.** 시작 메뉴에서 **Git Bash** 를 열고 실행한다 — 바로 앞 절은 PowerShell 이므로 창을 바꾼다.
+
 ```bash
 git config --global core.autocrlf false
+git config --global core.eol lf
 ```
+
+* 확인 : `false` 가 나와야 한다.
+```bash
+git config --global --get core.autocrlf
+```
+
+> ⚠️ `git: command not found` 가 나오면 Git 설치가 안 된 것이다. 0장의 프로그램 설치를 확인한다.
+> PowerShell 에서도 `git` 이 동작하기는 하나 **Git 설치 전에 열어 둔 창에서는 경로가 잡히지 않아** 같은 오류가 난다.
 
 ## Vagrant box 등록 ★ 이 절을 건너뛰면 인터넷에서 621MB 를 받는다
 
