@@ -56,7 +56,7 @@ jpc1(Intel i7-6700T · Skylake)에서 둘 다 확인했다. 지원하지 않는 
 ## 1. 바깥 VM 만들기 — Windows 에서
 
 ```bash
-cd lab1.Kubespray/pc/cf_cf_inVm
+cd lab1.Kubespray/pc/cf_inVm
 vagrant up
 ```
 
@@ -66,7 +66,7 @@ VirtualBox·Vagrant 설치가 포함되어 이웃 폴더(1.pc.byVagrant)보다 �
 
 ```bash
 vagrant ssh                    # ubuntu 계정으로 들어간다
-bash /sreMsa/lab1.Kubespray/pc/cf_cf_inVm/inner/doInner.sh
+bash /sreMsa/lab1.Kubespray/pc/cf_inVm/inner/doInner.sh
 ```
 
 이 스크립트가 키 배치 · box 확보 · `vagrant up` · Kubespray 준비를 한 번에 한다.

@@ -1,7 +1,7 @@
 #!/bin/bash
 # 바깥 VM(i1) 안에서 실행 — 안쪽 노드 vm01~vm03 을 만들고 Kubespray 까지 준비한다.
 #
-#   bash /sreMsa/lab1.Kubespray/pc/cf_cf_inVm/inner/doInner.sh
+#   bash /sreMsa/lab1.Kubespray/pc/cf_inVm/inner/doInner.sh
 #
 # 하는 일
 #   1) 바깥 VM 의 ubuntu 공개키를 .keys/ 에 둔다 (안쪽 노드가 이 키를 신뢰한다)

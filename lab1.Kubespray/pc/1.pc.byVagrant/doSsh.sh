@@ -1,5 +1,9 @@
 #!/bin/bash
-# `vagrant ssh` 대신 쓰는 빠른 접속 헬퍼. 호스트(Windows Git Bash)에서 실행한다.
+# `vagrant ssh` 대신 쓰는 빠른 접속 헬퍼 (bash 판).
+#
+# ⚠️ Windows 실습에서는 이 파일이 아니라 doSsh.ps1 을 쓴다.
+#    Git for Windows 를 설치하지 않기로 했으므로 Windows 에는 bash 가 없다.
+#    이 파일은 호스트가 macOS·Linux 일 때(강사 검증 환경)를 위해 남겨 둔다.
 #
 #   ./doSsh.sh              # i1 에 접속
 #   ./doSsh.sh vm01         # vm01 에 접속

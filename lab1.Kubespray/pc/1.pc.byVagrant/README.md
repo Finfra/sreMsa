@@ -128,7 +128,7 @@ vagrant ssh i1
 > AWS 경로의 [aws/3.aws.InstanceForKubernetes/README.md](../../aws/3.aws.InstanceForKubernetes/README.md) 0단계 `su - ubuntu` 에 해당한다.
 > AWS 키 설정(`TF_VAR_AWS_ACCESS_KEY` 등)은 로컬에서 필요 없으므로 건너뛴다.
 
-## 접속이 느리다면 — `doSsh.sh` 를 쓴다 ★
+## 접속이 느리다면 — `doSsh.ps1` 를 쓴다 ★
 
 `vagrant ssh` 는 명령 하나에 **5~10초**가 걸린다. Vagrant CLI 가 Ruby 런타임과
 내장 플러그인 수십 개를 매번 새로 로드하는 구조 때문이고, **VM 이나 PC 가 느린 것이 아니다.**
@@ -142,17 +142,26 @@ vagrant ssh i1
 | **`ssh -F ssh-config i1`** | **0.12초** |
 | `VBoxManage showvminfo`    |     0.08초 |
 
-같은 폴더의 **`doSsh.sh`** 는 접속 정보를 한 번만 뽑아 두고 그 다음부터 `ssh` 를 직접 쓴다.
+같은 폴더의 **`doSsh.ps1`** 은 접속 정보를 한 번만 뽑아 두고 그 다음부터 `ssh` 를 직접 쓴다.
 자주 드나드는 실습에서는 이쪽이 훨씬 편하다.
 
-```bash
-./doSsh.sh              # i1 에 접속
-./doSsh.sh vm01         # vm01 에 접속
-./doSsh.sh i1 hostname  # 명령 하나만 실행하고 빠져나옴
+```powershell
+.\doSsh.ps1              # i1 에 접속
+.\doSsh.ps1 vm01         # vm01 에 접속
+.\doSsh.ps1 i1 hostname  # 명령 하나만 실행하고 빠져나옴
 ```
 
+여기서 쓰는 `ssh` 는 **Windows 10 에 기본으로 들어 있는 것**이다(`System32\OpenSSH`).
+별도 설치가 필요 없어 이 실습은 Git for Windows 를 쓰지 않는다.
+
+> 처음 실행할 때 스크립트 실행이 막히면 그 창에서만 한 번 허용한다.
+> ```powershell
+> Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+> ```
+> (`Process` 범위라 창을 닫으면 원래대로 돌아간다. 시스템 설정을 바꾸지 않는다.)
+
 `vagrant` 를 부르는 것은 `ssh-config` 를 만드는 최초 1회뿐이다.
-VM 을 다시 만들었다면 `rm .vagrant/ssh-config` 후 다시 실행한다.
+VM 을 다시 만들었다면 `del .vagrant\ssh-config` 후 다시 실행한다.
 
 # 5. 환경 점검 ★ Kubespray 전에 반드시
 
@@ -168,7 +177,7 @@ bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doVerify.sh
 * `[7] Ansible 연결` — **i1 에서 vm01~vm03 으로 Ansible 이 실제로 붙는지 확인한다**
 
 전부 `[ OK ]` 가 나와야 다음으로 간다.
-`ssh` 나 `ansible ping` 이 실패하면 호스트(내 PC)의 Git Bash 로 돌아가 키를 다시 심는다.
+`ssh` 나 `ansible ping` 이 실패하면 호스트(내 PC)의 PowerShell 로 돌아가 키를 다시 심는다.
 
 ```bash
 vagrant provision vm01 vm02 vm03
@@ -330,7 +339,7 @@ lab2 의 `docker build`·`docker run` 실습은 **콘솔 서버 i1 안에서** �
 > ⚠️ **내 PC(Windows)에 Docker Desktop 을 설치하지 말 것.**
 > Hyper-V 가 켜져 VirtualBox 가 VM 을 띄우지 못하게 된다. 이 실습의 컨테이너는 전부 VM 안에서 돈다.
 
-먼저 Git Bash(내 PC)에서 deb 를 소스 폴더로 옮긴다. 소스 폴더는 VM 안에서 `/sreMsa` 로 보인다.
+먼저 내 PC 에서 deb 를 소스 폴더로 옮긴다(탐색기로 복사해도 된다). 소스 폴더는 VM 안에서 `/sreMsa` 로 보인다.
 
 ```bash
 cp -r ~/Downloads/_prgs/docker ~/sreMsa/
@@ -340,7 +349,7 @@ i1 에 접속해 설치한다.
 
 ```bash
 cd ~/sreMsa/lab1.Kubespray/pc/1.pc.byVagrant
-./doSsh.sh i1
+.\doSsh.ps1 i1
 
 # --- 여기부터 i1 안 ---
 sudo dpkg -i /sreMsa/docker/*.deb
@@ -387,7 +396,6 @@ vagrant destroy -f
 | `vagrant up` 이 VM 을 못 띄운다                                     | Hyper-V·메모리 무결성이 켜져 있다. [0.pc_setting/README.md](../0.pc_setting/README.md) 의 "Windows 만의 사전 작업" 을 다시 확인한다. `HypervisorPresent` 가 `False` 인지 볼 것 |
 | `Timed out while waiting for the machine to boot`                   | **VM 이 죽은 것이 아닐 수 있다.** 아래 "부팅이 오래 걸릴 때" 참조                                                                                                           |
 | `vagrant up` 이 box 를 내려받으려 한다                              | box 등록을 건너뛰었거나 이름이 다르다. `vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다                                                                             |
-| 스크립트가 `\r` 오류를 낸다                                         | `core.autocrlf` 를 끄지 않고 clone 했다. `git config --global core.autocrlf false` 후 다시 clone                                                                            |
 | i1 에서 `ssh vm01` 이 암호를 묻는다                                 | 호스트에서 `vagrant provision vm01`                                                                                                                                         |
 | `/vagrant` 가 비어 있다                                             | 공유 폴더가 마운트되지 않았다. `vagrant reload` 후 재시도                                                                                                                   |
 | `ansible ping` 이 실패한다                                          | i1 에서 `bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doVerify.sh` — 어느 단계에서 끊기는지 나온다                                                                                                         |
