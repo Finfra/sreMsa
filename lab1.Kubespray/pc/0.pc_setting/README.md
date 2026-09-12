@@ -66,16 +66,16 @@ box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 
 
 설치 옵션은 전부 기본값 그대로 둔다.
 
-**설치 전에 파일이 온전히 복사됐는지 확인한다.** 복사 도중 끊기면 설치가 알 수 없는 오류로 실패한다.
-
-```powershell
-cd $env:USERPROFILE\Downloads\_prgs
-Get-FileHash *.exe,*.msi,*.box -Algorithm SHA256 |
-  ForEach-Object { "{0}  {1}" -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) }
-```
-
-출력된 해시를 `SHA256SUMS.txt` 의 값과 견준다. 다른 것이 있으면 그 파일을 다시 복사받는다.
-**PowerShell 에 기본으로 들어 있는 명령이라 따로 설치할 것이 없다.**
+> **[선택] 파일이 온전한지 확인하려면** — 건너뛰어도 된다.
+> 설치가 알 수 없는 오류로 실패할 때, 복사가 도중에 끊긴 것은 아닌지 이 방법으로 가려낼 수 있다.
+>
+> ```powershell
+> cd $env:USERPROFILE\Downloads\_prgs
+> Get-FileHash *.exe,*.msi,*.box -Algorithm SHA256 |
+>   ForEach-Object { "{0}  {1}" -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) }
+> ```
+>
+> 출력된 해시를 `SHA256SUMS.txt` 의 값과 견준다. 다른 것이 있으면 그 파일만 다시 복사받는다.
 
 설치가 끝나면 곧바로 다음 절로 간다. **재부팅은 "Windows 만의 사전 작업" 에서 한 번에 처리**한다.
 
