@@ -43,9 +43,9 @@ config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 | [scripts/common.sh](scripts/common.sh)   | 전 노드   | /etc/hosts, ubuntu 계정, swap off, 방화벽 off           |
 | [scripts/i1.sh](scripts/i1.sh)           | i1        | ssh 키 생성 + `installOnEc2.sh` 실행                    |
 | [scripts/node.sh](scripts/node.sh)       | vm0N      | i1 공개키 등록                                          |
-| [doSetHosts.sh](doSetHosts.sh)           | i1        | AWS 동명 스크립트의 로컬판. hosts 확인·known_hosts 정리 |
-| [doMakeInventory.sh](doMakeInventory.sh) | i1        | kubespray inventory 생성 (`ip=` 자동 기입)              |
-| [doVerify.sh](doVerify.sh)               | i1        | **Ansible 이 i1→vm0N 으로 실제 동작하는지 점검**        |
+| [doSetHosts.sh](../3.pc.InstanceForKubernetes/doSetHosts.sh)           | i1        | AWS 동명 스크립트의 로컬판. hosts 확인·known_hosts 정리 |
+| [doMakeInventory.sh](../3.pc.InstanceForKubernetes/doMakeInventory.sh) | i1        | kubespray inventory 생성 (`ip=` 자동 기입)              |
+| [doVerify.sh](../3.pc.InstanceForKubernetes/doVerify.sh)               | i1        | **Ansible 이 i1→vm0N 으로 실제 동작하는지 점검**        |
 
 `hosts.generated`·`.keys/`·`.vagrant/` 는 `vagrant up` 이 만드는 산출물이라 git 에 넣지 않는다.
 
@@ -82,7 +82,7 @@ VirtualBox VM 은 네트워크 인터페이스가 두 개다.
 그러면 **모든 노드가 10.0.2.15 라는 같은 주소를 갖게 되어 클러스터가 성립하지 않는다.**
 AWS 인스턴스는 인터페이스가 하나뿐이라 이 문제가 없었다.
 
-[doMakeInventory.sh](doMakeInventory.sh) 가 이것을 자동으로 넣는다. 손으로 쓸 때는 아래처럼 된다.
+[doMakeInventory.sh](../3.pc.InstanceForKubernetes/doMakeInventory.sh) 가 이것을 자동으로 넣는다. 손으로 쓸 때는 아래처럼 된다.
 
 ```ini
 [all]
@@ -91,7 +91,7 @@ vm02 ansible_host=192.168.56.12 ip=192.168.56.12
 vm03 ansible_host=192.168.56.13 ip=192.168.56.13
 ```
 
-[doVerify.sh](doVerify.sh) 의 `[5]` 항목이 이 함정을 사전에 잡는다.
+[doVerify.sh](../3.pc.InstanceForKubernetes/doVerify.sh) 의 `[5]` 항목이 이 함정을 사전에 잡는다.
 
 ### 2. hosts 파일을 얻는 방법
 
@@ -158,8 +158,8 @@ AWS 경로와 절차가 같다. 다른 것은 첫 줄뿐이다.
 | 단계          | AWS                                                    | 로컬                                                     |
 | :------------ | :----------------------------------------------------- | :------------------------------------------------------- |
 | VM 추가       | `vars.tf` 의 `instance_count` 를 4 → `terraform apply` | `settings.yml` 의 `nodes.count` 를 4 → `vagrant up vm04` |
-| hosts         | `bash doSetHosts.sh`                                   | `bash /vagrant/doSetHosts.sh`                            |
-| inventory     | vm04 추가                                              | `bash /vagrant/doMakeInventory.sh` (또는 손으로 추가)    |
+| hosts         | `bash doSetHosts.sh`                                   | `bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doSetHosts.sh`                            |
+| inventory     | vm04 추가                                              | `bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doMakeInventory.sh` (또는 손으로 추가)    |
 | 클러스터 반영 | `ansible-playbook ... cluster.yml`                     | **동일**                                                 |
 | 확인          | `kubectl get nodes`                                    | **동일**                                                 |
 
@@ -193,7 +193,7 @@ box 하나가 621MB 이므로 20명이면 12GB 가 한꺼번에 흐른다. 두 �
 | 증상                                                                                     | 확인                                                                                                                                       |
 | :--------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
 | i1 에서 `ssh vm01` 이 암호를 묻는다                                                      | 호스트에서 `vagrant provision vm01` — i1 키를 다시 심는다                                                                                  |
-| `ansible ping` 이 실패한다                                                               | i1 에서 `bash /vagrant/doVerify.sh` — 어느 단계에서 끊기는지 나온다                                                                        |
+| `ansible ping` 이 실패한다                                                               | i1 에서 `bash /sreMsa/lab1.Kubespray/pc/3.pc.InstanceForKubernetes/doVerify.sh` — 어느 단계에서 끊기는지 나온다                                                                        |
 | 노드가 전부 10.0.2.15 로 보인다                                                          | inventory 에 `ip=` 가 빠졌다. `doMakeInventory.sh` 로 다시 만든다                                                                          |
 | `/vagrant` 가 비어 있다                                                                  | 공유 폴더 미마운트. `vagrant reload` 후 재시도                                                                                             |
 | box 를 인터넷에서 받으려 한다                                                            | `vagrant box list` 로 이름이 `bento/ubuntu-24.04` 인지 확인. 다르면 지우고 다시 등록                                                       |
