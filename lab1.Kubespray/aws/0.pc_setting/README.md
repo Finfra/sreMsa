@@ -33,7 +33,7 @@ AWS 방식에는 쓰지 않는 1.1GB 를 끌고 온다. AWS 방식은 아래 넷
 | 순서  | `_prgs` 안의 파일                   |          크기 | 용도                                         |
 | :---: | :---------------------------------- | ------------: | :------------------------------------------- |
 | **1** | `1_VSCodeUserSetup-x64-1.137.0.exe` |        224 MB | Visual Studio Code — YAML·매니페스트 편집용  |
-| **2** | `2_Git-2.55.0.5-64-bit.exe`         |         62 MB | Git for Windows —**Git Bash 를 SSH 로 쓴다** |
+| **2** | `2_Git-2.55.0.5-64-bit.exe`         |         62 MB | Git for Windows — **Git Bash 를 SSH 로 쓴다** |
 | **3** | `3_putty-64bit-installer.msi`       |          4 MB | PuTTY·PuTTYgen·pscp — Windows 표준 SSH 도구  |
 | **4** | `4_DockerDesktopInstaller.exe`      |        600 MB | Docker Desktop — 로컬에서 이미지 빌드·테스트 |
 |   —   | `SHA256SUMS.txt`                    |             — | 무결성 검증용 체크섬                         |
@@ -113,7 +113,7 @@ EC2 에 접속하려면 AWS 가 발급한 키 파일(`.pem`)이 필요하다. �
 | 도구                | 키 준비                                | 접속                                   |
 | :------------------ | :------------------------------------- | :------------------------------------- |
 | **Git Bash** (권장) | `.pem` 을 그대로 쓴다                  | `ssh -i key.pem ubuntu@<i1의 공인 IP>` |
-| **PuTTY**           | PuTTYgen 으로`.pem` → `.ppk` 변환 필요 | Host 에`ubuntu@<공인 IP>`, 키는 `.ppk` |
+| **PuTTY**           | PuTTYgen 으로 `.pem` → `.ppk` 변환 필요 | Host 에 `ubuntu@<공인 IP>`, 키는 `.ppk` |
 
 * **Git Bash 를 권장한다.** 변환 단계가 없고, 이 문서의 명령이 전부 Git Bash 기준이다.
 * PuTTY 로 접속할 때는 `Connection → SSH → Auth → Credentials` 에서 `.ppk` 를 지정한다.
@@ -150,7 +150,7 @@ flowchart LR
 | 단계  | 무엇을 하나                                 | 문서                                                                    |
 | :---: | :------------------------------------------ | :---------------------------------------------------------------------- |
 | **1** | AWS 계정 생성 · IAM 사용자와 액세스 키 발급 | [2.aws.Create_IAM_Key](../2.aws.Create_IAM_Key/README.md)               |
-| **2** | 콘솔 서버`i1` 을 EC2 로 생성                | [1.aws.byTerraform](../1.aws.byTerraform/README.md) Step1               |
+| **2** | 콘솔 서버 `i1` 을 EC2 로 생성                | [1.aws.byTerraform](../1.aws.byTerraform/README.md) Step1               |
 | **3** | `i1` 에 Terraform·Ansible·AWS CLI 설치      | [1.aws.byTerraform](../1.aws.byTerraform/README.md) Step3~4             |
 | **4** | 노드 3대 생성 + Kubespray 설치              | [3.aws.InstanceForKubernetes](../3.aws.InstanceForKubernetes/README.md) |
 
@@ -206,10 +206,10 @@ flowchart LR
 
 | 절  | 무엇을 하나                              | 놓치기 쉬운 것                                           |
 | :-- | :--------------------------------------- | :------------------------------------------------------- |
-| 0   | `~/.bashrc` 에 IAM 키·리전 환경변수 등록 | 1절에서 받은**Secret key** 를 여기에 넣는다              |
+| 0   | `~/.bashrc` 에 IAM 키·리전 환경변수 등록 | 1절에서 받은 **Secret key** 를 여기에 넣는다              |
 | 1   | SSH 키 생성 (`ssh-keygen`)               | 이미 있으면 건너뛴다                                     |
 | 2   | Terraform 으로 노드 생성                 | 두 번째 설치라면 기존 노드를 먼저 정리한다               |
-| 3   | `/etc/hosts` 설정                        | 두 번째 설치라면**3.1 의 fact 캐시 정리**를 먼저 한다    |
+| 3   | `/etc/hosts` 설정                        | 두 번째 설치라면 **3.1 의 fact 캐시 정리**를 먼저 한다    |
 | 4~5 | Kubespray clone · inventory 생성         | —                                                        |
 | 6   | **EC2 전용 설정**                        | 프라이빗 IP ping 체크를 꺼야 한다. 안 끄면 설치가 멈춘다 |
 | 7   | 노드 연결 확인 (선택)                    | `ansible -m ping` 으로 3대가 응답하는지                  |
@@ -226,9 +226,9 @@ flowchart LR
 
 | 확인 항목        | 성공 기준                                     |
 | :--------------- | :-------------------------------------------- |
-| 노드 상태        | 3개 노드가 모두`Ready`                        |
+| 노드 상태        | 3개 노드가 모두 `Ready`                        |
 | Pod 분산         | 6개 replica 가 한 노드에 몰리지 않고 흩어진다 |
-| Container 런타임 | 세 노드 모두에서`containerd` 버전이 출력된다  |
+| Container 런타임 | 세 노드 모두에서 `containerd` 버전이 출력된다  |
 
 ## 비용 관리 ★ AWS 경로에서만 필요하다
 
@@ -239,7 +239,7 @@ flowchart LR
 | 상황                       | 어느 것을 고르나                                                    |
 | :------------------------- | :------------------------------------------------------------------ |
 | 잠시 멈춤 (다음 날 이어서) | 인스턴스만 정지한다. 디스크 요금은 남지만 다시 켜서 이어갈 수 있다  |
-| 완전히 정리                | 전부 삭제한다.**되돌릴 수 없으므로** 실습이 완전히 끝난 뒤에만 한다 |
+| 완전히 정리                | 전부 삭제한다. **되돌릴 수 없으므로** 실습이 완전히 끝난 뒤에만 한다 |
 
 # 다음 단계
 

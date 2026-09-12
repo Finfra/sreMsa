@@ -113,7 +113,7 @@ fatal: "Ansible must be between 2.16.4 and 2.17.0 exclusive - you have 2.17.14"
 
 | 파일                                   | 실행 위치 | 하는 일                                                 |
 | :------------------------------------- | :-------- | :------------------------------------------------------ |
-| [settings.yml](settings.yml)           | —         | 바깥·안쪽 자원.**고칠 파일은 이것 하나뿐이다**          |
+| [settings.yml](settings.yml)           | —         | 바깥·안쪽 자원. **고칠 파일은 이것 하나뿐이다**          |
 | [Vagrantfile](Vagrantfile)             | Windows   | 바깥 VM 한 대를 만든다 (`--nested-hw-virt on`)          |
 | [scripts/outer.sh](scripts/outer.sh)   | 바깥 VM   | LVM 확장 · VirtualBox · Vagrant · 계정 · Kubespray 도구 |
 | [inner/doInner.sh](inner/doInner.sh)   | 바깥 VM   | 안쪽 노드 생성 진입점                                   |
