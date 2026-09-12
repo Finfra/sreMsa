@@ -25,10 +25,15 @@ Windows                            Windows
 
 이것이 성립하지 않으면 이 폴더는 쓸 수 없다. 확인은 30초면 된다.
 
-```bash
-# 아무 VM 이나 하나 골라 켠 뒤
+호스트에서 아무 VM 이나 하나 골라 중첩을 켠다.
+
+```powershell
 VBoxManage modifyvm <VM이름> --nested-hw-virt on
-# 그 게스트 안에서
+```
+
+그 VM 을 켜고 **게스트 안에서** 확인한다.
+
+```bash
 lscpu | grep -i virtualization    # VT-x 또는 AMD-V 가 보여야 한다
 ls -la /dev/kvm                   # 이 장치가 있어야 실제로 동작한다
 ```
@@ -40,12 +45,12 @@ jpc1(Intel i7-6700T · Skylake)에서 둘 다 확인했다. 지원하지 않는 
 이웃 폴더(1.pc.byVagrant)는 호스트가 4대에 나눠 주지만, 여기서는 **VM 한 대에 전부 몰아줘야** 한다.
 
 |                             | 이웃 폴더(1.pc.byVagrant) |             이 폴더 |
-| :-------------------------- | ---------------: | ------------------: |
-| vm01 · vm02 · vm03          |          8,704MB |             8,704MB |
-| i1                          |          1,024MB | — (바깥 VM 이 겸함) |
-| 바깥 게스트 OS + VirtualBox |                — |             2,048MB |
-| **VM 에 줘야 할 총량**      |      **9,728MB** |        **10,752MB** |
-| 권장 호스트 메모리          |             16GB |       **20GB 이상** |
+| :-------------------------- | ------------------------: | ------------------: |
+| vm01 · vm02 · vm03          |                   8,704MB |             8,704MB |
+| i1                          |                   1,024MB | — (바깥 VM 이 겸함) |
+| 바깥 게스트 OS + VirtualBox |                         — |             2,048MB |
+| **VM 에 줘야 할 총량**      |               **9,728MB** |        **10,752MB** |
+| 권장 호스트 메모리          |                      16GB |       **20GB 이상** |
 
 16GB 호스트에서도 돌기는 하나 여유가 거의 없다. 그런 경우 [settings.yml](settings.yml) 의 `outer.memory` 와 `inner` 노드 메모리를 함께 낮춘다.
 
@@ -55,7 +60,7 @@ jpc1(Intel i7-6700T · Skylake)에서 둘 다 확인했다. 지원하지 않는 
 
 ## 1. 바깥 VM 만들기 — Windows 에서
 
-```bash
+```powershell
 cd lab1.Kubespray/pc/cf_inVm
 vagrant up
 ```
@@ -64,7 +69,7 @@ VirtualBox·Vagrant 설치가 포함되어 이웃 폴더(1.pc.byVagrant)보다 �
 
 ## 2. 안쪽 노드 만들기 — 바깥 VM 안에서
 
-```bash
+```powershell
 vagrant ssh                    # ubuntu 계정으로 들어간다
 bash /sreMsa/lab1.Kubespray/pc/cf_inVm/inner/doInner.sh
 ```
@@ -119,11 +124,11 @@ fatal: "Ansible must be between 2.16.4 and 2.17.0 exclusive - you have 2.17.14"
 # 어느 쪽을 쓸 것인가
 
 |               | 이웃 폴더(1.pc.byVagrant) | 이 폴더    |
-| :------------ | :--------------- | :--------- |
-| 배포 단위     | VM 4대           | **VM 1대** |
-| 호스트 메모리 | 16GB             | 20GB 권장  |
-| 중첩 가상화   | 불필요           | **필수**   |
-| 성능          | 기준             | 느리다     |
-| 검증 상태     | 설치 확인        | 설치 확인  |
+| :------------ | :------------------------ | :--------- |
+| 배포 단위     | VM 4대                    | **VM 1대** |
+| 호스트 메모리 | 16GB                      | 20GB 권장  |
+| 중첩 가상화   | 불필요                    | **필수**   |
+| 성능          | 기준                      | 느리다     |
+| 검증 상태     | 설치 확인                 | 설치 확인  |
 
 수강생 배포를 VM 하나로 끝내야 하는 상황이 아니라면 이웃 폴더(1.pc.byVagrant)가 안전하다.

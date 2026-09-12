@@ -104,7 +104,7 @@ vagrant --version
 예전 자료들이 Windows 에 `vagrant-winnfsd` 를 필수로 안내하는 경우가 있는데,
 그것은 공유 폴더를 NFS 로 쓰던 시절의 이야기이고 여기서는 VirtualBox 기본 공유를 쓴다.
 
-```bash
+```powershell
 vagrant plugin list
 ```
 
