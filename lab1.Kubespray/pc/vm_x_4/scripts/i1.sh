@@ -1,7 +1,7 @@
 #!/bin/bash
 # 콘솔 서버(i1) 전용 프로비저닝
 #
-#   1) AWS 경로와 같은 도구를 깐다 — 1.InstanceForTerraform/installOnEc2.sh 를 그대로 실행한다
+#   1) AWS 경로와 같은 도구를 깐다 — aws/1.aws.byTerraform/installOnEc2.sh 를 그대로 실행한다
 #      (ansible · python · terraform · awscli. 로컬에서 terraform·awscli 는 쓰지 않지만
 #       AWS 경로와 환경을 동일하게 두기 위해 스크립트를 나누지 않는다)
 #   2) ubuntu 계정의 ssh 키를 만들고 공개키를 /vagrant/.keys/ 에 남긴다
@@ -9,8 +9,8 @@
 
 set -uo pipefail
 
-INSTALLER_LOCAL="/sreMsa/lab1.Kubespray/1.InstanceForTerraform/installOnEc2.sh"
-INSTALLER_URL="https://raw.githubusercontent.com/Finfra/sreMsa/main/lab1.Kubespray/1.InstanceForTerraform/installOnEc2.sh"
+INSTALLER_LOCAL="/sreMsa/lab1.Kubespray/aws/1.aws.byTerraform/installOnEc2.sh"
+INSTALLER_URL="https://raw.githubusercontent.com/Finfra/sreMsa/main/lab1.Kubespray/aws/1.aws.byTerraform/installOnEc2.sh"
 
 echo "=== [i1] ubuntu 계정 ssh 키 생성 ==="
 if [ ! -f /home/ubuntu/.ssh/id_rsa ]; then

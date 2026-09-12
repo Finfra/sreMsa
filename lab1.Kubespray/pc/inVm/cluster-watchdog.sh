@@ -12,7 +12,7 @@
 # cluster.yml 은 멱등이라 재실행하면 끝난 태스크를 건너뛴다.
 # download_keep_remote_cache 로 받은 이미지도 유지되므로 재개가 빠르다.
 
-BASE="/c/Users/nowage/work/sreMsa/lab1.Kubespray/0.VagrantForLocal/2.inVm"
+BASE="/c/Users/nowage/work/sreMsa/lab1.Kubespray/pc/inVm"
 VB="/c/Program Files/Oracle/VirtualBox/VBoxManage.exe"
 VM="sreMsa-inVm"
 WLOG="/c/Users/nowage/watchdog.log"

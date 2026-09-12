@@ -1,5 +1,5 @@
 #!/bin/bash
-# AWS 경로의 3.InstanceForKubernetes/doSetHosts.sh 에 대응하는 로컬판.
+# AWS 경로의 aws/3.aws.InstanceForKubernetes/doSetHosts.sh 에 대응하는 로컬판.
 # i1 안에서 실행한다.
 #
 # AWS 판은 `aws ec2 describe-instances` 로 IP 를 알아내야 하지만

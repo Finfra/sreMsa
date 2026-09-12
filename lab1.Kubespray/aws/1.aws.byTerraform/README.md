@@ -22,7 +22,7 @@ sudo apt-get update
 * 아래 스크립트를 실행합니다.
 * Python 버전을 자동 감지하여 설치합니다 (3.10~3.12 지원, 없을 경우 3.12 설치)
 ```
-sudo -i bash -c 'curl https://raw.githubusercontent.com/Finfra/sreMsa/main/lab1.Kubespray/1.InstanceForTerraform/installOnEc2.sh | bash'
+sudo -i bash -c 'curl https://raw.githubusercontent.com/Finfra/sreMsa/main/lab1.Kubespray/aws/1.aws.byTerraform/installOnEc2.sh | bash'
 ```
 
 # Step4. 설치 확인

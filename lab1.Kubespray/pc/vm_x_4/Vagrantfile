@@ -11,7 +11,7 @@
 #   * i1 -> vm0N 키 기반 무암호 ssh
 #   * 모든 노드의 /etc/hosts 에 i1·vm0N 등록
 #   * i1 에 ansible·python·terraform·awscli 설치
-#     (1.InstanceForTerraform/installOnEc2.sh 를 그대로 재사용한다)
+#     (aws/1.aws.byTerraform/installOnEc2.sh 를 그대로 재사용한다)
 #
 # 설정은 settings.yml 에서 읽는다. 이 파일은 고칠 일이 없다.
 
@@ -75,7 +75,7 @@ Vagrant.configure("2") do |config|
 
   # 강의 소스 전체를 게스트에 올린다.
   # i1 에서 /sreMsa/lab1.Kubespray/... 로 AWS 경로의 스크립트를 그대로 쓸 수 있다.
-  # 이 폴더가 0.VagrantForLocal/1.vm4 로 한 단계 깊어졌으므로 세 번 올라간다.
+  # 이 폴더가 pc/vm_x_4 로 한 단계 깊어졌으므로 세 번 올라간다.
   config.vm.synced_folder "../../../", "/sreMsa"
 
   # -------------------------------------------------------------------------
