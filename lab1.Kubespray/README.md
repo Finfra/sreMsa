@@ -5,15 +5,15 @@
 실습 환경은 두 갈래다. **둘 다 Kubespray 로 설치하며 명령도 거의 같다.**
 고른 쪽의 폴더로 들어가면 그 안에 진입점 문서가 있다.
 
-| 폴더                 | 언제 쓰나                                        |
-| -------------------- | ------------------------------------------------ |
-| [pc](pc/README.md)   | 로컬 PC 에서 실습할 때 — **이번 수업은 이 방식** |
-| [aws](aws/README.md) | AWS 계정으로 실습할 때                           |
+| 갈래                     | 폴더                 | 언제 쓰나                                        |
+| :----------------------- | :------------------- | :----------------------------------------------- |
+| **A. 로컬 PC** (Vagrant) | [pc](pc/README.md)   | 로컬 PC 에서 실습할 때 — **이번 수업은 이 방식** |
+| **B. AWS** (Terraform)   | [aws](aws/README.md) | AWS 계정으로 실습할 때                           |
 
 > ⚠️ **1일차에 Docker Desktop 을 설치했다면 Hyper-V 를 먼저 꺼야 한다.** 켜져 있으면 VirtualBox 가 VM 을 띄우지 못한다 —
 > 절차는 [lab0.Docker](../lab0.Docker/README.md) 의 **"2일차 전에 반드시"** 절에 있다.
 
-## 로컬 PC 경로 — [pc](pc/README.md)
+## A. 로컬 PC 경로 — [pc](pc/README.md)
 
 | 순서  | 문서                                                       | 무엇을 하나                                             |
 | :---: | :--------------------------------------------------------- | :------------------------------------------------------ |
@@ -26,7 +26,7 @@
 * **수업은 `1.pc.byVagrant` 로 진행한다.** VM 1대 안에 전부 넣는 `cf_inVm` 은 참고용이며, 고르는 기준은 [pc/README.md](pc/README.md) 에 있다.
 * Windows 호스트에는 VirtualBox·Vagrant 만 있으면 된다. Ansible 은 i1 안에서 돈다.
 
-## AWS 경로 — [aws](aws/README.md)
+## B. AWS 경로 — [aws](aws/README.md)
 
 진입점은 문서 하나다 — **[aws/0.pc_setting/README.md](aws/0.pc_setting/README.md)**.
 내 PC 에 설치할 것부터 AWS 계정·키, 콘솔 서버 `i1`, Kubernetes 설치까지 한 문서로 이어진다.
