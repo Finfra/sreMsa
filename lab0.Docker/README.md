@@ -7,10 +7,10 @@ date: 2026.09.13
 
 **첫날 실습은 내 Windows 에 Docker Desktop 을 깔고 진행한다.** VM 이나 Linux 를 거치지 않고 익숙한 환경에서 컨테이너를 먼저 다뤄 보기 위한 것이다.
 
-| 일차      | 무엇을 쓰나                      | 설치 문서                                          |
-| :-------- | :------------------------------- | :------------------------------------------------- |
-| **1일차** | Windows + **Docker Desktop**     | **이 문서** — 설치 파일은 `_prgs\DockerDesktop\` |
-| **2일차** | VirtualBox + Vagrant + Kubespray | `lab1.Kubespray` — `_prgs` 의 나머지 설치          |
+| 일차      | 무엇을 쓰나                      | 설치 문서                                |
+| :-------- | :------------------------------- | :--------------------------------------- |
+| **1일차** | Windows + **Docker Desktop**     | **이 문서** — 설치 파일은 `_prgs\Day1\`  |
+| **2일차** | VirtualBox + Vagrant + Kubespray | `lab1.Kubespray` — `_prgs\Day2\` 를 쓴다 |
 
 > ⚠️ **두 환경은 같은 PC 에서 동시에 켤 수 없다.** Docker Desktop 은 Hyper-V 를 켜야 하고 VirtualBox 는 꺼야 한다.
 > **2일차로 넘어가기 전에 아래 "2일차 전에 반드시" 절을 반드시 거친다.** 이것을 놓치면 2일차가 통째로 막힌다.
@@ -32,7 +32,7 @@ date: 2026.09.13
 | 파일                         |   크기 | 쓰임                                        |
 | :--------------------------- | -----: | :------------------------------------------ |
 | `DockerDesktopInstaller.exe` | 577 MB | Docker Desktop 본체 (Windows x64)           |
-| `wsl_update_x64.msi`         |  17 MB | WSL2 리눅스 커널 — **오프라인 설치의 핵심**  |
+| `wsl_update_x64.msi`         |  17 MB | WSL2 리눅스 커널 — **오프라인 설치의 핵심** |
 | `kind-windows-amd64.exe`     |  11 MB | kind — 2일차가 끝내 막혔을 때만 쓰는 비상용 |
 | `SHA256SUMS.txt`             |      — | 무결성 검증용 체크섬                        |
 
@@ -40,7 +40,7 @@ date: 2026.09.13
 * **파일이 온전한지** 의심되면 확인한다. 복사가 중간에 끊기면 설치가 알 수 없는 오류로 실패한다.
 
 ```powershell
-cd $env:USERPROFILE\Downloads\_prgs\DockerDesktop
+cd $env:USERPROFILE\Downloads\_prgs\Day1
 Get-FileHash *.exe,*.msi -Algorithm SHA256 |
   ForEach-Object { "{0}  {1}" -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) }
 ```
@@ -73,7 +73,7 @@ shutdown -r -t 0
 재부팅 뒤 실행한다. **`wsl --install` 대신 이것을 쓴다** — 인터넷 없이 끝난다.
 
 ```powershell
-msiexec /i $env:USERPROFILE\Downloads\_prgs\DockerDesktop\wsl_update_x64.msi /quiet
+msiexec /i $env:USERPROFILE\Downloads\_prgs\Day1\wsl_update_x64.msi /quiet
 wsl --set-default-version 2
 ```
 
@@ -92,7 +92,7 @@ wsl --status
 exe파일을 더블 클릭해도 된다.
 
 ```powershell
-& "$env:USERPROFILE\Downloads\_prgs\DockerDesktop\DockerDesktopInstaller.exe"
+& "$env:USERPROFILE\Downloads\_prgs\Day1\DockerDesktopInstaller.exe"
 ```
 
 설치 화면에서 **`Use WSL 2 instead of Hyper-V`** 를 켠 채로 진행한다. 나머지는 기본값이다.
@@ -141,24 +141,24 @@ Windows 11 은 **메모리 무결성(코어 격리)** 도 함께 꺼야 한다. 
 * **`False`** 가 나와야 VirtualBox 가 VM 을 띄울 수 있다.
 * `True` 면 메모리 무결성까지 껐는지 다시 확인하고 재부팅한다.
 
-| 이때 생기는 일                                                 | 정상인가                                |
-| :------------------------------------------------------------- | :-------------------------------------- |
+| 이때 생기는 일                                                  | 정상인가                                |
+| :-------------------------------------------------------------- | :-------------------------------------- |
 | Docker Desktop 이 `Virtualization support not detected` 로 뜬다 | ✅**정상이다.** 2일차에는 쓰지 않는다   |
-| `docker` 명령이 동작하지 않는다                                | ✅ 정상. 컨테이너 실습은 VM 안에서 한다 |
-| WSL2 도 뜨지 않는다                                            | ✅ 정상. 같은 가상화를 쓰기 때문이다    |
+| `docker` 명령이 동작하지 않는다                                 | ✅ 정상. 컨테이너 실습은 VM 안에서 한다 |
+| WSL2 도 뜨지 않는다                                             | ✅ 정상. 같은 가상화를 쓰기 때문이다    |
 
 * **Docker Desktop 을 지울 필요는 없다.** 켜지지 않을 뿐이며, 수업이 끝난 뒤 `hypervisorlaunchtype auto` 로 되돌리면 다시 쓸 수 있다.
 * 1일차로 돌아가고 싶으면 `bcdedit /set hypervisorlaunchtype auto` + 재부팅. **그때는 VirtualBox 가 막힌다.** 두 환경은 재부팅으로만 오간다.
 
 # 자주 막히는 곳
 
-| 증상                                                   | 원인·해결                                                                          |
-| :----------------------------------------------------- | :--------------------------------------------------------------------------------- |
-| `가상 머신 플랫폼을 사용할 수 없습니다`                | 1단계를 하고 **재부팅하지 않았다**                                                  |
-| `WSL 2를 실행하려면 커널 업데이트가 필요합니다`        | 2단계 msi 가 안 깔렸다. `/quiet` 없이 다시 실행해 화면을 본다                       |
-| Docker Desktop 이 `Virtualization support not detected` | Hyper-V 가 꺼져 있다. 1단계 `hypervisorlaunchtype auto` 후 재부팅                   |
-| `docker` 명령을 찾을 수 없다                           | 설치 후 **로그아웃·재로그인**을 하지 않았다                                         |
-| **2일차에 `vagrant up` 이 VM 을 못 띄운다**            | **위 "2일차 전에 반드시" 를 건너뛰었다.** `HypervisorPresent` 가 `False` 인지 본다 |
+| 증상                                                    | 원인·해결                                                                          |
+| :------------------------------------------------------ | :--------------------------------------------------------------------------------- |
+| `가상 머신 플랫폼을 사용할 수 없습니다`                 | 1단계를 하고 **재부팅하지 않았다**                                                 |
+| `WSL 2를 실행하려면 커널 업데이트가 필요합니다`         | 2단계 msi 가 안 깔렸다. `/quiet` 없이 다시 실행해 화면을 본다                      |
+| Docker Desktop 이 `Virtualization support not detected` | Hyper-V 가 꺼져 있다. 1단계 `hypervisorlaunchtype auto` 후 재부팅                  |
+| `docker` 명령을 찾을 수 없다                            | 설치 후 **로그아웃·재로그인**을 하지 않았다                                        |
+| **2일차에 `vagrant up` 이 VM 을 못 띄운다**             | **위 "2일차 전에 반드시" 를 건너뛰었다.** `HypervisorPresent` 가 `False` 인지 본다 |
 
 # 참고 — 2일차가 끝내 막혔을 때
 

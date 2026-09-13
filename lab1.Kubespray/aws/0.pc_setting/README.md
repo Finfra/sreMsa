@@ -35,7 +35,7 @@ AWS 방식에는 쓰지 않는 1.1GB 를 끌고 온다. AWS 방식은 아래 넷
 | **1** | `VSCodeUserSetup-x64-1.137.0.exe` |        224 MB | Visual Studio Code — YAML·매니페스트 편집용  |
 | **2** | `2_Git-2.55.0.5-64-bit.exe`         |         62 MB | Git for Windows — **Git Bash 를 SSH 로 쓴다** |
 | **3** | `3_putty-64bit-installer.msi`       |          4 MB | PuTTY·PuTTYgen·pscp — Windows 표준 SSH 도구  |
-| **4** | `4_DockerDesktopInstaller.exe`      |        600 MB | Docker Desktop — 로컬에서 이미지 빌드·테스트 |
+| **4** | `DockerDesktopInstaller.exe`      |        600 MB | Docker Desktop — 로컬에서 이미지 빌드·테스트 |
 |   —   | `SHA256SUMS.txt`                    |             — | 무결성 검증용 체크섬                         |
 |       | 합계                                | **약 890 MB** |                                              |
 
@@ -75,7 +75,7 @@ wsl --list --verbose
 
 ### 2단계 : Docker Desktop 설치
 
-`_prgs` 의 `4_DockerDesktopInstaller.exe` 를 실행하고, 설치 화면에서 **`Use WSL 2 instead of Hyper-V`** 를 켠 채로 진행한다.
+`_prgs` 의 `DockerDesktopInstaller.exe` 를 실행하고, 설치 화면에서 **`Use WSL 2 instead of Hyper-V`** 를 켠 채로 진행한다.
 
 설치 후 터미널을 새로 열어 확인한다.
 
