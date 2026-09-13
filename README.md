@@ -12,7 +12,15 @@ cd sreMsa
 
 ```
 
+# [Lab0. Docker](./lab0.Docker/)
+* **1일차** — 내 Windows 에서 Docker Desktop 으로 컨테이너를 먼저 다룬다
+* VM 이나 Linux 를 거치지 않으므로 첫날 바로 실습에 들어간다
+## Lab0-1. Docker Desktop 설치 (Hyper-V · WSL2)
+## Lab0-2. 컨테이너 기본 실습
+* ⚠️ **2일차로 넘어가기 전에 Hyper-V 를 끄고 재부팅한다.** Docker Desktop 과 VirtualBox 는 같은 PC 에서 동시에 켤 수 없다
+
 # [Lab1. 사전 실습 환경 세팅](./lab1.Kubespray/)
+* **2일차** — VirtualBox + Vagrant 로 VM 을 만들고 Kubespray 로 클러스터를 올린다
 ## Lab1-1~3. Terraform으로 EC2 인스턴스 생성
 ### Lab1-1. 실습용 Terraform Instance 구성
 ### Lab1-2. IAM Key생성

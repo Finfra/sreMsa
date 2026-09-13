@@ -1,17 +1,17 @@
 ---
-name: day1-DockerDesktop
-description: 1일차 준비물 — Windows 에 Docker Desktop 을 설치한다. 2일차 VirtualBox 전환 주의 포함
+name: README
+description: Lab0 — 1일차 Docker 실습 환경. Windows 에 Docker Desktop 을 설치하고 2일차 전환까지 안내한다
 date: 2026.09.13
 ---
 
-# 1일차는 여기서 시작한다
+# Lab0. Docker — 1일차는 여기서 시작한다
 
 **첫날 실습은 내 Windows 에 Docker Desktop 을 깔고 진행한다.** VM 이나 Linux 를 거치지 않고 익숙한 환경에서 컨테이너를 먼저 다뤄 보기 위한 것이다.
 
-| 일차      | 무엇을 쓰나                      | 설치 문서                               |
-| :-------- | :------------------------------- | :-------------------------------------- |
-| **1일차** | Windows + **Docker Desktop**     | **이 문서** (`_prgs\0_DockerDesktop\`)  |
-| **2일차** | VirtualBox + Vagrant + Kubespray | `_prgs\README.md` — 1~5번을 차례로 설치 |
+| 일차      | 무엇을 쓰나                      | 설치 문서                                          |
+| :-------- | :------------------------------- | :------------------------------------------------- |
+| **1일차** | Windows + **Docker Desktop**     | **이 문서** — 설치 파일은 `_prgs\0_DockerDesktop\` |
+| **2일차** | VirtualBox + Vagrant + Kubespray | `lab1.Kubespray` — `_prgs` 의 1~5번 설치           |
 
 > ⚠️ **두 환경은 같은 PC 에서 동시에 켤 수 없다.** Docker Desktop 은 Hyper-V 를 켜야 하고 VirtualBox 는 꺼야 한다.
 > **2일차로 넘어가기 전에 아래 "2일차 전에 반드시" 절을 반드시 거친다.** 이것을 놓치면 2일차가 통째로 막힌다.

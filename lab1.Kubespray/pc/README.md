@@ -10,7 +10,7 @@ date: 2026.09.12
 
 | 일차      | 환경                     | 여는 문서                                                                                     |
 | :-------- | :----------------------- | :-------------------------------------------------------------------------------------------- |
-| **1일차** | Windows + Docker Desktop | [0.pc_setting/day1-DockerDesktop.md](0.pc_setting/day1-DockerDesktop.md)                      |
+| **1일차** | Windows + Docker Desktop | [lab0.Docker](../../lab0.Docker/README.md)                                                    |
 | **2일차** | VirtualBox + Vagrant     | [0.pc_setting/README.md](0.pc_setting/README.md) → [1.pc.byVagrant](1.pc.byVagrant/README.md) |
 
 > ⚠️ **1일차에서 2일차로 넘어갈 때 Hyper-V 를 끄고 재부팅해야 한다.**
