@@ -9,8 +9,8 @@ date: 2026.09.13
 
 | 일차      | 무엇을 쓰나                      | 설치 문서                                          |
 | :-------- | :------------------------------- | :------------------------------------------------- |
-| **1일차** | Windows +**Docker Desktop**      | **이 문서** — 설치 파일은 `_prgs\DockerDesktop\` |
-| **2일차** | VirtualBox + Vagrant + Kubespray | `lab1.Kubespray` — `_prgs` 의 1~5번 설치           |
+| **1일차** | Windows + **Docker Desktop**     | **이 문서** — 설치 파일은 `_prgs\DockerDesktop\` |
+| **2일차** | VirtualBox + Vagrant + Kubespray | `lab1.Kubespray` — `_prgs` 의 나머지 설치          |
 
 > ⚠️ **두 환경은 같은 PC 에서 동시에 켤 수 없다.** Docker Desktop 은 Hyper-V 를 켜야 하고 VirtualBox 는 꺼야 한다.
 > **2일차로 넘어가기 전에 아래 "2일차 전에 반드시" 절을 반드시 거친다.** 이것을 놓치면 2일차가 통째로 막힌다.
