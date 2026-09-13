@@ -5,8 +5,8 @@ Windows 설정을 바꾸고, 프로그램을 깔고, 실습 소스를 확인하�
 
 > ⚠️ **1일차에 Docker Desktop 을 설치했다면 그대로는 진행되지 않는다.**
 > 1일차에 켠 **Hyper-V 를 먼저 꺼야** VirtualBox 가 VM 을 띄운다 — 절차는 아래
-> "Windows 만의 사전 작업" 에 있고, `_prgs\0_DockerDesktop\README.md` 의
-> **"2일차 전에 반드시"** 절과 같은 내용이다.
+> "Windows 만의 사전 작업" 에 있고, [day1-DockerDesktop.md](day1-DockerDesktop.md)(배포본은
+> `_prgs\0_DockerDesktop\README.md`)의 **"2일차 전에 반드시"** 절과 같은 내용이다.
 
 * **이 문서만 마치면** VM 을 만들 준비가 끝난다. 그 다음은
   [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 의 **2장** 부터 이어서 진행한다.
@@ -25,7 +25,7 @@ flowchart LR
 
 |  단계   | 무엇을 하나                                 | 문서                                                                  |
 | :-----: | :------------------------------------------ | :-------------------------------------------------------------------- |
-| *1일차* | *Docker Desktop 설치 · 컨테이너 실습*       | *`_prgs\0_DockerDesktop\README.md`*                                   |
+| *1일차* | *Docker Desktop 설치 · 컨테이너 실습*       | *[day1-DockerDesktop.md](day1-DockerDesktop.md)*                      |
 |  **1**  | **Hyper-V 끄기** → `_prgs` 로 프로그램 설치 | 이 문서 0장                                                           |
 |  **2**  | Vagrant box 등록 · 소스 확인                | 이 문서 0~1장                                                         |
 |  **3**  | VM 4대 생성 (`i1`·`vm01`~`vm03`)            | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 2장                     |
