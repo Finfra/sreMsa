@@ -15,8 +15,10 @@ cd sreMsa
 # [Lab0. Docker](./lab0.Docker/)
 * **1일차** — 내 Windows 에서 Docker Desktop 으로 컨테이너를 먼저 다룬다
 * VM 이나 Linux 를 거치지 않으므로 첫날 바로 실습에 들어간다
-## Lab0-1. Docker Desktop 설치 (Hyper-V · WSL2)
-## Lab0-2. 컨테이너 기본 실습
+## Lab0-1. [컨테이너 사용 — docker run](./lab0.Docker/1.dockerRun/)
+* 이미지 검색·실행·접속·이미지화·정리 · 볼륨 매핑 · Docker Hub push
+## Lab0-2. [이미지 제작 — docker build](./lab0.Docker/2.dockerBuild/)
+* Dockerfile 문법 · build · 캐시 · GitHub(절차)과 Docker Hub(결과) 분리 배포
 * ⚠️ **2일차로 넘어가기 전에 Hyper-V 를 끄고 재부팅한다.** Docker Desktop 과 VirtualBox 는 같은 PC 에서 동시에 켤 수 없다
 
 # [Lab1. 사전 실습 환경 세팅](./lab1.Kubespray/)
