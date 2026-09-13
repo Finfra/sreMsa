@@ -120,7 +120,11 @@ cd sreMsa
 
 ## 그 밖의 설치 파일은 해당 Lab 이 안내한다
 
-`_prgs` 에는 위 공통 프로그램 외에 Lab 별 설치 파일이 함께 들어 있다. **무엇을 언제 까는지는 각 문서가 정한다.**
+`_prgs` 에는 위 공통 프로그램 외에 **어느 경로로 실습하느냐에 따라 다른 파일**이 들어 있다. 무엇을 언제 까는지는 각 Lab 문서가 정한다.
+
+### VirtualBox 로 진행하는 과정 ★ 이번 수업
+
+내 PC 에 VM 을 띄워 실습한다. `_prgs` 가 **날짜별로 갈려** 있다.
 
 | `_prgs` 안           | 언제 쓰나              | 안내 문서                                                                                       |
 | :------------------- | :--------------------- | :---------------------------------------------------------------------------------------------- |
@@ -128,8 +132,27 @@ cd sreMsa
 | `Day2/`              | **2일차** VM·Kubespray | [lab1.Kubespray/pc/0.pc_setting/README.md](./lab1.Kubespray/pc/0.pc_setting/README.md)          |
 | `Day2/docker/` (deb) | 참고 — VM 안 Docker    | [lab1.Kubespray/pc/1.pc.byVagrant/README.md](./lab1.Kubespray/pc/1.pc.byVagrant/README.md) 11장 |
 
-* ⚠️ **1일차와 2일차는 Hyper-V 요구가 정반대다.** Docker Desktop 은 켜야 하고 VirtualBox 는 꺼야 하므로, 2일차로 넘어갈 때 끄고 재부팅한다.
-* 파일이 온전한지는 각 폴더의 `SHA256SUMS.txt` 로 확인한다 — 직하(공통)·`Day1`·`Day2` 가 각자 갖고 있다.
+* ⚠️ **1일차와 2일차는 Hyper-V 요구가 정반대다.** Docker Desktop 은 켜야 하고 VirtualBox 는 꺼야 하므로, 2일차로 넘어갈 때 **끄고 재부팅**한다.
+* 메모리 **16GB 최소**, 디스크 여유 **60GB 이상**이 필요하다. VM 4대가 합계 9.5GB 를 쓴다.
+
+### AWS 로 진행하는 과정
+
+AWS 계정으로 EC2 를 띄워 실습한다. **내 PC 에는 브라우저와 SSH 도구만** 있으면 되므로 `_prgs` 구성이 위와 다르다.
+
+| 순서  | 파일                              |   크기 | 쓰임                                     |
+| :---: | :-------------------------------- | -----: | :--------------------------------------- |
+| **①** | `VSCodeUserSetup-x64-1.137.0.exe` | 224 MB | VS Code (공통)                           |
+| **②** | `Git-2.55.0.5-64-bit.exe`         |  62 MB | Git Bash — SSH 클라이언트로 쓴다         |
+| **③** | `putty-64bit-installer.msi`       |   4 MB | PuTTY·PuTTYgen — Windows 표준 SSH 도구   |
+| **④** | `DockerDesktopInstaller.exe`      | 600 MB | Docker Desktop — 로컬 이미지 빌드·테스트 |
+
+* 안내 문서 : [lab1.Kubespray/aws/0.pc_setting/README.md](./lab1.Kubespray/aws/0.pc_setting/README.md)
+* **VirtualBox·Vagrant·Vagrant box 는 쓰지 않는다** — 노드를 AWS 가 만들기 때문이며, 그만큼 약 1.1 GB 를 덜 받는다.
+* ⚠️ AWS 는 **인스턴스를 켜 둔 채로 두면 요금이 계속 나간다.** 실습이 끝나면 반드시 정리한다.
+
+### 공통 — 파일이 온전한지 확인
+
+각 폴더의 `SHA256SUMS.txt` 로 확인한다. 직하(공통)·`Day1`·`Day2` 가 각자 갖고 있다.
 
 ```powershell
 cd $env:USERPROFILE\Downloads\_prgs
@@ -137,10 +160,28 @@ Get-FileHash *.exe,*.msi,*.box -Algorithm SHA256 |
   ForEach-Object { "{0}  {1}" -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) }
 ```
 
-
-
+* 설치가 끝내 실패하면 **강사에게 말한다.** 완성된 VM 이 담긴 복구용 USB 를 받아 실습에 복귀할 수 있다.
 
 # 수강 년도별 소스 보기
+
+**지금 수강 중이라면 브랜치를 바꾸지 않는다.** `git clone` 한 기본 상태가 이번 회차 자료다.
+
+```
+cd
+git clone https://github.com/Finfra/sreMsa
+cd sreMsa
+```
+
+지난 회차 자료가 필요하면 아래에서 자기 수강 시기를 찾아 그 브랜치로 간다.
+
+| 수강 시기          | 브랜치   |
+| :----------------- | :------- |
+| **지금 (진행 중)** | (기본)   |
+| 202508~202511      | `202511` |
+| 202504~202508      | `202508` |
+| 202207~202504      | `202504` |
+| 202107~202207      | `202207` |
+| 202107 이전        | `202107` |
 
 ## 202508~202511에 수업들었던 분들은 아래 방식
 
