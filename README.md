@@ -122,14 +122,14 @@ cd sreMsa
 
 `_prgs` 에는 위 공통 프로그램 외에 Lab 별 설치 파일이 함께 들어 있다. **무엇을 언제 까는지는 각 문서가 정한다.**
 
-| `_prgs` 안             | 언제 쓰나              | 안내 문서                                                                                       |
-| :--------------------- | :--------------------- | :---------------------------------------------------------------------------------------------- |
-| `DockerDesktop/`       | **1일차** Docker 실습  | [lab0.Docker/README.md](./lab0.Docker/README.md)                                                |
-| VirtualBox·Vagrant·box | **2일차** VM·Kubespray | [lab1.Kubespray/pc/0.pc_setting/README.md](./lab1.Kubespray/pc/0.pc_setting/README.md)          |
-| `docker/` (deb)        | 참고 — VM 안 Docker    | [lab1.Kubespray/pc/1.pc.byVagrant/README.md](./lab1.Kubespray/pc/1.pc.byVagrant/README.md) 11장 |
+| `_prgs` 안           | 언제 쓰나              | 안내 문서                                                                                       |
+| :------------------- | :--------------------- | :---------------------------------------------------------------------------------------------- |
+| `Day1/`              | **1일차** Docker 실습  | [lab0.Docker/README.md](./lab0.Docker/README.md)                                                |
+| `Day2/`              | **2일차** VM·Kubespray | [lab1.Kubespray/pc/0.pc_setting/README.md](./lab1.Kubespray/pc/0.pc_setting/README.md)          |
+| `Day2/docker/` (deb) | 참고 — VM 안 Docker    | [lab1.Kubespray/pc/1.pc.byVagrant/README.md](./lab1.Kubespray/pc/1.pc.byVagrant/README.md) 11장 |
 
 * ⚠️ **1일차와 2일차는 Hyper-V 요구가 정반대다.** Docker Desktop 은 켜야 하고 VirtualBox 는 꺼야 하므로, 2일차로 넘어갈 때 끄고 재부팅한다.
-* 파일이 온전한지는 `_prgs\SHA256SUMS.txt` 로 확인한다.
+* 파일이 온전한지는 각 폴더의 `SHA256SUMS.txt` 로 확인한다 — 직하(공통)·`Day1`·`Day2` 가 각자 갖고 있다.
 
 ```powershell
 cd $env:USERPROFILE\Downloads\_prgs

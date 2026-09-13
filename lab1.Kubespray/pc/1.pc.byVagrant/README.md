@@ -354,7 +354,7 @@ kubectl get nodes
 먼저 내 PC 에서 deb 를 소스 폴더로 옮긴다(탐색기로 복사해도 된다). 소스 폴더는 VM 안에서 `/sreMsa` 로 보인다.
 
 ```powershell
-Copy-Item -Recurse $env:USERPROFILE\Downloads\_prgs\docker `
+Copy-Item -Recurse $env:USERPROFILE\Downloads\_prgs\Day2\docker `
           $env:USERPROFILE\Downloads\sreMsa\
 ```
 

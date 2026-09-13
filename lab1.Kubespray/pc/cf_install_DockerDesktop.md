@@ -17,7 +17,7 @@ date: 2026.09.12
 이럴 때 **1일차에 쓴 Docker Desktop 위에 kind 로 Kubernetes 를 올려** 실습을 이어 간다. 이 문서가 그 경로다.
 
 > **Docker Desktop 설치 자체는 여기서 다루지 않는다.** 1일차에 이미 했으며, 절차는
-> `다운로드\_prgs\DockerDesktop\README.md` 에 있다. 이 문서는 **그 위에 클러스터를 올리는 부분**만 맡는다.
+> `다운로드\_prgs\Day1\README.md` 에 있다. 이 문서는 **그 위에 클러스터를 올리는 부분**만 맡는다.
 > 1일차를 건너뛰었다면 그 문서로 먼저 Docker Desktop 을 설치한다.
 
 > ⚠️ **이 경로를 고르면 Hyper-V 를 켠 채로 남는다** — 2일차 VirtualBox 로는 돌아갈 수 없다.
@@ -52,7 +52,7 @@ docker --version
 | :-------------------------------------------- | :-------------------------------------------------------------------------- |
 | `docker` 가 동작하고 `HypervisorPresent`=True | ✅ 준비됐다. 아래 1장으로 간다                                              |
 | `HypervisorPresent`=False                     | 2일차 전환으로 Hyper-V 를 꺼 둔 상태다. **되돌려야 한다** — 아래 참조       |
-| `docker` 를 찾을 수 없다                      | Docker Desktop 이 없다. `_prgs\DockerDesktop\README.md` 로 먼저 설치한다 |
+| `docker` 를 찾을 수 없다                      | Docker Desktop 이 없다. `_prgs\Day1\README.md` 로 먼저 설치한다 |
 
 **Hyper-V 를 되돌리려면** 관리자 권한 PowerShell 에서 실행하고 재부팅한다.
 
@@ -62,7 +62,7 @@ shutdown -r -t 0
 ```
 
 * ⚠️ **이 순간부터 VirtualBox 는 VM 을 띄우지 못한다.** 2일차 정규 경로를 포기하는 선택이므로 **강사에게 먼저 알린다.**
-* Windows 기능(WSL·가상 머신 플랫폼)과 WSL2 커널 설치는 `_prgs\DockerDesktop\README.md` 의 1~2단계가 정본이다. 여기서 되풀이하지 않는다.
+* Windows 기능(WSL·가상 머신 플랫폼)과 WSL2 커널 설치는 `_prgs\Day1\README.md` 의 1~2단계가 정본이다. 여기서 되풀이하지 않는다.
 
 # 1. kind 로 3노드 클러스터 만들기
 
@@ -73,7 +73,7 @@ shutdown -r -t 0
 **배포 폴더에 바이너리가 들어 있다.** 교육장 회선을 쓰지 않는다.
 
 ```powershell
-copy $env:USERPROFILE\Downloads\_prgs\DockerDesktop\kind-windows-amd64.exe $env:USERPROFILE\kind.exe
+copy $env:USERPROFILE\Downloads\_prgs\Day1\kind-windows-amd64.exe $env:USERPROFILE\kind.exe
 & "$env:USERPROFILE\kind.exe" version
 ```
 
@@ -152,8 +152,8 @@ Docker Desktop 을 지울 필요는 없다. Hyper-V 만 꺼 두면 VirtualBox �
 
 | 증상 | 원인·해결 |
 | :--- | :--- |
-| `가상 머신 플랫폼을 사용할 수 없습니다` | Hyper-V·WSL 기능이 꺼져 있다. `_prgs\DockerDesktop\README.md` 1단계를 한 뒤 **재부팅**한다 |
-| `WSL 2를 실행하려면 커널 구성 요소 업데이트가 필요합니다` | WSL2 커널이 없다. `_prgs\DockerDesktop\wsl_update_x64.msi` 로 설치한다 |
+| `가상 머신 플랫폼을 사용할 수 없습니다` | Hyper-V·WSL 기능이 꺼져 있다. `_prgs\Day1\README.md` 1단계를 한 뒤 **재부팅**한다 |
+| `WSL 2를 실행하려면 커널 구성 요소 업데이트가 필요합니다` | WSL2 커널이 없다. `_prgs\Day1\wsl_update_x64.msi` 로 설치한다 |
 | `kind create cluster` 가 멈춘다 | Docker Desktop 이 아직 기동 중이다. 트레이 아이콘이 초록으로 바뀐 뒤 다시 실행한다 |
 | NodePort 서비스에 접속이 안 된다 | `extraPortMappings` 에 그 포트를 넣지 않았다. 클러스터를 지우고 config 를 고쳐 다시 만든다 |
 | 노드에 `ssh` 가 안 된다 | 노드가 컨테이너라 sshd 가 없다. `docker exec` 를 쓴다 |

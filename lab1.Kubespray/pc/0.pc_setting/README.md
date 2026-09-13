@@ -6,7 +6,7 @@ Windows 설정을 바꾸고, 프로그램을 깔고, 실습 소스를 확인하�
 > ⚠️ **1일차에 Docker Desktop 을 설치했다면 그대로는 진행되지 않는다.**
 > 1일차에 켠 **Hyper-V 를 먼저 꺼야** VirtualBox 가 VM 을 띄운다 — 절차는 아래
 > "Windows 만의 사전 작업" 에 있고, [lab0.Docker](../../../lab0.Docker/README.md)(배포본은
-> `_prgs\DockerDesktop\README.md`)의 **"2일차 전에 반드시"** 절과 같은 내용이다.
+> `_prgs\Day1\README.md`)의 **"2일차 전에 반드시"** 절과 같은 내용이다.
 
 * **이 문서만 마치면** VM 을 만들 준비가 끝난다. 그 다음은
   [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 의 **2장** 부터 이어서 진행한다.
@@ -60,7 +60,9 @@ flowchart LR
 C:\Users\<계정>\Downloads\
 ├── sreMsa\   ← 실습 소스 (여기서 vagrant up 을 한다)
 └── _prgs\    ← 설치 파일
-    └── DockerDesktop\   ← 1일차에 쓴 폴더
+    ├── VSCodeUserSetup-…exe   ← 공통
+    ├── Day1\   ← 1일차에 쓴 폴더
+    └── Day2\   ← **오늘 쓰는 폴더**
 ```
 
 | 폴더     | 언제 쓰나                                          |
@@ -110,19 +112,19 @@ Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격
 
 **인터넷에서 직접 받지 말 것.** 강의 처음에 구글 드라이브로 받은 **`_prgs`** 폴더에 필요한 파일이 모두 들어 있다.
 
-**2일차에 새로 까는 것은 아래 세 개**다. `DockerDesktop` 은 1일차에 이미 썼고, `VSCodeUserSetup` 은 전 과정 공통이라 대개 이미 깔려 있다.
+**오늘 쓰는 것은 `Day2\` 폴더**다. `Day1\` 은 어제 썼고, 직하의 `VSCodeUserSetup` 은 전 과정 공통이라 대개 이미 깔려 있다.
 
-| 순서  | `_prgs` 안의 파일                                     |          크기 | 용도                                                      |
-| :---: | :---------------------------------------------------- | ------------: | :-------------------------------------------------------- |
-| 공통  | `VSCodeUserSetup-x64-1.137.0.exe`                     |        224 MB | VS Code — 전 과정에서 YAML·매니페스트를 편집한다          |
-| 1일차 | `DockerDesktop/`                                      |        605 MB | **어제 쓴 폴더** — 2일차에는 설치하지 않는다              |
-| **①** | **`vc_redist.x64.exe`**                               |         25 MB | **Visual C++ 재배포 — 바로 다음 VirtualBox 의 전제조건**  |
-| **②** | `VirtualBox-7.2.16-174877-Win.exe`                    |        170 MB | VirtualBox 7.2.16                                         |
-| **③** | `vagrant_2.4.9_windows_amd64.msi`                     |        236 MB | Vagrant 2.4.9                                             |
-| 등록  | `bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box` |        621 MB | **Vagrant box** — 설치가 아니라 **등록**한다              |
-| 참고  | `docker/` (deb 4개)                                   |         73 MB | VM 안 Ubuntu 용 Docker — 1일차를 했다면 쓰지 않는다(11장) |
-|   —   | `SHA256SUMS.txt`                                      |             — | 무결성 검증용 체크섬                                      |
-|       | 합계                                                  | **약 2.0 GB** |                                                           |
+| 순서  | `_prgs` 안                                                 |          크기 | 용도                                                      |
+| :---: | :--------------------------------------------------------- | ------------: | :-------------------------------------------------------- |
+| 공통  | `VSCodeUserSetup-x64-1.137.0.exe` (직하)                   |        224 MB | VS Code — 전 과정에서 YAML·매니페스트를 편집한다          |
+| 1일차 | `Day1\`                                                    |        604 MB | **어제 쓴 폴더** — 2일차에는 열지 않는다                  |
+| **①** | **`Day2\vc_redist.x64.exe`**                               |         25 MB | **Visual C++ 재배포 — 바로 다음 VirtualBox 의 전제조건**  |
+| **②** | `Day2\VirtualBox-7.2.16-174877-Win.exe`                    |        170 MB | VirtualBox 7.2.16                                         |
+| **③** | `Day2\vagrant_2.4.9_windows_amd64.msi`                     |        236 MB | Vagrant 2.4.9                                             |
+| 등록  | `Day2\bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box` |        621 MB | **Vagrant box** — 설치가 아니라 **등록**한다              |
+| 참고  | `Day2\docker\` (deb 4개)                                   |         73 MB | VM 안 Ubuntu 용 Docker — 1일차를 했다면 쓰지 않는다(11장) |
+|   —   | `SHA256SUMS.txt`                                           |             — | 폴더마다 하나씩 — 무결성 검증용                           |
+|       | 합계                                                       | **약 2.0 GB** |                                                           |
 
 수강생 전원이 같은 파일을 동시에 내려받으면 교육장 회선이 막혀 실습을 시작조차 못 한다.
 box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 미리 받아 배포한다.
@@ -142,7 +144,7 @@ box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 
 > 설치가 알 수 없는 오류로 실패할 때, 복사가 도중에 끊긴 것은 아닌지 이 방법으로 가려낼 수 있다.
 >
 > ```powershell
-> cd $env:USERPROFILE\Downloads\_prgs
+> cd $env:USERPROFILE\Downloads\_prgs\Day2
 > Get-FileHash *.exe,*.msi,*.box -Algorithm SHA256 |
 >   ForEach-Object { "{0}  {1}" -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) }
 > ```
@@ -197,12 +199,12 @@ No plugins installed.
 
 ## Vagrant box 등록 ★ 이 절을 건너뛰면 인터넷에서 621MB 를 받는다
 
-`_prgs` 의 `.box` 파일을 Vagrant 에 등록한다. **인터넷을 쓰지 않는다.**
+`_prgs\Day2` 의 `.box` 파일을 Vagrant 에 등록한다. **인터넷을 쓰지 않는다.**
 
-PowerShell 에서 `_prgs` 폴더로 이동한 뒤 실행한다.
+PowerShell 에서 `_prgs\Day2` 폴더로 이동한 뒤 실행한다.
 
 ```powershell
-cd $env:USERPROFILE\Downloads\_prgs
+cd $env:USERPROFILE\Downloads\_prgs\Day2
 vagrant box add bento/ubuntu-24.04 ./bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box
 ```
 
