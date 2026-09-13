@@ -70,15 +70,16 @@ shutdown -r -t 0
 
 ## 설치
 
-**배포 폴더에 바이너리가 들어 있다.** 교육장 회선을 쓰지 않는다.
+**바이너리는 강사 복구용 USB 의 `2.k8s` 폴더에 있다.** 교육장 회선을 쓰지 않는다.
 
 ```powershell
-copy $env:USERPROFILE\Downloads\_prgs\Day1\kind-windows-amd64.exe $env:USERPROFILE\kind.exe
+copy E:\2.k8s\kind-windows-amd64.exe $env:USERPROFILE\kind.exe
 & "$env:USERPROFILE\kind.exe" version
 ```
 
+* `E:` 는 USB 드라이브 문자다. `탐색기`에서 확인해 바꾼다.
 * 아래 명령에서 `kind` 대신 `& "$env:USERPROFILE\kind.exe"` 로 부르거나, `PATH` 가 걸린 폴더로 옮긴다.
-* 인터넷이 되면 `winget install Kubernetes.kind` 로 받아도 된다.
+* 인터넷이 되면 `winget install Kubernetes.kind` 로 받아도 된다 — 그때는 USB 가 필요 없다.
 
 `kubectl` 은 Docker Desktop 이 함께 설치한다. 없으면 `winget install Kubernetes.kubectl`.
 
