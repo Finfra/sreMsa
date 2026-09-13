@@ -44,7 +44,7 @@ config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 # 시작하기 전에 — 기본 설치를 먼저 끝낸다 ★
 
 프로그램 설치·Windows 사전 작업·소스 내려받기는 **[0.pc_setting/README.md](../0.pc_setting/README.md)** 가 다룬다
-(0~1장). 강사 배포 폴더 `_prgs` 안에도 같은 문서가 들어 있다.
+(0~1장). 구글 드라이브로 받는 `_prgs\Day2\` 안에도 같은 문서가 들어 있다.
 
 **그 문서를 마치고 돌아온다.** 아래 상태여야 이어서 진행할 수 있다.
 

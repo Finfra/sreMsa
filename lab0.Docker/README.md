@@ -33,7 +33,6 @@ date: 2026.09.13
 | :--------------------------- | -----: | :------------------------------------------ |
 | `DockerDesktopInstaller.exe` | 577 MB | Docker Desktop 본체 (Windows x64)           |
 | `wsl_update_x64.msi`         |  17 MB | WSL2 리눅스 커널 — **오프라인 설치의 핵심** |
-| `kind-windows-amd64.exe`     |  11 MB | kind — 2일차가 끝내 막혔을 때만 쓰는 비상용 |
 | `SHA256SUMS.txt`             |      — | 무결성 검증용 체크섬                        |
 
 * ⚠️ `wsl --install` 은 **인터넷으로 커널을 받아 온다.** 교육장 회선이 막히면 그 명령만으로는 멈춘다. 이 폴더의 `wsl_update_x64.msi` 가 그 자리를 대신한다.
@@ -164,7 +163,7 @@ Windows 11 은 **메모리 무결성(코어 격리)** 도 함께 꺼야 한다. 
 
 회사 정책으로 VirtualBox 를 못 깔거나 관리자 권한이 없어 2일차 환경을 만들 수 없다면, **Docker Desktop 위에 kind 로 Kubernetes 를 올려** 실습을 이어 갈 수 있다.
 
-* 이 폴더의 `kind-windows-amd64.exe` 가 그 용도다.
+* 필요한 `kind` 바이너리는 **강사 복구용 USB 의 `2.k8s` 폴더**에 있다. 2일차 클러스터를 대신하는 수단이라 그쪽에 둔다.
 * 다만 **완전한 대체가 아니다** — 노드가 VM 이 아니라 컨테이너라 lab1 Kubespray 는 할 수 없고 일부 실습이 달라진다.
 * 절차와 한계는 실습 소스의 `다운로드\sreMsa\lab1.Kubespray\pc\cf_install_DockerDesktop.md` 에 있다.
 * ⚠️ **강사에게 먼저 알린다.** 반 전체가 2일차 환경으로 가는데 혼자 다른 경로를 타면 이후 실습이 어긋난다.
@@ -177,14 +176,13 @@ Windows 11 은 **메모리 무결성(코어 격리)** 도 함께 꺼야 한다. 
 | :--------------------------- | :------------------------------------------------------------------------- |
 | `DockerDesktopInstaller.exe` | https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe |
 | `wsl_update_x64.msi`         | https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi   |
-| `kind-windows-amd64.exe`     | https://github.com/kubernetes-sigs/kind/releases (최신 릴리스)             |
 
 **파일명을 위 표대로 고정한다** — 이 문서의 명령이 그 이름을 쓴다.
 
 ```bash
 # 받은 뒤 체크섬을 새로 만든다
-shasum -a 256 DockerDesktopInstaller.exe wsl_update_x64.msi kind-windows-amd64.exe > SHA256SUMS.txt
+shasum -a 256 DockerDesktopInstaller.exe wsl_update_x64.msi > SHA256SUMS.txt
 ```
 
 * Docker Desktop 은 판이 자주 바뀐다. **개강 2주 전쯤 새로 받아** 1일차 절차를 한 번 밟아 보는 편이 안전하다.
-* 회선 없는 교육장이 예상되면 kind 노드 이미지(`docker save kindest/node:<버전> -o kindest-node.tar`, 약 1 GB)도 함께 넣는다.
+* `kind` 바이너리와 노드 이미지는 이 폴더가 아니라 **복구용 USB 의 `2.k8s`** 에 둔다 — 2일차가 막혔을 때만 쓰는 대안이기 때문이다.
