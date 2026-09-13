@@ -1,4 +1,4 @@
-# 실습 환경 기본 설치 — 프로그램·소스 준비 (Windows)
+# 2일차 실습 환경 설치 — VirtualBox·Vagrant 준비 (Windows)
 
 **2일차 환경(VirtualBox + Vagrant + Kubespray)을 만드는 문서**다.
 Windows 설정을 바꾸고, 프로그램을 깔고, 실습 소스를 확인하는 데까지를 다룬다.
@@ -16,26 +16,32 @@ Windows 설정을 바꾸고, 프로그램을 깔고, 실습 소스를 확인하�
 
 ```mermaid
 flowchart LR
-    A["① Windows 설정<br/>Hyper-V 끄기 + 재부팅"] --> B["② 프로그램 설치<br/>VirtualBox·Vagrant"]
+    Z["1일차<br/>Docker Desktop<br/>(Hyper-V ON)"] -->|"⚠️ Hyper-V OFF<br/>+ 재부팅"| A["① Windows 설정"]
+    A --> B["② 프로그램 설치<br/>VirtualBox·Vagrant"]
     B --> C["③ box 등록<br/>+ 소스 확인"]
     C --> D["④ VM 4대<br/>vagrant up"]
     D --> E["⑤ Kubernetes<br/>inventory + Kubespray"]
 ```
 
-| 단계  | 무엇을 하나                             | 문서                                                                  |
-| :---: | :-------------------------------------- | :-------------------------------------------------------------------- |
-| **1** | Hyper-V 끄기 → `_prgs` 로 프로그램 설치 | 이 문서 0장                                                           |
-| **2** | Vagrant box 등록 · 소스 확인            | 이 문서 0~1장                                                         |
-| **3** | VM 4대 생성 (`i1`·`vm01`~`vm03`)        | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 2장                     |
-| **4** | hosts·inventory·환경 점검               | [2.pc.InstanceForKubernetes](../2.pc.InstanceForKubernetes/README.md) |
-| **5** | Kubespray 실행 · 설치 확인              | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 7~10장                  |
+|  단계   | 무엇을 하나                                 | 문서                                                                  |
+| :-----: | :------------------------------------------ | :-------------------------------------------------------------------- |
+| *1일차* | *Docker Desktop 설치 · 컨테이너 실습*       | *`_prgs\0_DockerDesktop\README.md`*                                   |
+|  **1**  | **Hyper-V 끄기** → `_prgs` 로 프로그램 설치 | 이 문서 0장                                                           |
+|  **2**  | Vagrant box 등록 · 소스 확인                | 이 문서 0~1장                                                         |
+|  **3**  | VM 4대 생성 (`i1`·`vm01`~`vm03`)            | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 2장                     |
+|  **4**  | hosts·inventory·환경 점검                   | [2.pc.InstanceForKubernetes](../2.pc.InstanceForKubernetes/README.md) |
+|  **5**  | Kubespray 실행 · 설치 확인                  | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 7~10장                  |
 
-* **AWS 갈래와 달리 계정·키 발급이 없다.** 내 PC 에 만들기 때문이며, 그만큼 1단계가 곧 시작이다.
+* **1일차는 이 문서가 아니다** — 기울임으로 적은 줄은 어제 한 일이며, 오늘은 **1단계부터** 시작한다.
+* ⚠️ **1단계의 Hyper-V 끄기가 어제와 오늘을 가르는 지점**이다. 이것을 건너뛰면 3단계 `vagrant up` 이 실패한다.
+* **AWS 갈래와 달리 계정·키 발급이 없다.** 내 PC 에 만들기 때문이다.
 * 장 번호는 두 문서에 걸쳐 이어진다 — 이 문서가 0~1장, [1.pc.byVagrant](../1.pc.byVagrant/README.md) 가 2장부터다.
 
 # 0. 준비와 설치
 
 ## 하드웨어
+
+아래는 **2일차 기준**이다. VM 4대를 동시에 띄우므로 1일차(Docker Desktop)보다 요구가 크다.
 
 * 메모리 **16GB 최소**, 24GB 이상 권장 — VM 이 합계 **9.5GB** 를 쓴다
 * CPU **논리 프로세서 8개 이상 권장** — VM 이 합계 7개를 가져간다. 4개뿐이면 느려진다
@@ -95,7 +101,7 @@ Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격
 `False` 가 나와야 VirtualBox 가 VM 을 띄울 수 있다. `True` 면 아직 Hyper-V 가 올라와 있는 것이므로
 메모리 무결성까지 껐는지 다시 확인하고 재부팅한다.
 
-**Docker Desktop 을 쓴 적이 있다면 이 절이 특히 중요하다.** 그것이 Hyper-V 를 켜 두기 때문이다.
+**1일차를 했다면 이 절을 반드시 거친다.** Docker Desktop 설치가 Hyper-V 를 켜 두었기 때문이다.
 **2일차 실습은 Hyper-V 를 끈 상태로 끝까지** 진행한다. 1일차에 쓰던 Docker Desktop 은 그동안 뜨지 않는데 정상이며, 수업이 끝난 뒤 `bcdedit /set hypervisorlaunchtype auto` + 재부팅으로 되돌리면 다시 쓸 수 있다.
 
 
@@ -103,7 +109,7 @@ Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격
 
 **인터넷에서 직접 받지 말 것.** 강사가 배포하는 **`_prgs`** 폴더에 필요한 파일이 모두 들어 있다.
 
-**파일 이름 앞의 번호가 곧 설치 순서다.** 1~4 를 차례로 설치하고, 5 는 설치가 아니라 **등록**한다(아래 "Vagrant box 등록" 절).
+**파일 이름 앞의 번호가 곧 설치 순서다.** **0번은 1일차에 이미 썼다** — 오늘은 1~4 를 차례로 설치하고, 5 는 설치가 아니라 **등록**한다(아래 "Vagrant box 등록" 절).
 
 | 순서  | `_prgs` 안의 파일                                       |          크기 | 용도                                                               |
 | :---: | :------------------------------------------------------ | ------------: | :----------------------------------------------------------------- |
