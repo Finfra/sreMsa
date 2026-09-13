@@ -335,13 +335,21 @@ sudo -i
 kubectl get nodes
 ```
 
-# 11. Docker 설치 (VM 안) ★ lab2 준비
+# 11. [참고] i1 안에 Docker 설치 — 예전 방식
 
-lab2 의 `docker build`·`docker run` 실습은 **콘솔 서버 i1 안에서** 한다.
+> **1일차에 Windows 에서 Docker Desktop 으로 컨테이너를 다뤘다면 이 장은 건너뛴다.**
+> 여기는 같은 실습을 VM(i1) 안의 Linux Docker 로 하던 **이전 방식**의 기록이다.
+
+아래 경우에만 필요하다.
+
+* 1일차에 참석하지 못해 컨테이너 실습을 건너뛰었다
+* Linux 에서 Docker 를 직접 다뤄 보고 싶다
+* 강사가 지시했다
+
 `_prgs/docker/` 의 deb 로 **오프라인 설치**하므로 인터넷을 쓰지 않는다.
 
-> ⚠️ **내 PC(Windows)에 Docker Desktop 을 설치하지 말 것.**
-> Hyper-V 가 켜져 VirtualBox 가 VM 을 띄우지 못하게 된다. 이 실습의 컨테이너는 전부 VM 안에서 돈다.
+> ⚠️ **2일차 환경에서는 내 PC 의 Docker Desktop 이 뜨지 않는다.** Hyper-V 를 껐기 때문이며 정상이다.
+> 그 상태에서 컨테이너를 다루려면 이 장처럼 VM 안의 Docker 를 쓴다.
 
 먼저 내 PC 에서 deb 를 소스 폴더로 옮긴다(탐색기로 복사해도 된다). 소스 폴더는 VM 안에서 `/sreMsa` 로 보인다.
 
@@ -413,8 +421,8 @@ vagrant destroy -f
 | cluster.yml 이 중간에 멈춘다                                        | fact 캐시를 지우고 재실행 (9장 참조)                                                                                                                                          |
 | 메모리가 모자라 PC 가 멈춘다                                        | 아래 참고 자료의 "자원 → 메모리가 부족할 때"                                                                                                                                  |
 | **VirtualBox 설치가 1초 만에 실패한다**                             | `2_vc_redist.x64.exe` 를 `3_VirtualBox` 보다 먼저 설치하지 않았다. `msiexec` 오류 1603 이 그 증상이다                                                                         |
-| **Docker Desktop 을 깔았더니 `vagrant up` 이 안 된다**              | Hyper-V 가 켜졌다. **이 실습에 Docker Desktop 은 필요 없다** — 컨테이너는 VM 안에서 돈다. 관리자 PowerShell 에서 `bcdedit /set hypervisorlaunchtype off` 후 재부팅             |
-| **Docker Desktop 이 `Virtualization support not detected` 로 뜬다** | Hyper-V 를 껐기 때문이며 **정상이다.** Docker Desktop 은 이 실습에서 쓰지 않는다 — 컨테이너 실습은 11장처럼 VM(i1) 안의 Docker 로 한다                                         |
+| **`vagrant up` 이 안 된다 — 1일차에 Docker Desktop 을 깔았다**      | 그 설치가 Hyper-V 를 켰다. **2일차 전환을 건너뛴 것이다.** 관리자 PowerShell 에서 `bcdedit /set hypervisorlaunchtype off` 후 재부팅하고, `HypervisorPresent` 가 `False` 인지 확인한다 |
+| **Docker Desktop 이 `Virtualization support not detected` 로 뜬다** | Hyper-V 를 껐기 때문이며 **정상이다.** 1일차에 쓰던 Docker Desktop 은 2일차에 뜨지 않는다 — 컨테이너를 다루려면 11장처럼 VM(i1) 안의 Docker 를 쓴다                                         |
 | **VM 이 깨졌거나 설치가 끝나지 않았다**                             | 배포 폴더의 `_vm` 안에 완성본이 있다. **강사 안내를 받고 진행한다** — 그 안의 `README.md` 에 절차가 있다                                                                       |
 
 ## 부팅이 오래 걸릴 때

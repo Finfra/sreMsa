@@ -1,7 +1,12 @@
 # 실습 환경 기본 설치 — 프로그램·소스 준비 (Windows)
 
-내 PC 에 Kubernetes 실습 환경을 만들기 위한 **첫 단계**다.
+**2일차 환경(VirtualBox + Vagrant + Kubespray)을 만드는 문서**다.
 Windows 설정을 바꾸고, 프로그램을 깔고, 실습 소스를 확인하는 데까지를 다룬다.
+
+> ⚠️ **1일차에 Docker Desktop 을 설치했다면 그대로는 진행되지 않는다.**
+> 1일차에 켠 **Hyper-V 를 먼저 꺼야** VirtualBox 가 VM 을 띄운다 — 절차는 아래
+> "Windows 만의 사전 작업" 에 있고, `_prgs\0_DockerDesktop\README.md` 의
+> **"2일차 전에 반드시"** 절과 같은 내용이다.
 
 * **이 문서만 마치면** VM 을 만들 준비가 끝난다. 그 다음은
   [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 의 **2장** 부터 이어서 진행한다.
@@ -17,13 +22,13 @@ flowchart LR
     D --> E["⑤ Kubernetes<br/>inventory + Kubespray"]
 ```
 
-| 단계  | 무엇을 하나                            | 문서                                                                  |
-| :---: | :------------------------------------- | :-------------------------------------------------------------------- |
+| 단계  | 무엇을 하나                             | 문서                                                                  |
+| :---: | :-------------------------------------- | :-------------------------------------------------------------------- |
 | **1** | Hyper-V 끄기 → `_prgs` 로 프로그램 설치 | 이 문서 0장                                                           |
-| **2** | Vagrant box 등록 · 소스 확인           | 이 문서 0~1장                                                         |
-| **3** | VM 4대 생성 (`i1`·`vm01`~`vm03`)       | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 2장                     |
-| **4** | hosts·inventory·환경 점검              | [2.pc.InstanceForKubernetes](../2.pc.InstanceForKubernetes/README.md) |
-| **5** | Kubespray 실행 · 설치 확인             | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 7~10장                  |
+| **2** | Vagrant box 등록 · 소스 확인            | 이 문서 0~1장                                                         |
+| **3** | VM 4대 생성 (`i1`·`vm01`~`vm03`)        | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 2장                     |
+| **4** | hosts·inventory·환경 점검               | [2.pc.InstanceForKubernetes](../2.pc.InstanceForKubernetes/README.md) |
+| **5** | Kubespray 실행 · 설치 확인              | [1.pc.byVagrant](../1.pc.byVagrant/README.md) 7~10장                  |
 
 * **AWS 갈래와 달리 계정·키 발급이 없다.** 내 PC 에 만들기 때문이며, 그만큼 1단계가 곧 시작이다.
 * 장 번호는 두 문서에 걸쳐 이어진다 — 이 문서가 0~1장, [1.pc.byVagrant](../1.pc.byVagrant/README.md) 가 2장부터다.
@@ -49,6 +54,7 @@ flowchart LR
 C:\Users\<계정>\Downloads\
 ├── sreMsa\   ← 실습 소스 (여기서 vagrant up 을 한다)
 ├── _prgs\    ← 설치 파일
+│   └── 0_DockerDesktop\   ← 1일차에 쓴 폴더
 └── _vm\      ← 완성된 VM 백업 (문제가 생겼을 때만 쓴다)
 ```
 
@@ -63,7 +69,9 @@ C:\Users\<계정>\Downloads\
 ## Windows 만의 사전 작업 ★ 프로그램을 깔기 전에 먼저 한다
 
 VirtualBox 는 Hyper-V 가 켜져 있으면 VM 을 띄우지 못한다.
-Docker Desktop·WSL2 를 쓴 적이 있거나, Windows 11 이라면 대개 켜져 있다.
+
+**1일차에 Docker Desktop 을 설치했다면 Hyper-V 가 켜져 있다** — 그 설치가 켠 것이다.
+1일차를 건너뛴 PC 도 Windows 11 이거나 WSL2 를 쓴 적이 있으면 대개 켜져 있다.
 
 **관리자 권한 PowerShell** 에서 실행한 뒤 재부팅한다.
 
@@ -88,7 +96,7 @@ Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격
 메모리 무결성까지 껐는지 다시 확인하고 재부팅한다.
 
 **Docker Desktop 을 쓴 적이 있다면 이 절이 특히 중요하다.** 그것이 Hyper-V 를 켜 두기 때문이다.
-이 실습은 Hyper-V 를 **끈 상태로 끝까지** 진행한다 — 컨테이너 실습도 VM 안에서 하므로([1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 11장) 중간에 다시 켤 일이 없다.
+**2일차 실습은 Hyper-V 를 끈 상태로 끝까지** 진행한다. 1일차에 쓰던 Docker Desktop 은 그동안 뜨지 않는데 정상이며, 수업이 끝난 뒤 `bcdedit /set hypervisorlaunchtype auto` + 재부팅으로 되돌리면 다시 쓸 수 있다.
 
 
 ## 소프트웨어 — 강사가 제공하는 `_prgs` 폴더를 쓴다 ★
@@ -97,16 +105,17 @@ Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격
 
 **파일 이름 앞의 번호가 곧 설치 순서다.** 1~4 를 차례로 설치하고, 5 는 설치가 아니라 **등록**한다(아래 "Vagrant box 등록" 절).
 
-| 순서  | `_prgs` 안의 파일                                       |          크기 | 용도                                                      |
-| :---: | :------------------------------------------------------ | ------------: | :-------------------------------------------------------- |
-| **1** | `1_VSCodeUserSetup-x64-1.137.0.exe`                     |        224 MB | Visual Studio Code — YAML·매니페스트 편집용               |
-| **2** | **`2_vc_redist.x64.exe`**                               |         25 MB | **Visual C++ 재배포 — 바로 다음 VirtualBox 의 전제조건**  |
-| **3** | `3_VirtualBox-7.2.16-174877-Win.exe`                    |        170 MB | VirtualBox 7.2.16                                         |
-| **4** | `4_vagrant_2.4.9_windows_amd64.msi`                     |        236 MB | Vagrant 2.4.9                                             |
-| **5** | `5_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box` |        621 MB | **Vagrant box** — 설치가 아니라 **등록**한다              |
-| 나중  | `docker/` (deb 4개)                                     |         73 MB | **Docker Engine — VM 안의 Ubuntu 에 설치**한다(정본 11장) |
-|   —   | `SHA256SUMS.txt`                                        |             — | 무결성 검증용 체크섬                                      |
-|       | 합계                                                    | **약 1.4 GB** |                                                           |
+| 순서  | `_prgs` 안의 파일                                       |          크기 | 용도                                                               |
+| :---: | :------------------------------------------------------ | ------------: | :----------------------------------------------------------------- |
+| **0** | `0_DockerDesktop/`                                      |        605 MB | **1일차에 쓴 폴더** — 2일차에는 설치하지 않는다                    |
+| **1** | `1_VSCodeUserSetup-x64-1.137.0.exe`                     |        224 MB | Visual Studio Code — YAML·매니페스트 편집용                        |
+| **2** | **`2_vc_redist.x64.exe`**                               |         25 MB | **Visual C++ 재배포 — 바로 다음 VirtualBox 의 전제조건**           |
+| **3** | `3_VirtualBox-7.2.16-174877-Win.exe`                    |        170 MB | VirtualBox 7.2.16                                                  |
+| **4** | `4_vagrant_2.4.9_windows_amd64.msi`                     |        236 MB | Vagrant 2.4.9                                                      |
+| **5** | `5_bento-ubuntu-24.04-202510.26.0-virtualbox-amd64.box` |        621 MB | **Vagrant box** — 설치가 아니라 **등록**한다                       |
+| 참고  | `docker/` (deb 4개)                                     |         73 MB | VM 안 Ubuntu 용 Docker — **1일차를 했다면 쓰지 않는다**(11장 참고) |
+|   —   | `SHA256SUMS.txt`                                        |             — | 무결성 검증용 체크섬                                               |
+|       | 합계                                                    | **약 2.0 GB** | (0번 포함)                                                         |
 
 수강생 전원이 같은 파일을 동시에 내려받으면 교육장 회선이 막혀 실습을 시작조차 못 한다.
 box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 미리 받아 배포한다.
@@ -117,8 +126,8 @@ box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 
 
 ## 프로그램 설치 ★ 번호 순서를 지킨다
 
-> ⚠️ **`docker/` 는 이 단계에서 설치하지 않는다.** VM 안의 Ubuntu 에 까는 것이며 [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 11장에서 쓴다.
-> **내 PC(Windows)에 Docker Desktop 을 설치하지 말 것** — Hyper-V 가 켜져 VirtualBox 가 VM 을 띄우지 못하게 된다.
+> ⚠️ **`docker/` 는 이 단계에서 설치하지 않는다.** VM 안의 Ubuntu 에 까는 것이며, **1일차에 Docker Desktop 으로 컨테이너를 다뤘다면 쓰지 않는다** — [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 11장이 참고용으로 남겨 둔 절차다.
+> **1일차에 깐 Docker Desktop 은 지우지 않아도 된다** — 2일차에는 Hyper-V 를 끄므로 뜨지 않을 뿐이다.
 
 설치 옵션은 전부 기본값 그대로 둔다.
 

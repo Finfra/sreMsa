@@ -6,7 +6,7 @@ date: 2026.09.12
 
 # 언제 이 문서를 보나
 
-**정규 경로는 [1.pc.byVagrant](1.pc.byVagrant/) 다.** VirtualBox 와 Vagrant 로 VM 4대를 만들어 Kubespray 로 클러스터를 올린다.
+**2일차 정규 경로는 [1.pc.byVagrant](1.pc.byVagrant/) 다.** VirtualBox 와 Vagrant 로 VM 4대를 만들어 Kubespray 로 클러스터를 올린다.
 
 그런데 그 경로를 쓸 수 없는 PC 가 있다.
 
@@ -14,7 +14,14 @@ date: 2026.09.12
 * **관리자 권한이 없어** 드라이버를 설치하지 못한다
 * 이미 WSL2·Hyper-V 가 다른 업무에 쓰이고 있어 끌 수 없다
 
-이럴 때 **Docker 위에 Kubernetes 를 올려 실습을 이어 간다.** 이 문서가 그 경로다.
+이럴 때 **1일차에 쓴 Docker Desktop 위에 kind 로 Kubernetes 를 올려** 실습을 이어 간다. 이 문서가 그 경로다.
+
+> **Docker Desktop 설치 자체는 여기서 다루지 않는다.** 1일차에 이미 했으며, 절차는
+> `다운로드\_prgs\0_DockerDesktop\README.md` 에 있다. 이 문서는 **그 위에 클러스터를 올리는 부분**만 맡는다.
+> 1일차를 건너뛰었다면 그 문서로 먼저 Docker Desktop 을 설치한다.
+
+> ⚠️ **이 경로를 고르면 Hyper-V 를 켠 채로 남는다** — 2일차 VirtualBox 로는 돌아갈 수 없다.
+> 되돌리려면 `bcdedit /set hypervisorlaunchtype off` + 재부팅이 필요하다. **강사에게 먼저 알린다.**
 
 # ⚠️ 먼저 — 무엇이 되고 무엇이 안 되나
 
@@ -32,96 +39,46 @@ date: 2026.09.12
 
 **lab1 이 목적인 수업이라면 이 경로로는 그 부분을 대신할 수 없다.** 강사에게 먼저 알리고 진행한다.
 
-# 0. 지금 상태 확인
+# 0. Docker Desktop 이 동작하는지 확인
 
-Docker Desktop 은 WSL2 위에서 돌고, WSL2 는 Hyper-V 가상화를 쓴다. **VirtualBox 와는 동시에 쓸 수 없다.**
+이 경로는 **Docker Desktop 이 돌아가는 상태**에서 시작한다. 1일차에 설치했다면 그대로 쓴다.
 
 ```powershell
+docker --version
 (Get-CimInstance Win32_ComputerSystem).HypervisorPresent
 ```
 
-| 출력 | 뜻 |
-| :--- | :--- |
-| `True` | Hyper-V 가 올라와 있다 — Docker Desktop 을 쓸 수 있는 상태 |
-| `False` | 꺼져 있다 — 1단계부터 진행한다 |
+| 상태                                          | 무엇을 하나                                                                 |
+| :-------------------------------------------- | :-------------------------------------------------------------------------- |
+| `docker` 가 동작하고 `HypervisorPresent`=True | ✅ 준비됐다. 아래 1장으로 간다                                              |
+| `HypervisorPresent`=False                     | 2일차 전환으로 Hyper-V 를 꺼 둔 상태다. **되돌려야 한다** — 아래 참조       |
+| `docker` 를 찾을 수 없다                      | Docker Desktop 이 없다. `_prgs\0_DockerDesktop\README.md` 로 먼저 설치한다 |
 
-Windows 기능도 함께 본다.
-
-```powershell
-Get-WindowsOptionalFeature -Online |
-  Where-Object FeatureName -match "Subsystem-Linux|VirtualMachinePlatform" |
-  Format-Table FeatureName, State -AutoSize
-```
-
-# 1. Hyper-V 켜기
-
-VirtualBox 실습을 준비하며 `hypervisorlaunchtype off` 로 꺼 두었다면 되돌린다. **이 단계를 건너뛰면 WSL2 가 `가상 머신 플랫폼을 사용할 수 없습니다` 로 실패한다.**
-
-**관리자 권한 PowerShell** 에서 실행한다.
+**Hyper-V 를 되돌리려면** 관리자 권한 PowerShell 에서 실행하고 재부팅한다.
 
 ```powershell
 bcdedit /set hypervisorlaunchtype auto
-```
-
-# 2. WSL2 기능 켜기
-
-같은 관리자 PowerShell 에서 기능 둘을 켠다.
-
-```powershell
-dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-```
-
-**여기서 재부팅한다.**
-
-```powershell
 shutdown -r -t 0
 ```
 
-재부팅 뒤 `HypervisorPresent` 가 `True` 로 바뀌었는지 확인한다.
+* ⚠️ **이 순간부터 VirtualBox 는 VM 을 띄우지 못한다.** 2일차 정규 경로를 포기하는 선택이므로 **강사에게 먼저 알린다.**
+* Windows 기능(WSL·가상 머신 플랫폼)과 WSL2 커널 설치는 `_prgs\0_DockerDesktop\README.md` 의 1~2단계가 정본이다. 여기서 되풀이하지 않는다.
 
-# 3. WSL2 커널
-
-```powershell
-wsl --update
-wsl --set-default-version 2
-```
-
-`wsl --update` 가 실패하는 구형 빌드라면 커널 패키지를 직접 받는다 — https://aka.ms/wsl2kernel
-
-리눅스 배포판은 없어도 Docker Desktop 이 동작한다. 셸이 필요하면 하나 깐다.
-
-```powershell
-wsl --install -d Ubuntu
-```
-
-# 4. Docker Desktop 설치
-
-PC 방식 `_prgs` 에는 들어 있지 않다(그 폴더는 VirtualBox 실습 전용이다). 내려받아 설치한다.
-
-> https://www.docker.com/products/docker-desktop/
-
-설치 중 **Use WSL 2 instead of Hyper-V** 를 켠 채로 둔다(기본값). 설치 후 재부팅하거나 로그아웃 후 다시 로그인한다.
-
-```powershell
-docker version
-docker run --rm hello-world
-```
-
-`Server` 쪽까지 나오면 준비가 끝났다.
-
-# 5. kind 로 3노드 클러스터 만들기
+# 1. kind 로 3노드 클러스터 만들기
 
 `kind`(Kubernetes in Docker)는 컨테이너를 노드로 삼아 클러스터를 만든다. **노드가 셋인 구성**을 만들 수 있어 정규 경로(vm01~vm03)와 모양이 가장 가깝다.
 
 ## 설치
 
+**배포 폴더에 바이너리가 들어 있다.** 교육장 회선을 쓰지 않는다.
+
 ```powershell
-winget install Kubernetes.kind
-kubectl version --client
+copy $env:USERPROFILE\Downloads\_prgs\0_DockerDesktop\kind-windows-amd64.exe $env:USERPROFILE\kind.exe
+& "$env:USERPROFILE\kind.exe" version
 ```
 
-`winget` 이 없으면 바이너리를 직접 받는다 — https://kind.sigs.k8s.io/docs/user/quick-start/
+* 아래 명령에서 `kind` 대신 `& "$env:USERPROFILE\kind.exe"` 로 부르거나, `PATH` 가 걸린 폴더로 옮긴다.
+* 인터넷이 되면 `winget install Kubernetes.kind` 로 받아도 된다.
 
 `kubectl` 은 Docker Desktop 이 함께 설치한다. 없으면 `winget install Kubernetes.kubectl`.
 
@@ -160,7 +117,7 @@ sremsa-worker           Ready    <none>          1m    v1.31.x
 sremsa-worker2          Ready    <none>          1m    v1.31.x
 ```
 
-# 6. 실습 문서를 읽는 법 — 이름 대응표
+# 2. 실습 문서를 읽는 법 — 이름 대응표
 
 실습 문서는 VM 환경을 전제로 쓰여 있다. **아래로 바꿔 읽는다.**
 
@@ -176,7 +133,7 @@ sremsa-worker2          Ready    <none>          1m    v1.31.x
 
 `i1` 이 사라지는 것이 가장 큰 차이다. VM 환경에서는 콘솔 서버에 들어가 `kubectl` 을 썼지만, 여기서는 **호스트의 PowerShell 에서 바로** 쓴다. kind 가 `kubeconfig` 를 자동으로 설정해 둔다.
 
-# 7. 정리
+# 3. 정리
 
 ```powershell
 kind delete cluster --name sremsa
@@ -195,8 +152,8 @@ Docker Desktop 을 지울 필요는 없다. Hyper-V 만 꺼 두면 VirtualBox �
 
 | 증상 | 원인·해결 |
 | :--- | :--- |
-| `가상 머신 플랫폼을 사용할 수 없습니다` | 1단계(`hypervisorlaunchtype auto`)나 2단계를 건너뛰었다. 둘 다 한 뒤 **재부팅**해야 한다 |
-| `WSL 2를 실행하려면 커널 구성 요소 업데이트가 필요합니다` | 3단계 `wsl --update` 를 건너뛰었다 |
+| `가상 머신 플랫폼을 사용할 수 없습니다` | Hyper-V·WSL 기능이 꺼져 있다. `_prgs\0_DockerDesktop\README.md` 1단계를 한 뒤 **재부팅**한다 |
+| `WSL 2를 실행하려면 커널 구성 요소 업데이트가 필요합니다` | WSL2 커널이 없다. `_prgs\0_DockerDesktop\wsl_update_x64.msi` 로 설치한다 |
 | `kind create cluster` 가 멈춘다 | Docker Desktop 이 아직 기동 중이다. 트레이 아이콘이 초록으로 바뀐 뒤 다시 실행한다 |
 | NodePort 서비스에 접속이 안 된다 | `extraPortMappings` 에 그 포트를 넣지 않았다. 클러스터를 지우고 config 를 고쳐 다시 만든다 |
 | 노드에 `ssh` 가 안 된다 | 노드가 컨테이너라 sshd 가 없다. `docker exec` 를 쓴다 |
@@ -212,4 +169,4 @@ flowchart LR
   B -->|"bcdedit … off + 재부팅"| A
 ```
 
-**한 PC 에서 동시에 쓸 수는 없다.** 어느 쪽으로 수업을 진행할지 먼저 정하고 시작한다.
+**한 PC 에서 동시에 쓸 수는 없다.** 수업은 1일차에 Hyper-V 모드, 2일차에 VirtualBox 모드로 진행하며 그 사이에 재부팅이 한 번 들어간다. 이 문서의 경로를 고르면 **2일차에도 Hyper-V 모드에 남는다.**
