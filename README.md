@@ -1,24 +1,15 @@
-# 수강 관련 문의 : [한국글로벌널리지](https://www.globalknowledge.co.kr)
-
-# Usage.
-
+# Usage
+* [ 교육시는 불필요 ] GoogleDrive의 _prgs에 포함.
 ```
-git config --global core.autocrlf false
-git config --global core.eol lf
-cd
-
 git clone https://github.com/Finfra/sreMsa
 cd sreMsa
 ```
 
 # [Lab0. Docker](./lab0.Docker/)
-
 * **1일차** — 내 Windows 에서 Docker Desktop 으로 컨테이너를 먼저 다룬다
 * VM 이나 Linux 를 거치지 않으므로 첫날 바로 실습에 들어간다
 
 ## Lab0-1. [컨테이너 사용 — docker run](./lab0.Docker/1.dockerRun/)
-
-* 이미지 검색·실행·접속·이미지화·정리 · 볼륨 매핑 · Docker Hub push
 
 ## Lab0-2. [이미지 제작 — docker build](./lab0.Docker/2.dockerBuild/)
 
@@ -27,21 +18,36 @@ cd sreMsa
 
 # [Lab1. 사전 실습 환경 세팅](./lab1.Kubespray/)
 
-* **2일차** — VirtualBox + Vagrant 로 VM 을 만들고 Kubespray 로 클러스터를 올린다
+* **2일차** — Kubernetes 클러스터를 만든다. 여기서 **실습 환경이 두 갈래**로 갈린다
+* **다른 것은 노드를 무엇이 만드느냐뿐이다** — Kubespray 로 설치하는 부분은 양쪽이 같고, **Lab2 부터는 구분이 없다**
+| 갈래                                                        | 노드를 만드는 것     | 필요한 것                         |
+| :---------------------------------------------------------- | :------------------- | :-------------------------------- |
+| **[A. 로컬 PC](./lab1.Kubespray/pc/README.md)** ★ 이번 수업 | VirtualBox + Vagrant | 내 PC — 메모리 16GB · 디스크 60GB |
+| [B. AWS](./lab1.Kubespray/aws/README.md)                    | Terraform + EC2      | AWS 계정 — ⚠️ 켠 만큼 요금         |
 
-## Lab1-1~3. Terraform으로 EC2 인스턴스 생성
+## Lab1-A. 로컬 PC — VirtualBox + Vagrant ★ 이번 수업
 
-### Lab1-1. 실습용 Terraform Instance 구성
+### Lab1-A1. 기본 설치 — 프로그램·Windows 설정(Hyper-V OFF)·소스 확인
 
-### Lab1-2. IAM Key생성
+### Lab1-A2. Vagrant로 VM 4대 생성
 
-### Lab1-3. Terraform으로 K8s용으로 사용할 Instance 생성
+### Lab1-A3. 콘솔 서버 i1 접속과 환경 점검
 
-## Lab1-4~5. Ansible+Terraform Provisiong(Kubespray)
+### Lab1-A4. Kubespray를 통한 K8s 구성
 
-### Lab1-4. Kubepray를 통한 K8s 구성
+### Lab1-A5. K8s 작동 테스트
 
-### Lab1-5. K8s 작동 테스트
+## Lab1-B. AWS — Terraform + EC2
+
+### Lab1-B1. 내 PC 설정과 AWS 계정 준비
+
+### Lab1-B2. IAM Key 생성
+
+### Lab1-B3. Terraform으로 콘솔 서버 i1 생성 — Terraform·Ansible 설치
+
+### Lab1-B4. Terraform으로 K8s 노드 3대 생성 + Kubespray를 통한 K8s 구성
+
+### Lab1-B5. K8s 작동 테스트와 인스턴스 정리
 
 # [Lab2. Kubernetes](./lab2.Kubernetes/)
 
@@ -122,7 +128,7 @@ cd sreMsa
 
 `_prgs` 에는 위 공통 프로그램 외에 **어느 경로로 실습하느냐에 따라 다른 파일**이 들어 있다. 무엇을 언제 설치하는지는 각 Lab 문서가 정한다.
 
-### VirtualBox 로 진행하는 과정 ★ 이번 수업
+### A. 로컬 PC (VirtualBox) 로 진행하는 과정 ★ 이번 수업
 
 내 PC 에 VM 을 띄워 실습한다. `_prgs` 가 **날짜별로 갈려** 있다.
 
@@ -135,7 +141,7 @@ cd sreMsa
 * ⚠️ **1일차와 2일차는 Hyper-V 요구가 정반대다.** Docker Desktop 은 켜야 하고 VirtualBox 는 꺼야 하므로, 2일차로 넘어갈 때 **끄고 재부팅**한다.
 * 메모리 **16GB 최소**, 디스크 여유 **60GB 이상**이 필요하다. VM 4대가 합계 9.5GB 를 쓴다.
 
-### AWS 로 진행하는 과정
+### B. AWS 로 진행하는 과정
 
 AWS 계정으로 EC2 를 띄워 실습한다. **내 PC 에는 브라우저와 SSH 도구만** 있으면 되므로 `_prgs` 구성이 위와 다르다.
 
@@ -227,3 +233,5 @@ git clone https://github.com/Finfra/sreMsa
 cd sreMsa
 git checkout 202107
 ```
+
+# 수강 관련 문의 : [한국글로벌널리지](https://www.globalknowledge.co.kr)
