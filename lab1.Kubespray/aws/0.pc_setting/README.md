@@ -32,7 +32,7 @@ AWS 방식에는 쓰지 않는 1.1GB 를 끌고 온다. AWS 방식은 아래 넷
 
 | 순서  | `_prgs` 안의 파일                   |          크기 | 용도                                         |
 | :---: | :---------------------------------- | ------------: | :------------------------------------------- |
-| **1** | `1_VSCodeUserSetup-x64-1.137.0.exe` |        224 MB | Visual Studio Code — YAML·매니페스트 편집용  |
+| **1** | `VSCodeUserSetup-x64-1.137.0.exe` |        224 MB | Visual Studio Code — YAML·매니페스트 편집용  |
 | **2** | `2_Git-2.55.0.5-64-bit.exe`         |         62 MB | Git for Windows — **Git Bash 를 SSH 로 쓴다** |
 | **3** | `3_putty-64bit-installer.msi`       |          4 MB | PuTTY·PuTTYgen·pscp — Windows 표준 SSH 도구  |
 | **4** | `4_DockerDesktopInstaller.exe`      |        600 MB | Docker Desktop — 로컬에서 이미지 빌드·테스트 |
