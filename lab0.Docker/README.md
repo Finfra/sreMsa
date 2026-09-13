@@ -9,7 +9,7 @@ date: 2026.09.13
 
 | 일차      | 무엇을 쓰나                      | 설치 문서                                          |
 | :-------- | :------------------------------- | :------------------------------------------------- |
-| **1일차** | Windows +**Docker Desktop**      | **이 문서** — 설치 파일은 `_prgs\0_DockerDesktop\` |
+| **1일차** | Windows +**Docker Desktop**      | **이 문서** — 설치 파일은 `_prgs\DockerDesktop\` |
 | **2일차** | VirtualBox + Vagrant + Kubespray | `lab1.Kubespray` — `_prgs` 의 1~5번 설치           |
 
 > ⚠️ **두 환경은 같은 PC 에서 동시에 켤 수 없다.** Docker Desktop 은 Hyper-V 를 켜야 하고 VirtualBox 는 꺼야 한다.
@@ -40,7 +40,7 @@ date: 2026.09.13
 * **파일이 온전한지** 의심되면 확인한다. 복사가 중간에 끊기면 설치가 알 수 없는 오류로 실패한다.
 
 ```powershell
-cd $env:USERPROFILE\Downloads\_prgs\0_DockerDesktop
+cd $env:USERPROFILE\Downloads\_prgs\DockerDesktop
 Get-FileHash *.exe,*.msi -Algorithm SHA256 |
   ForEach-Object { "{0}  {1}" -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) }
 ```
@@ -73,7 +73,7 @@ shutdown -r -t 0
 재부팅 뒤 실행한다. **`wsl --install` 대신 이것을 쓴다** — 인터넷 없이 끝난다.
 
 ```powershell
-msiexec /i $env:USERPROFILE\Downloads\_prgs\0_DockerDesktop\wsl_update_x64.msi /quiet
+msiexec /i $env:USERPROFILE\Downloads\_prgs\DockerDesktop\wsl_update_x64.msi /quiet
 wsl --set-default-version 2
 ```
 
@@ -92,7 +92,7 @@ wsl --status
 exe파일을 더블 클릭해도 된다.
 
 ```powershell
-& "$env:USERPROFILE\Downloads\_prgs\0_DockerDesktop\DockerDesktopInstaller.exe"
+& "$env:USERPROFILE\Downloads\_prgs\DockerDesktop\DockerDesktopInstaller.exe"
 ```
 
 설치 화면에서 **`Use WSL 2 instead of Hyper-V`** 를 켠 채로 진행한다. 나머지는 기본값이다.
