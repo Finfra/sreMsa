@@ -1,6 +1,6 @@
 # AWS 실습 환경 준비 — 내 PC 설정부터 Kubernetes 까지
 
-AWS 경로로 실습할 때 **가장 먼저 하는 일**이다. 내 PC 에 필요한 프로그램을 깔고, AWS 계정을 만들고,
+AWS 경로로 실습할 때 **가장 먼저 하는 일**이다. 내 PC 에 필요한 프로그램을 설치하고, AWS 계정을 만들고,
 Terraform 이 쓸 키를 받고, 명령을 실행할 콘솔 서버(`i1`)를 띄워 Kubernetes 를 올리는 데까지를 다룬다.
 
 * **Kubernetes 클러스터는 전부 AWS 쪽에서 돈다.** 내 PC 는 브라우저로 콘솔을 보고 SSH 로 접속하는 창구다.
@@ -118,7 +118,7 @@ EC2 에 접속하려면 AWS 가 발급한 키 파일(`.pem`)이 필요하다. �
 * **Git Bash 를 권장한다.** 변환 단계가 없고, 이 문서의 명령이 전부 Git Bash 기준이다.
 * PuTTY 로 접속할 때는 `Connection → SSH → Auth → Credentials` 에서 `.ppk` 를 지정한다.
 * `.pem` 파일은 **권한이 너무 열려 있으면 SSH 가 거부한다.** Git Bash 에서 `chmod 400 key.pem` 을 해 둔다.
-* PuTTY 를 깔면 `pscp`·`psftp` 도 함께 들어온다. 파일을 주고받을 때 쓴다.
+* PuTTY 를 설치하면 `pscp`·`psftp` 도 함께 들어온다. 파일을 주고받을 때 쓴다.
 
 ## Git 줄바꿈 설정
 

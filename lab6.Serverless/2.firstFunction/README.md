@@ -105,7 +105,7 @@ sudo docker info | grep -A2 "Insecure Registries"
 
 ## 4. i1 에 faas-cli 설치와 로그인 [i1에서 실행]
 
-* `1.openfaasInstall` 에서 깐 `faas-cli` 는 **vm01 에 있습니다.** 빌드는 i1 에서 하므로 여기에도 깝니다.
+* `1.openfaasInstall` 에서 설치한 `faas-cli` 는 **vm01 에 있습니다.** 빌드는 i1 에서 하므로 여기에도 설치합니다.
 
 ```
 curl -sSL https://cli.openfaas.com | sudo sh

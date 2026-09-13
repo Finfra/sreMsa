@@ -10,7 +10,7 @@
 | [pc](pc/README.md)   | 로컬 PC 에서 실습할 때 — **이번 수업은 이 방식** |
 | [aws](aws/README.md) | AWS 계정으로 실습할 때                           |
 
-> ⚠️ **1일차에 Docker Desktop 을 깔았다면 Hyper-V 를 먼저 꺼야 한다.** 켜져 있으면 VirtualBox 가 VM 을 띄우지 못한다 —
+> ⚠️ **1일차에 Docker Desktop 을 설치했다면 Hyper-V 를 먼저 꺼야 한다.** 켜져 있으면 VirtualBox 가 VM 을 띄우지 못한다 —
 > 절차는 [lab0.Docker](../lab0.Docker/README.md) 의 **"2일차 전에 반드시"** 절에 있다.
 
 ## 로컬 PC 경로 — [pc](pc/README.md)

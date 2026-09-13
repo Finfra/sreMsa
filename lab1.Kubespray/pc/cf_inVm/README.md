@@ -101,7 +101,7 @@ TASK [Check 2.16.4 <= Ansible version < 2.17.0]
 fatal: "Ansible must be between 2.16.4 and 2.17.0 exclusive - you have 2.17.14"
 ```
 
-`installOnEc2.sh` 가 깔아 주는 ansible 은 **core 2.17.x** 인데 kubespray `release-2.28` 은 **2.16.x** 를 요구한다. `requirements.txt` 가 `ansible==9.13.0` 을 고정하므로 전용 venv 로 맞춘다 — `doInner.sh` 가 자동으로 만든다.
+`installOnEc2.sh` 가 설치하는 ansible 은 **core 2.17.x** 인데 kubespray `release-2.28` 은 **2.16.x** 를 요구한다. `requirements.txt` 가 `ansible==9.13.0` 을 고정하므로 전용 venv 로 맞춘다 — `doInner.sh` 가 자동으로 만든다.
 
 이것은 이웃 폴더(1.pc.byVagrant) 방식에도 똑같이 해당한다.
 
