@@ -48,6 +48,17 @@ flowchart LR
 * 디스크 여유 **60GB 이상**
 * CPU 가상화 지원 (요즘 PC 는 모두 지원한다)
 
+지금 PC 가 조건에 맞는지 한 줄로 본다.
+
+```powershell
+Get-CimInstance Win32_Processor | Select-Object NumberOfLogicalProcessors, VirtualizationFirmwareEnabled
+[math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory/1GB,1)
+```
+
+* `VirtualizationFirmwareEnabled` 가 `False` 면 BIOS/UEFI 에서 **VT-x**(Intel) 또는 **AMD-V** 를 켠다.
+  단, **Hyper-V 가 떠 있는 상태에서는 이 값이 잘못 나오기도 한다** — 아래 "Windows 만의 사전 작업" 을 먼저 끝내고 다시 본다.
+* 1일차에 Docker Desktop 이 정상 동작했다면 가상화는 이미 검증된 것이다.
+
 메모리가 부족하면 [1.pc.byVagrant/README.md](../1.pc.byVagrant/README.md) 의 "메모리가 부족할 때" 절을 본다.
 
 
@@ -71,6 +82,29 @@ C:\Users\<계정>\Downloads\
 | `_prgs`  | **맨 처음 한 번.** 프로그램 설치와 box 등록에 쓴다 |
 
 > `sreMsa` 폴더가 곧 실습 소스다. **따로 내려받을 것이 없다.**
+
+### ⚠️ `다운로드` 가 OneDrive 안에 있으면 먼저 빼낸다 — Windows 11 에서 흔하다
+
+Windows 11 초기 설정에서 **OneDrive 폴더 백업**을 켜면 `바탕 화면`·`문서`뿐 아니라 `다운로드`까지
+OneDrive 안으로 옮겨지는 경우가 있다. 그러면 두 가지가 한꺼번에 어긋난다.
+
+* 이 문서가 쓰는 `$env:USERPROFILE\Downloads` 와 탐색기의 `다운로드` 가 **서로 다른 곳**을 가리킨다
+* VM 디스크 파일이 **동기화 대상**이 되어 수 GB 가 업로드된다. PC 와 회선이 함께 마비된다
+
+지금 확인한다.
+
+```powershell
+(Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders")."{374DE290-123F-4565-9164-39C4925E467B}"
+```
+
+`C:\Users\<계정>\Downloads` 가 나오면 된다. 경로에 **`OneDrive` 가 들어 있으면** 둘 중 하나를 한다.
+
+| 방법                      | 절차                                                                                            |
+| :------------------------ | :---------------------------------------------------------------------------------------------- |
+| **백업을 끈다** (권장)    | OneDrive 아이콘 → 설정 → 동기화 및 백업 → **폴더 백업 관리** → `다운로드` 끄기                  |
+| **실습 폴더만 밖에 둔다** | `sreMsa`·`_prgs` 를 **`C:\sreMsa`·`C:\_prgs`** 에 두고, 이후 명령의 경로를 그것으로 바꿔 읽는다 |
+
+* 어느 쪽이든 **`vagrant up` 을 하기 전에** 끝내야 한다. VM 을 만든 뒤에 옮기면 다시 만들어야 한다.
 
 **설치가 끝내 실패하면 강사가 복구용 USB 를 준다.** 완성된 VM 을 가져와 실습에 복귀하는 수단이며,
 평소에는 쓰지 않는다 — 직접 만드는 것이 이 실습의 목적이다. 절차는 그 USB 안의 `README.md` 에 있다.
@@ -102,7 +136,57 @@ Windows 11 은 Hyper-V 를 켠 적이 없어도 **메모리 무결성(코어 격
 ```
 
 `False` 가 나와야 VirtualBox 가 VM 을 띄울 수 있다. `True` 면 아직 Hyper-V 가 올라와 있는 것이므로
-메모리 무결성까지 껐는지 다시 확인하고 재부팅한다.
+아래 "그래도 `True` 일 때" 를 본다.
+
+> ⚠️ **반드시 `다시 시작`으로 재부팅한다.** Windows 11 의 **빠른 시작**이 켜져 있으면
+> `시작 → 전원 → 시스템 종료` 후 다시 켜는 것은 **재부팅이 아니라 최대 절전에서 복귀**하는 것이라
+> `bcdedit` 변경이 적용되지 않는다. 위의 `shutdown -r -t 0` 을 쓰거나 `시작 → 전원 → 다시 시작` 을 고른다.
+
+### 그래도 `True` 일 때 — Windows 11 은 하이퍼바이저를 되살리는 장치가 더 있다 ★
+
+`bcdedit` 를 껐고 메모리 무결성도 껐는데 `HypervisorPresent` 가 계속 `True` 라면
+**가상화 기반 보안(VBS)** 이 하이퍼바이저를 다시 올리고 있는 것이다. 무엇이 켜져 있는지부터 본다.
+
+```powershell
+Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard |
+  Select-Object VirtualizationBasedSecurityStatus, SecurityServicesRunning
+```
+
+| 나온 값                                 | 뜻                      | 할 일                                                                    |
+| :-------------------------------------- | :---------------------- | :----------------------------------------------------------------------- |
+| `VirtualizationBasedSecurityStatus : 2` | VBS 가 **실행 중**      | 아래 두 줄을 차례로 확인한다                                             |
+| `SecurityServicesRunning` 에 `2`        | **메모리 무결성**(HVCI) | `Windows 보안 → 장치 보안 → 코어 격리 세부 정보` 에서 끄고 **다시 시작** |
+| `SecurityServicesRunning` 에 `1`        | **Credential Guard**    | 아래 참조 — 회사 PC 는 개인이 끄지 못하는 경우가 많다                    |
+| `SecurityServicesRunning : {}`          | 실행 중인 것이 없다     | 이쪽이 원인이 아니다. 아래 "Windows 기능" 을 본다                        |
+
+**Credential Guard 가 켜져 있다면** 회사에서 그룹 정책·Intune 으로 강제한 것일 가능성이 크다.
+개인 PC 라면 관리자 PowerShell 에서 아래로 끄고 **다시 시작**한다.
+
+```powershell
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v EnableVirtualizationBasedSecurity /t REG_DWORD /d 0 /f
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v Enabled /t REG_DWORD /d 0 /f
+```
+
+* ⚠️ **회사 지급 PC 는 위 값을 바꿔도 정책이 다음 동기화에서 되돌린다.** 이 경우 개인이 해결할 수 없으므로
+  **강사에게 알린다** — 완성된 VM 이 담긴 복구용 USB 로 실습에 복귀한다.
+* 수업이 끝난 뒤 되돌리려면 같은 명령의 `/d 0` 을 `/d 1` 로 바꿔 실행하고 다시 시작한다.
+
+**Windows 기능** 쪽도 볼 수 있다. `bcdedit off` 로 대개 무력화되지만, 그래도 남는 PC 가 있다.
+
+```powershell
+Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All, VirtualMachinePlatform, HypervisorPlatform |
+  Select-Object FeatureName, State
+```
+
+`Enabled` 인 것이 있고 위 방법으로도 안 잡히면 관리자 PowerShell 에서 끄고 **다시 시작**한다.
+
+```powershell
+dism /online /disable-feature /featurename:VirtualMachinePlatform /norestart
+dism /online /disable-feature /featurename:HypervisorPlatform /norestart
+```
+
+* ⚠️ **이것을 끄면 1일차의 Docker Desktop·WSL2 도 함께 못 쓰게 된다.** 2일차에는 어차피 쓰지 않으므로
+  문제가 되지 않지만, 수업 뒤 되돌리려면 `/enable-feature` 로 다시 켜야 한다는 것을 기억해 둔다.
 
 **1일차를 했다면 이 절을 반드시 거친다.** Docker Desktop 설치가 Hyper-V 를 켜 두었기 때문이다.
 **2일차 실습은 Hyper-V 를 끈 상태로 끝까지** 진행한다. 1일차에 쓰던 Docker Desktop 은 그동안 뜨지 않는데 정상이며, 수업이 끝난 뒤 `bcdedit /set hypervisorlaunchtype auto` + 재부팅으로 되돌리면 다시 쓸 수 있다.
@@ -139,6 +223,23 @@ box 하나만 해도 20명이면 **12GB** 가 한꺼번에 흐른다. 그래서 
 > **1일차에 설치한 Docker Desktop 은 지우지 않아도 된다** — 2일차에는 Hyper-V 를 끄므로 뜨지 않을 뿐이다.
 
 설치 옵션은 전부 기본값 그대로 둔다.
+
+> ⚠️ **"Windows의 PC 보호" 파란 창이 뜨면 정상이다.** 구글 드라이브로 받은 파일에는
+> *"인터넷에서 내려받았다"* 는 표시(Mark of the Web)가 붙어 **SmartScreen** 이 한 번 막는다.
+> **`추가 정보` → `실행`** 을 누르면 진행된다. 파일이 이상한 것이 아니다.
+>
+> 매번 누르기 번거로우면 표시를 한꺼번에 뗀다. 관리자 권한이 필요 없다.
+>
+> ```powershell
+> Get-ChildItem $env:USERPROFILE\Downloads\_prgs -Recurse | Unblock-File
+> Get-ChildItem $env:USERPROFILE\Downloads\sreMsa -Recurse | Unblock-File
+> ```
+>
+> * 실습 소스 쪽도 함께 떼는 이유는 **`doSsh.ps1`·`doCheckWindows.ps1` 같은 `.ps1` 파일**이
+>   같은 표시 때문에 실행을 거부당하기 때문이다.
+> * 새로 산 PC 라 **Smart App Control** 이 켜져 있으면 `추가 정보` 조차 없이 차단되기도 한다.
+>   `Windows 보안 → 앱 및 브라우저 컨트롤 → 스마트 앱 컨트롤` 을 끈다
+>   (⚠️ **한 번 끄면 다시 켤 수 없다** — Windows 를 다시 설치해야 한다. 그래도 실습에는 지장이 없다).
 
 > **[선택] 파일이 온전한지 확인하려면** — 건너뛰어도 된다.
 > 설치가 알 수 없는 오류로 실패할 때, 복사가 도중에 끊긴 것은 아닌지 이 방법으로 가려낼 수 있다.
@@ -242,10 +343,54 @@ dir
 ```
 
 ```
-lab1.Kubespray  lab2.Kubernetes  lab3.Istio  lab4.ArgoCd  lab5.Zipkin  lab6.Serverless  README.md
+lab0.Docker  lab1.Kubespray  lab2.Kubernetes  lab3.Istio  lab4.ArgoCd  lab5.Zipkin  lab6.Serverless  README.md
 ```
 
-이 여섯 폴더가 보이면 된다. 하나라도 없으면 복사가 덜 끝난 것이므로 `다운로드` 폴더를 다시 확인한다.
+이 일곱 폴더가 보이면 된다. `lab0.Docker` 는 1일차에 쓴 폴더다. 하나라도 없으면 복사가 덜 끝난 것이므로 `다운로드` 폴더를 다시 확인한다.
+
+## 경로에 한글이 있으면 옮긴다
+
+Windows 계정을 한글 이름으로 만들었으면 `C:\Users\홍길동\Downloads\…` 가 된다.
+VirtualBox·Vagrant 는 비ASCII 경로에서 드물게 실패하고, 그때 나오는 오류가 원인을 짚어 주지 않는다.
+
+```powershell
+$PWD.Path
+```
+
+* 한글이 섞여 있거나 경로가 너무 길면(Vagrant 가 그 아래 `.vagrant\machines\…` 를 더 만든다)
+  **`sreMsa` 폴더를 `C:\sreMsa` 로 옮기고** 거기서 진행한다. 이후 명령의
+  `$env:USERPROFILE\Downloads\sreMsa` 를 `C:\sreMsa` 로 바꿔 읽으면 된다.
+* 영문 계정이면 신경 쓰지 않아도 된다.
+
+# 사전 점검 ★ `vagrant up` 전에 1분 (장 번호 없음 — 1장의 마무리다)
+
+여기까지의 준비가 실제로 됐는지 한 번에 확인한다. **아무것도 고치지 않고 보기만 한다.**
+
+```powershell
+cd $env:USERPROFILE\Downloads\sreMsa\lab1.Kubespray\pc\1.pc.byVagrant
+.\doCheckWindows.ps1
+```
+
+`vagrant up` 은 20~40분이 걸린다. **40분 뒤에 실패하는 것보다 1분 만에 원인을 아는 편이 낫다** —
+i1 안에서 도는 [doVerify.sh](../2.pc.InstanceForKubernetes/doVerify.sh) 와 같은 취지의 호스트판이다.
+
+무엇을 보는가.
+
+| 항목        | 무엇을 잡나                                                           |
+| :---------- | :-------------------------------------------------------------------- |
+| `[1] [2]`   | CPU 가상화 · **하이퍼바이저가 실제로 내려갔는지**                     |
+| `[3]`       | **VBS · 메모리 무결성 · Credential Guard** — `[2]` 가 `True` 인 이유  |
+| `[4]`       | 빠른 시작 — 재부팅이 재부팅이 아니었을 가능성                         |
+| `[5]`       | **OneDrive 가 `다운로드` 를 가로챘는지** · `sreMsa`·`_prgs` 복사 여부 |
+| `[6]`       | 경로의 한글·길이                                                      |
+| `[7] [8]`   | 메모리·디스크 · VirtualBox·Vagrant·**box 등록**                       |
+| `[9]`       | 실행 정책 · **SmartScreen 차단 표시**                                 |
+| `[10] [11]` | hosts 등록(3장 뒤) · **실행 엔진이 NEM 으로 떨어졌는지**(VM 생성 뒤)  |
+
+* 판정은 `[ OK ]` · `[경고]` · `[실패]` · `[확인불가]` 넷이다.
+  **`[실패]` 가 하나라도 있으면 그것부터 해결한다.** `[경고]` 는 진행해도 되지만 나중에 증상으로 돌아온다.
+* `[확인불가]` 는 관리자 권한이 없어 못 본 것이다. 실패로 세지 않는다.
+* 스크립트 실행이 막히면 그 창에서만 한 번 허용한다 — `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
 
 # 다음 단계
 

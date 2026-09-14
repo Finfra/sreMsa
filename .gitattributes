@@ -1,0 +1,36 @@
+# 줄바꿈 강제 — Windows 에서 clone 할 때 실습이 깨지는 것을 막는다
+#
+# 왜 필요한가:
+#   Git for Windows 는 core.autocrlf=true 가 기본이라 저장소의 LF 를 CRLF 로 바꿔 꺼낸다.
+#   그 파일들은 그대로 /sreMsa 로 VM(Linux)에 공유되므로, 셸이 줄 끝의 \r 을 명령의 일부로
+#   읽어 아래처럼 무너진다.
+#
+#     $'\r': command not found
+#     bash: doVerify.sh: /bin/bash^M: bad interpreter
+#
+#   provision 스크립트(scripts/common.sh)가 여기 걸리면 vagrant up 자체가 실패하고,
+#   원인이 줄바꿈이라는 것이 화면에 드러나지 않아 진단이 오래 걸린다.
+#
+#   교육장 배포본(구글 드라이브)은 폴더 복사라 이 문제가 없다. clone 으로 받는 경우
+#   —교육 밖에서 복습하거나 지난 회차 브랜치를 볼 때— 만 해당하지만, 그때 막히면
+#   물어볼 강사가 없다. 그래서 저장소 쪽에서 강제한다.
+
+# 기본: 텍스트로 판정된 것은 LF 로 꺼낸다
+* text=auto eol=lf
+
+# Linux 에서 실행되는 것 — CRLF 가 섞이면 즉시 깨진다
+*.sh        text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+Vagrantfile text eol=lf
+
+# Windows 에서만 실행되는 것 — CRLF 가 자연스럽다
+*.ps1       text eol=crlf
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
+
+# 변환하면 안 되는 것
+*.box       binary
+*.png       binary
+*.jpg       binary
+*.pdf       binary

@@ -28,7 +28,14 @@ boot_timeout: 900
 
 network:
   # VirtualBox host-only 대역. 192.168.56.0/21 은 VirtualBox 가 기본 허용하는 범위라
-  # /etc/vbox/networks.conf 를 건드릴 필요가 없다.
+  # 허용 대역 설정 파일을 건드릴 필요가 없다.
+  #
+  # ⚠️ 이 값을 다른 대역으로 바꾸면 VirtualBox 가 "Code E_ACCESSDENIED" 로 거부한다.
+  #    그때는 아래 파일에 대역을 등록해야 하는데, 경로가 OS 마다 다르다.
+  #      Windows : C:\ProgramData\VirtualBox\networks.conf   (관리자 권한 필요)
+  #      Linux   : /etc/vbox/networks.conf
+  #      macOS   : /etc/vbox/networks.conf
+  #    강의에서는 기본 대역을 쓰므로 이 일이 없다. 바꾸지 않는 것을 권한다.
   subnet: "192.168.56"
   i1_host: 10          # i1   = 192.168.56.10
   node_host_base: 10   # vm01 = 192.168.56.11, vm02 = .12, vm03 = .13 ...

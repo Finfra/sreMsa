@@ -8,12 +8,19 @@ C:\Users\<계정>\Downloads\
 └── _prgs\    ← 설치 파일 (Day1 · Day2)
 ```
 
-* 교육 밖에서 받으려면 clone 한다.
+* 교육 밖에서 받으려면 clone 한다
 
 ```
 git clone https://github.com/Finfra/sreMsa
 cd sreMsa
 ```
+
+> **Windows 에서 clone 할 때의 줄바꿈(CRLF)은 저장소가 처리한다.** Git for Windows 는 기본값이
+> `core.autocrlf=true` 라 `.sh` 파일을 CRLF 로 꺼내는데, 그 파일이 VM(Linux) 안에서 돌면
+> `$'\r': command not found` 로 무너진다. 이 저장소는 [.gitattributes](.gitattributes) 로
+> `.sh`·`Vagrantfile`·`.yml` 을 **LF 로 고정**해 두었으므로 따로 설정할 것이 없다.
+>
+> 이미 CRLF 로 받아 버렸다면 다시 꺼낸다 — `git rm -r --cached . && git reset --hard`
 
 # [Lab0. Docker](./lab0.Docker/)
 * **1일차** — 내 Windows 에서 Docker Desktop 으로 컨테이너를 먼저 다룬다
