@@ -57,6 +57,19 @@ vagrant box list      # bento/ubuntu-24.04 가 보여야 한다
 
 # 2. VM 만들기
 
+## 먼저 1분짜리 점검 ★
+
+`vagrant up` 은 20~40분이 걸린다. 그 뒤에 실패하면 오전이 날아간다. 먼저 호스트 상태를 본다.
+
+```powershell
+.\doCheckWindows.ps1
+```
+
+`[실패]` 가 하나라도 있으면 그것부터 해결한다 — 대개 Hyper-V 계열이거나 box 미등록이다.
+무엇을 보는지는 [0.pc_setting/README.md](../0.pc_setting/README.md) 의 "사전 점검" 절에 있다.
+
+## 만들기
+
 ```powershell
 vagrant up
 ```
@@ -111,11 +124,43 @@ cat hosts.generated
 C:\Windows\System32\drivers\etc\hosts
 ```
 
+손으로 여는 대신 **관리자 권한 PowerShell** 에서 한 줄로 넣어도 된다. 같은 줄이 이미 있으면 건너뛴다.
+
+```powershell
+$h = "$env:SystemRoot\System32\drivers\etc\hosts"
+Get-Content .\hosts.generated | ForEach-Object {
+    if (-not (Select-String -Path $h -Pattern ([regex]::Escape($_)) -Quiet)) { Add-Content $h $_ }
+}
+```
+
 확인한다.
 
 ```powershell
 ping -n 1 vm01
 ```
+
+## ⚠️ 저장했는데 되돌아가 있다면 — Defender 가 되돌린 것이다
+
+**Microsoft Defender 는 `hosts` 파일 수정을 공격으로 본다.** `SettingsModifier:Win32/HostsFileHijack`
+이라는 이름으로 탐지해 파일을 원래대로 되돌린다. **오류가 뜨지 않고 조용히 되돌아가는 것**이 고약한 점이며,
+나중에 `curl vm01:30080` 이 안 되는 형태로 뒤늦게 드러난다.
+
+방금 넣은 줄이 남아 있는지 본다.
+
+```powershell
+Get-Content $env:SystemRoot\System32\drivers\etc\hosts | Select-String vm01
+```
+
+아무것도 안 나오면 되돌려진 것이다. **관리자 권한 PowerShell** 에서 이 파일을 검사 대상에서 빼고 다시 넣는다.
+
+```powershell
+Add-MpPreference -ExclusionPath "$env:SystemRoot\System32\drivers\etc\hosts"
+```
+
+* `Windows 보안 → 보호 기록` 에 차단 항목이 남아 있으면 **`디바이스에서 허용`** 을 눌러도 된다.
+* 실습이 끝난 뒤 되돌리려면 `Remove-MpPreference -ExclusionPath "$env:SystemRoot\System32\drivers\etc\hosts"`.
+* 회사 정책으로 예외 추가가 막혀 있으면 **이름 대신 IP 를 쓴다** — `curl 192.168.56.11:30080` 처럼.
+  실습 진행에는 지장이 없다.
 
 # 4. 콘솔 서버(i1) 접속
 
@@ -424,14 +469,60 @@ vagrant destroy -f
 | cluster.yml 이 중간에 멈춘다                                        | fact 캐시를 지우고 재실행 (9장 참조)                                                                                                                                                  |
 | 메모리가 모자라 PC 가 멈춘다                                        | 아래 참고 자료의 "자원 → 메모리가 부족할 때"                                                                                                                                          |
 | **VirtualBox 설치가 1초 만에 실패한다**                             | `vc_redist.x64.exe` 를 `VirtualBox` 보다 먼저 설치하지 않았다. `msiexec` 오류 1603 이 그 증상이다                                                                                     |
-| **`vagrant up` 이 안 된다 — 1일차에 Docker Desktop 을 설치했다**      | 그 설치가 Hyper-V 를 켰다. **2일차 전환을 건너뛴 것이다.** 관리자 PowerShell 에서 `bcdedit /set hypervisorlaunchtype off` 후 재부팅하고, `HypervisorPresent` 가 `False` 인지 확인한다 |
+| **`vagrant up` 이 안 된다 — 1일차에 Docker Desktop 을 설치했다**    | 그 설치가 Hyper-V 를 켰다. **2일차 전환을 건너뛴 것이다.** 관리자 PowerShell 에서 `bcdedit /set hypervisorlaunchtype off` 후 재부팅하고, `HypervisorPresent` 가 `False` 인지 확인한다 |
 | **Docker Desktop 이 `Virtualization support not detected` 로 뜬다** | Hyper-V 를 껐기 때문이며 **정상이다.** 1일차에 쓰던 Docker Desktop 은 2일차에 뜨지 않는다 — 컨테이너를 다루려면 11장처럼 VM(i1) 안의 Docker 를 쓴다                                   |
 | **VM 이 깨졌거나 설치가 끝나지 않았다**                             | **강사 복구용 USB** 에 완성본이 있다. **강사 안내를 받고 진행한다** — 절차는 그 USB 의 `README.md` 에 있다                                                                            |
+| **VM 은 뜨는데 모든 것이 느리다 · 거북이 아이콘**                   | VirtualBox 가 **NEM 으로 폴백**했다. 하이퍼바이저가 아직 살아 있다 — 아래 "부팅이 오래 걸릴 때" 의 ⚠️ 절                                                                             |
+| **`bcdedit off` 를 했는데 `HypervisorPresent` 가 계속 `True`**      | 메모리 무결성·**Credential Guard**·Windows 기능 중 하나가 되살리고 있다. [0.pc_setting](../0.pc_setting/README.md) "그래도 `True` 일 때"                                              |
+| **재부팅했는데 설정이 안 바뀐다**                                   | **빠른 시작** 때문이다. `시스템 종료` 후 켜는 것은 재부팅이 아니다 — `shutdown -r -t 0` 또는 `다시 시작` 을 쓴다                                                                      |
+| **hosts 에 저장했는데 되돌아간다**                                  | Defender 가 `HostsFileHijack` 으로 되돌린 것이다. 3장의 "저장했는데 되돌아가 있다면" 참조                                                                                             |
+| **`.ps1` 이 실행되지 않는다 · "Windows의 PC 보호" 창**              | 구글 드라이브에서 받은 파일의 차단 표시다. `Get-ChildItem . -Recurse \| Unblock-File` 후 다시 실행                                                                                    |
+| **경로를 찾을 수 없다 — `다운로드` 가 비어 있다**                   | OneDrive 가 `다운로드` 를 가로챘다. [0.pc_setting](../0.pc_setting/README.md) 의 OneDrive 절                                                                                          |
 
 ## 부팅이 오래 걸릴 때
 
 `Timed out while waiting for the machine to boot` 가 나와도 **VM 이 실패한 것이 아닐 수 있다.**
-디스크가 느리면 부팅에 5~10분이 걸리기도 하는데, Vagrant 가 먼저 기다리기를 포기한 것뿐이다.
+원인은 둘이고, **Windows 11 에서는 아래쪽이 더 흔하다.**
+
+| 원인                                 | 무엇이 일어나나                                      |
+| :----------------------------------- | :--------------------------------------------------- |
+| 디스크가 느리다                      | 부팅에 5~10분이 걸려 Vagrant 가 먼저 포기한다        |
+| **하이퍼바이저가 아직 살아 있다** ★ | VirtualBox 가 **실패하지 않고 느려진다** — 아래 참조 |
+
+### ⚠️ VirtualBox 7 은 Hyper-V 와 겹쳐도 실패하지 않는다 — 10배 느려진다 ★
+
+예전 VirtualBox 는 Hyper-V 가 켜져 있으면 `VT-x is not available` 로 **대놓고 실패**했다.
+7.x 는 다르다. 하드웨어 가상화를 못 쓰면 **NEM**(Hyper-V 위에 얹혀 도는 느린 경로)으로 조용히 갈아타
+**VM 이 뜨긴 뜨는데 10배 느리다.** 그래서 증상이 "실패" 가 아니라 **"부팅 타임아웃"** 으로 나타나고,
+디스크를 의심하며 시간을 버리게 된다.
+
+**이것이 Windows 11 에서 가장 진단이 어려운 함정이다.** 판별법은 둘이다.
+
+* VirtualBox 창 오른쪽 아래에 **초록 거북이 아이콘**이 보인다 (느린 경로로 돌고 있다는 표시)
+* 로그를 본다 — `NEM` 이라는 글자가 나오면 확정이다
+
+```powershell
+Select-String -Path "$env:USERPROFILE\VirtualBox VMs\sreMsa-i1\Logs\VBox.log" -Pattern "NEM" |
+  Select-Object -First 3
+```
+
+나온다면 **하이퍼바이저가 아직 내려가지 않은 것**이다. 다시 잡고 VM 을 새로 만든다.
+
+```powershell
+(Get-CimInstance Win32_ComputerSystem).HypervisorPresent   # False 여야 한다
+.\doCheckWindows.ps1                                        # [2][3] 항목이 원인을 짚어 준다
+```
+
+* `True` 면 [0.pc_setting/README.md](../0.pc_setting/README.md) 의 **"그래도 `True` 일 때"** 절로 간다.
+  메모리 무결성·Credential Guard·Windows 기능 셋 중 하나가 되살리고 있다.
+* 해결한 뒤에는 **VM 을 다시 만든다** — 느린 경로로 만들어진 VM 은 그대로 두면 계속 느리다.
+
+```powershell
+vagrant destroy -f
+vagrant up
+```
+
+### 디스크가 느린 경우
 
 먼저 VM 이 살아 있는지 본다.
 
@@ -480,16 +571,18 @@ Get-Counter "\PhysicalDisk(_Total)\Avg. Disk sec/Transfer"
 
 # 파일
 
-| 파일                                                                   | 실행 위치 | 하는 일                                                 |
-| :--------------------------------------------------------------------- | :-------- | :------------------------------------------------------ |
-| [settings.yml](settings.yml)                                           | —         | 노드 수·자원·IP 대역. **고칠 파일은 이것 하나뿐이다**   |
-| [Vagrantfile](Vagrantfile)                                             | 호스트    | settings.yml 을 읽어 i1·vm01~vm0N 을 만든다             |
-| [scripts/common.sh](scripts/common.sh)                                 | 전 노드   | /etc/hosts, ubuntu 계정, swap off, 방화벽 off           |
-| [scripts/i1.sh](scripts/i1.sh)                                         | i1        | ssh 키 생성 + `installOnEc2.sh` 실행                    |
-| [scripts/node.sh](scripts/node.sh)                                     | vm0N      | i1 공개키 등록                                          |
-| [doSetHosts.sh](../2.pc.InstanceForKubernetes/doSetHosts.sh)           | i1        | AWS 동명 스크립트의 로컬판. hosts 확인·known_hosts 정리 |
-| [doMakeInventory.sh](../2.pc.InstanceForKubernetes/doMakeInventory.sh) | i1        | kubespray inventory 생성 (`ip=` 자동 기입)              |
-| [doVerify.sh](../2.pc.InstanceForKubernetes/doVerify.sh)               | i1        | **Ansible 이 i1→vm0N 으로 실제 동작하는지 점검**        |
+| 파일                                                                   | 실행 위치 | 하는 일                                                    |
+| :--------------------------------------------------------------------- | :-------- | :--------------------------------------------------------- |
+| [settings.yml](settings.yml)                                           | —         | 노드 수·자원·IP 대역. **고칠 파일은 이것 하나뿐이다**      |
+| [Vagrantfile](Vagrantfile)                                             | 호스트    | settings.yml 을 읽어 i1·vm01~vm0N 을 만든다                |
+| [doCheckWindows.ps1](doCheckWindows.ps1)                               | 호스트    | **`vagrant up` 전 Windows 점검** — doVerify.sh 의 호스트판 |
+| [doSsh.ps1](doSsh.ps1)                                                 | 호스트    | `vagrant ssh` 를 대신하는 빠른 접속 (0.12초)               |
+| [scripts/common.sh](scripts/common.sh)                                 | 전 노드   | /etc/hosts, ubuntu 계정, swap off, 방화벽 off              |
+| [scripts/i1.sh](scripts/i1.sh)                                         | i1        | ssh 키 생성 + `installOnEc2.sh` 실행                       |
+| [scripts/node.sh](scripts/node.sh)                                     | vm0N      | i1 공개키 등록                                             |
+| [doSetHosts.sh](../2.pc.InstanceForKubernetes/doSetHosts.sh)           | i1        | AWS 동명 스크립트의 로컬판. hosts 확인·known_hosts 정리    |
+| [doMakeInventory.sh](../2.pc.InstanceForKubernetes/doMakeInventory.sh) | i1        | kubespray inventory 생성 (`ip=` 자동 기입)                 |
+| [doVerify.sh](../2.pc.InstanceForKubernetes/doVerify.sh)               | i1        | **Ansible 이 i1→vm0N 으로 실제 동작하는지 점검**           |
 
 `hosts.generated`·`.keys/`·`.vagrant/` 는 `vagrant up` 이 만드는 산출물이라 git 에 넣지 않는다.
 
@@ -506,7 +599,7 @@ Get-Counter "\PhysicalDisk(_Total)\Avg. Disk sec/Transfer"
 | Kubespray           | `release-2.28` (Kubernetes 1.32.13)                                                        |
 | inventory 역할 배치 | `kube_control_plane` = vm01·vm02 / `etcd` = vm01 / `kube_node` = **전 노드**               |
 | 설치 명령           | `ansible-playbook ... cluster.yml` — 문장까지 동일                                         |
-| ansible 버전 맞추기 | 양쪽 다 `requirements.txt` 를 설치해야 한다. 로컬은 venv 로 한다 (9.1 절)                    |
+| ansible 버전 맞추기 | 양쪽 다 `requirements.txt` 를 설치해야 한다. 로컬은 venv 로 한다 (9.1 절)                  |
 
 `kube_node` 에 vm01 이 들어 있다. **vm01 은 control plane 이자 etcd 이자 워커 노드다.**
 그래서 vm01 에는 다른 노드보다 메모리를 더 준다(settings.yml 의 `overrides`).
