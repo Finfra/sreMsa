@@ -296,6 +296,7 @@ try {
 Write-Host ""
 Write-Host "[11] VirtualBox 실행 엔진 (VM 을 한 번이라도 띄운 뒤에 의미가 있다)"
 Write-Host "     Hyper-V 와 겹치면 VirtualBox 7 은 실패하지 않고 NEM 으로 폴백해 10배 느려진다."
+Write-Host "     이 항목만은 '지금' 이 아니라 '마지막으로 VM 을 띄웠을 때' 를 본다."
 $logs = @()
 try {
     $vmRoot = Join-Path $env:USERPROFILE "VirtualBox VMs"
@@ -307,14 +308,53 @@ try {
 if ($logs.Count -eq 0) { Note "아직 VM 로그가 없다 — vagrant up 을 한 뒤 다시 확인한다" }
 else {
     try {
-        $lg = Get-Content $logs[0].FullName -ErrorAction Stop | Select-String -Pattern 'NEM|HM:.*VT-x|Using.*execution'
-        $s  = ($lg | Out-String)
-        if ($s -match 'NEM') {
-            Fail ("{0} 가 NEM(Hyper-V 동거) 으로 돌았다 — 이것이 '부팅 타임아웃' 의 진짜 원인이다" -f $logs[0].Directory.Parent.Name)
-            Note "[2][3] 을 다시 잡고 재부팅한 뒤 vagrant destroy -f && vagrant up"
-        } elseif ($s -match 'VT-x') {
-            Pass "VT-x 네이티브로 돌았다 (정상)"
-        } else { Note "실행 엔진을 판정하지 못했다" }
+        $log    = $logs[0]
+        $vmName = $log.Directory.Parent.Name
+        Write-Host ("  로그      : {0}  ({1:yyyy-MM-dd HH:mm})" -f $vmName, $log.LastWriteTime)
+
+        # 이번 부팅보다 오래된 로그는 '[2][3] 을 고치기 전' 의 기록이다.
+        # 그때 NEM 으로 돌았다는 사실은 지금 상태에 대해 아무것도 말해 주지 않는다.
+        $stale = $false
+        try {
+            $boot = (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+            if ($log.LastWriteTime -lt $boot) { $stale = $true }
+        } catch { }
+
+        $txt = Get-Content $log.FullName -Raw -ErrorAction Stop
+
+        # ⚠️ 'NEM' 이라는 글자를 그냥 찾으면 안 된다 (2026.09.15 실제 오진).
+        #    PowerShell 의 -match 는 대소문자를 안 가리므로 정상 로그의
+        #      Mnemonic - Description  ...  [/NEM/] (level 1)
+        #      UseNEMInstead <integer> = 0 (0)      ← NEM 을 '안 쓴다' 는 줄
+        #    이 전부 걸린다. VT-x 로 잘 돈 로그가 [실패] 로 읽혔다.
+        #    그래서 엔진 번호와 HM 초기화 줄로 가른다. 대소문자도 -cmatch 로 가린다.
+        #      Using execution engine 1  → 하드웨어 가상화(VT-x/AMD-V)
+        #      Using execution engine 2  → NEM (Hyper-V 동거 · 10배 느림)
+        $engine = ''
+        $m = [regex]::Match($txt, 'Using execution engine (\d+)')
+        if ($m.Success) { $engine = $m.Groups[1].Value }
+
+        $hmUsed  = $txt -cmatch 'HM: Using (VT-x|AMD-V)'
+        $nemUsed = ($txt -cmatch 'fall back to NEM|NEM: Using|Snail execution mode') -or
+                   ($txt -cmatch 'UseNEMInstead\s+<integer>\s+=\s+0x0*[1-9]')
+
+        if ($hmUsed -and -not $nemUsed) {
+            Pass ("VT-x 네이티브로 돌았다 (정상 · execution engine {0})" -f $engine)
+        }
+        elseif ($nemUsed -or $engine -eq '2') {
+            if ($stale) {
+                Warn ("{0} 가 NEM 으로 돌았지만 그것은 이번 부팅 전 기록이다" -f $vmName)
+                Note "지금 [2][3] 이 모두 OK 라면 이미 고쳐진 것이다 — vagrant destroy -f 후 다시 띄우면 이 항목도 바뀐다"
+            } else {
+                Fail ("{0} 가 NEM(Hyper-V 동거) 으로 돌았다 — 이것이 '부팅 타임아웃' 의 진짜 원인이다" -f $vmName)
+                Note "[2][3] 을 다시 잡고 재부팅한 뒤 vagrant destroy -f && vagrant up"
+            }
+        }
+        elseif ($engine -eq '1') { Pass "하드웨어 가상화로 돌았다 (정상 · execution engine 1)" }
+        else {
+            Note "실행 엔진을 판정하지 못했다 — 아래로 직접 본다"
+            Note ("Select-String -Path '{0}' -Pattern 'Using execution engine|HM: Using'" -f $log.FullName)
+        }
     } catch { Skip "VBox.log 를 읽지 못했다" }
 }
 
