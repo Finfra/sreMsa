@@ -33,7 +33,7 @@ config.vbguest.auto_update = false if Vagrant.has_plugin?("vagrant-vbguest")
 
 만들어지는 것은 VM 네 대다.
 
-| VM   | 역할                                                           | IP            |  vCPU |     메모리 |
+| VM   | 역할                                                           | IP            | vCPU  | 메모리     |
 | :--- | :------------------------------------------------------------- | :------------ | ----: | ---------: |
 | i1   | 콘솔 서버. 여기서 Kubespray 를 실행한다 (Kubernetes 노드 아님) | 192.168.56.10 |     1 |     1024MB |
 | vm01 | control plane + etcd + **worker**                              | 192.168.56.11 |     2 |     3072MB |
@@ -62,8 +62,14 @@ vagrant box list      # bento/ubuntu-24.04 가 보여야 한다
 `vagrant up` 은 20~40분이 걸린다. 그 뒤에 실패하면 오전이 날아간다. 먼저 호스트 상태를 본다.
 
 ```powershell
+Get-ChildItem . -Recurse -File | Unblock-File   # 차단 표시 제거 — 첫 실행에 한 번만
 .\doCheckWindows.ps1
 ```
+
+> **첫 줄을 빠뜨리면 점검을 시작조차 못 한다.** 내려받은 파일에는 *"인터넷에서 왔다"* 는
+> 표시(Mark of the Web)가 붙어 있어, `.ps1` 이 **"디지털 서명되지 않았습니다"** 라는
+> 빨간 `PSSecurityException` 으로 거부당한다.
+> 파일이 이상한 것이 아니고 **실행 정책을 바꿔야 하는 것도 아니다** — 표시만 떼면 된다.
 
 `[실패]` 가 하나라도 있으면 그것부터 해결한다 — 대개 Hyper-V 계열이거나 box 미등록이다.
 무엇을 보는지는 [0.pc_setting/README.md](../0.pc_setting/README.md) 의 "사전 점검" 절에 있다.
@@ -181,7 +187,7 @@ vagrant ssh i1
 `vagrant ssh` 는 명령 하나에 **5~10초**가 걸린다. Vagrant 가 명령마다 자기 런타임을 새로 띄우기 때문이며,
 **VM 이나 PC 가 느린 것이 아니다.** 자주 드나들 때는 아래 방법이 훨씬 빠르다.
 
-| 명령                       |       소요 |
+| 명령                       | 소요       |
 | :------------------------- | ---------: |
 | `vagrant ssh i1 -c true`   |      6.8초 |
 | `vagrant status`           |      9.0초 |
@@ -204,7 +210,13 @@ vagrant ssh i1
 여기서 쓰는 `ssh` 는 **Windows 10 에 기본으로 들어 있는 것**이다(`System32\OpenSSH`).
 별도 설치가 필요 없어 이 실습은 Git for Windows 를 쓰지 않는다.
 
-> 처음 실행할 때 스크립트 실행이 막히면 그 창에서만 한 번 허용한다.
+> 실행이 막히면 **차단 표시부터 뗀다** — 2장에서 한 것과 같다. 원인은 대개 이쪽이다.
+>
+> ```powershell
+> Get-ChildItem . -Recurse -File | Unblock-File
+> ```
+>
+> 그래도 막히면 실행 정책 쪽이다. 그 창에서만 한 번 허용한다.
 >
 > ```powershell
 > Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
@@ -455,38 +467,39 @@ vagrant destroy -f
 
 # 자주 막히는 곳
 
-| 증상                                                                | 원인·해결                                                                                                                                                                             |
-| :------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `vagrant up` 이 VM 을 못 띄운다                                     | Hyper-V·메모리 무결성이 켜져 있다.[0.pc_setting/README.md](../0.pc_setting/README.md) 의 "Windows 만의 사전 작업" 을 다시 확인한다. `HypervisorPresent` 가 `False` 인지 볼 것         |
-| `Timed out while waiting for the machine to boot`                   | **VM 이 죽은 것이 아닐 수 있다.** 아래 "부팅이 오래 걸릴 때" 참조                                                                                                                     |
-| `vagrant up` 이 box 를 내려받으려 한다                              | box 등록을 건너뛰었거나 이름이 다르다. `vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다                                                                                       |
-| i1 에서 `ssh vm01` 이 암호를 묻는다                                 | 호스트에서 `vagrant provision vm01`                                                                                                                                                   |
-| `/vagrant` 가 비어 있다                                             | 공유 폴더가 마운트되지 않았다. `vagrant reload` 후 재시도                                                                                                                             |
-| `ansible ping` 이 실패한다                                          | i1 에서 `bash /sreMsa/lab1.Kubespray/pc/2.pc.InstanceForKubernetes/doVerify.sh` — 어느 단계에서 끊기는지 나온다                                                                       |
-| 노드가 전부 10.0.2.15 로 보인다                                     | inventory 에 `ip=` 가 빠졌다. `bash /sreMsa/lab1.Kubespray/pc/2.pc.InstanceForKubernetes/doMakeInventory.sh`                                                                          |
-| Windows 에서 `curl vm01:...` 이 안 된다                             | 3장의 hosts 파일 등록을 빠뜨렸다                                                                                                                                                      |
-| `Ansible must be between 2.16.4 and 2.17.0` 로 즉시 멈춘다          | venv 를 켜지 않았다. 9.1 참조 — `source ~/ksvenv/bin/activate` 후 다시 실행                                                                                                           |
-| cluster.yml 이 중간에 멈춘다                                        | fact 캐시를 지우고 재실행 (9장 참조)                                                                                                                                                  |
-| 메모리가 모자라 PC 가 멈춘다                                        | 아래 참고 자료의 "자원 → 메모리가 부족할 때"                                                                                                                                          |
-| **VirtualBox 설치가 1초 만에 실패한다**                             | `vc_redist.x64.exe` 를 `VirtualBox` 보다 먼저 설치하지 않았다. `msiexec` 오류 1603 이 그 증상이다                                                                                     |
-| **`vagrant up` 이 안 된다 — 1일차에 Docker Desktop 을 설치했다**    | 그 설치가 Hyper-V 를 켰다. **2일차 전환을 건너뛴 것이다.** 관리자 PowerShell 에서 `bcdedit /set hypervisorlaunchtype off` 후 재부팅하고, `HypervisorPresent` 가 `False` 인지 확인한다 |
-| **Docker Desktop 이 `Virtualization support not detected` 로 뜬다** | Hyper-V 를 껐기 때문이며 **정상이다.** 1일차에 쓰던 Docker Desktop 은 2일차에 뜨지 않는다 — 컨테이너를 다루려면 11장처럼 VM(i1) 안의 Docker 를 쓴다                                   |
-| **VM 이 깨졌거나 설치가 끝나지 않았다**                             | **강사 복구용 USB** 에 완성본이 있다. **강사 안내를 받고 진행한다** — 절차는 그 USB 의 `README.md` 에 있다                                                                            |
-| **VM 은 뜨는데 모든 것이 느리다 · 거북이 아이콘**                   | VirtualBox 가 **NEM 으로 폴백**했다. 하이퍼바이저가 아직 살아 있다 — 아래 "부팅이 오래 걸릴 때" 의 ⚠️ 절                                                                             |
-| **`bcdedit off` 를 했는데 `HypervisorPresent` 가 계속 `True`**      | 메모리 무결성·**Credential Guard**·Windows 기능 중 하나가 되살리고 있다. [0.pc_setting](../0.pc_setting/README.md) "그래도 `True` 일 때"                                              |
-| **재부팅했는데 설정이 안 바뀐다**                                   | **빠른 시작** 때문이다. `시스템 종료` 후 켜는 것은 재부팅이 아니다 — `shutdown -r -t 0` 또는 `다시 시작` 을 쓴다                                                                      |
-| **hosts 에 저장했는데 되돌아간다**                                  | Defender 가 `HostsFileHijack` 으로 되돌린 것이다. 3장의 "저장했는데 되돌아가 있다면" 참조                                                                                             |
-| **`.ps1` 이 실행되지 않는다 · "Windows의 PC 보호" 창**              | 구글 드라이브에서 받은 파일의 차단 표시다. `Get-ChildItem . -Recurse \| Unblock-File` 후 다시 실행                                                                                    |
-| **경로를 찾을 수 없다 — `다운로드` 가 비어 있다**                   | OneDrive 가 `다운로드` 를 가로챘다. [0.pc_setting](../0.pc_setting/README.md) 의 OneDrive 절                                                                                          |
+| 증상                                                                                | 원인·해결                                                                                                                                                                             |
+| :---------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `vagrant up` 이 VM 을 못 띄운다                                                     | Hyper-V·메모리 무결성이 켜져 있다.[0.pc_setting/README.md](../0.pc_setting/README.md) 의 "Windows 만의 사전 작업" 을 다시 확인한다. `HypervisorPresent` 가 `False` 인지 볼 것         |
+| `Timed out while waiting for the machine to boot`                                   | **VM 이 죽은 것이 아닐 수 있다.** 아래 "부팅이 오래 걸릴 때" 참조                                                                                                                     |
+| `vagrant up` 이 box 를 내려받으려 한다                                              | box 등록을 건너뛰었거나 이름이 다르다. `vagrant box list` 로 `bento/ubuntu-24.04` 인지 확인한다                                                                                       |
+| i1 에서 `ssh vm01` 이 암호를 묻는다                                                 | 호스트에서 `vagrant provision vm01`                                                                                                                                                   |
+| `/vagrant` 가 비어 있다                                                             | 공유 폴더가 마운트되지 않았다. `vagrant reload` 후 재시도                                                                                                                             |
+| `ansible ping` 이 실패한다                                                          | i1 에서 `bash /sreMsa/lab1.Kubespray/pc/2.pc.InstanceForKubernetes/doVerify.sh` — 어느 단계에서 끊기는지 나온다                                                                       |
+| 노드가 전부 10.0.2.15 로 보인다                                                     | inventory 에 `ip=` 가 빠졌다. `bash /sreMsa/lab1.Kubespray/pc/2.pc.InstanceForKubernetes/doMakeInventory.sh`                                                                          |
+| Windows 에서 `curl vm01:...` 이 안 된다                                             | 3장의 hosts 파일 등록을 빠뜨렸다                                                                                                                                                      |
+| `Ansible must be between 2.16.4 and 2.17.0` 로 즉시 멈춘다                          | venv 를 켜지 않았다. 9.1 참조 — `source ~/ksvenv/bin/activate` 후 다시 실행                                                                                                           |
+| cluster.yml 이 중간에 멈춘다                                                        | fact 캐시를 지우고 재실행 (9장 참조)                                                                                                                                                  |
+| 메모리가 모자라 PC 가 멈춘다                                                        | 아래 참고 자료의 "자원 → 메모리가 부족할 때"                                                                                                                                          |
+| **VirtualBox 설치가 1초 만에 실패한다**                                             | `vc_redist.x64.exe` 를 `VirtualBox` 보다 먼저 설치하지 않았다. `msiexec` 오류 1603 이 그 증상이다                                                                                     |
+| **`vagrant up` 이 안 된다 — 1일차에 Docker Desktop 을 설치했다**                    | 그 설치가 Hyper-V 를 켰다. **2일차 전환을 건너뛴 것이다.** 관리자 PowerShell 에서 `bcdedit /set hypervisorlaunchtype off` 후 재부팅하고, `HypervisorPresent` 가 `False` 인지 확인한다 |
+| **Docker Desktop 이 `Virtualization support not detected` 로 뜬다**                 | Hyper-V 를 껐기 때문이며 **정상이다.** 1일차에 쓰던 Docker Desktop 은 2일차에 뜨지 않는다 — 컨테이너를 다루려면 11장처럼 VM(i1) 안의 Docker 를 쓴다                                   |
+| **VM 이 깨졌거나 설치가 끝나지 않았다**                                             | **강사 복구용 USB** 에 완성본이 있다. **강사 안내를 받고 진행한다** — 절차는 그 USB 의 `README.md` 에 있다                                                                            |
+| **VM 은 뜨는데 모든 것이 느리다 · 거북이 아이콘**                                   | VirtualBox 가 **NEM 으로 폴백**했다. 하이퍼바이저가 아직 살아 있다 — 아래 "부팅이 오래 걸릴 때" 의 ⚠️ 절                                                                              |
+| **`bcdedit off` 를 했는데 `HypervisorPresent` 가 계속 `True`**                      | 메모리 무결성·**Credential Guard**·Windows 기능 중 하나가 되살리고 있다. [0.pc_setting](../0.pc_setting/README.md) "그래도 `True` 일 때"                                              |
+| **재부팅했는데 설정이 안 바뀐다**                                                   | **빠른 시작** 때문이다. `시스템 종료` 후 켜는 것은 재부팅이 아니다 — `shutdown -r -t 0` 또는 `다시 시작` 을 쓴다                                                                      |
+| **hosts 에 저장했는데 되돌아간다**                                                  | Defender 가 `HostsFileHijack` 으로 되돌린 것이다. 3장의 "저장했는데 되돌아가 있다면" 참조                                                                                             |
+| **`.ps1` 이 "디지털 서명되지 않았습니다" 로 거부된다 · 빨간 `PSSecurityException`** | 내려받은 파일의 **차단 표시**(Mark of the Web)다 — **실행 정책 문제가 아니다.** `Get-ChildItem . -Recurse -File \| Unblock-File` 후 다시 실행                                         |
+| **`.exe` 실행에 "Windows의 PC 보호" 파란 창이 뜬다**                                | 같은 차단 표시를 SmartScreen 이 잡은 것이다. `추가 정보` → `실행`, 또는 위와 같이 `Unblock-File`                                                                                      |
+| **경로를 찾을 수 없다 — `다운로드` 가 비어 있다**                                   | OneDrive 가 `다운로드` 를 가로챘다. [0.pc_setting](../0.pc_setting/README.md) 의 OneDrive 절                                                                                          |
 
 ## 부팅이 오래 걸릴 때
 
 `Timed out while waiting for the machine to boot` 가 나와도 **VM 이 실패한 것이 아닐 수 있다.**
 원인은 둘이고, **Windows 11 에서는 아래쪽이 더 흔하다.**
 
-| 원인                                 | 무엇이 일어나나                                      |
-| :----------------------------------- | :--------------------------------------------------- |
-| 디스크가 느리다                      | 부팅에 5~10분이 걸려 Vagrant 가 먼저 포기한다        |
+| 원인                                | 무엇이 일어나나                                      |
+| :---------------------------------- | :--------------------------------------------------- |
+| 디스크가 느리다                     | 부팅에 5~10분이 걸려 Vagrant 가 먼저 포기한다        |
 | **하이퍼바이저가 아직 살아 있다** ★ | VirtualBox 가 **실패하지 않고 느려진다** — 아래 참조 |
 
 ### ⚠️ VirtualBox 7 은 Hyper-V 와 겹쳐도 실패하지 않는다 — 10배 느려진다 ★
@@ -652,7 +665,7 @@ AWS 는 IP 가 생성 시점에 정해지므로 `doSetHosts.sh` 가 `aws ec2 des
 
 기본값 합계는 **7 vCPU · 9.5GB** 다.
 
-| VM       |  vCPU |     메모리 | 역할                                |
+| VM       | vCPU  | 메모리     | 역할                                |
 | :------- | ----: | ---------: | :---------------------------------- |
 | i1       |     1 |     1024MB | Ansible 실행 (Kubernetes 노드 아님) |
 | vm01     |     2 |     3072MB | control plane + etcd + worker       |
