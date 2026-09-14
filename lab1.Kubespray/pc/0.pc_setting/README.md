@@ -390,7 +390,9 @@ i1 안에서 도는 [doVerify.sh](../2.pc.InstanceForKubernetes/doVerify.sh) 와
 * 판정은 `[ OK ]` · `[경고]` · `[실패]` · `[확인불가]` 넷이다.
   **`[실패]` 가 하나라도 있으면 그것부터 해결한다.** `[경고]` 는 진행해도 되지만 나중에 증상으로 돌아온다.
 * `[확인불가]` 는 관리자 권한이 없어 못 본 것이다. 실패로 세지 않는다.
-* 스크립트 실행이 막히면 그 창에서만 한 번 허용한다 — `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
+* **스크립트가 "디지털 서명되지 않았습니다" 로 거부되면** 위 "프로그램 설치" 절의 `Unblock-File` 을 빠뜨린 것이다 —
+  실행 정책이 아니라 **차단 표시**가 원인이다. `Get-ChildItem . -Recurse -File | Unblock-File` 후 다시 실행한다.
+  그래도 막히면 그 창에서만 한 번 허용한다 — `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
 
 # 다음 단계
 
