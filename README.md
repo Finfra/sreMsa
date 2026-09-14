@@ -1,5 +1,15 @@
 # Usage
-* [ 교육시는 불필요 ] GoogleDrive의 _prgs에 포함.
+
+* **교육 중에는 clone 하지 않는다.** 실습 소스는 강의 처음에 구글 드라이브로 받는다 — 설치 파일 폴더 `_prgs` 와 **나란히 있는 `sreMsa` 폴더**가 곧 이 저장소다. 두 폴더를 모두 `다운로드`(Downloads)에 복사해 쓴다.
+
+```
+C:\Users\<계정>\Downloads\
+├── sreMsa\   ← 실습 소스 (이 저장소)
+└── _prgs\    ← 설치 파일 (Day1 · Day2)
+```
+
+* 교육 밖에서 받으려면 clone 한다.
+
 ```
 git clone https://github.com/Finfra/sreMsa
 cd sreMsa
