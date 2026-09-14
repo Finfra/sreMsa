@@ -2,6 +2,10 @@
 */.*
 .vagrant
 
+# editor
+.vscode/
+.zed/
+
 # claudeCode
 .claude
 CLAUDE.md
