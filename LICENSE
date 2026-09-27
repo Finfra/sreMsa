@@ -1,0 +1,70 @@
+sreMsa — License
+
+Copyright (c) 2021-2026 Finfra Co., Ltd. (https://finfra.kr)
+
+This repository contains two kinds of material, released under two
+different licenses. Read the section that applies to what you are using.
+
+--------------------------------------------------------------------------
+1. Course material — CC BY-NC-SA 4.0
+--------------------------------------------------------------------------
+
+Applies to: README files, lab instructions, explanations, diagrams,
+slides, and any other non-code content in this repository.
+
+Licensed under the Creative Commons Attribution-NonCommercial-ShareAlike
+4.0 International License (CC BY-NC-SA 4.0).
+
+You may copy, redistribute, and adapt this material for NON-COMMERCIAL
+purposes only, provided that you:
+
+  * give appropriate credit to "Finfra Co., Ltd. (https://finfra.kr)",
+  * provide a link to the license and indicate if changes were made, and
+  * distribute any adaptation under the same license (ShareAlike).
+
+Running a paid course, training, or workshop from this material is
+commercial use and is NOT permitted under this license.
+
+Full license text:        https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+Human-readable summary:   https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+--------------------------------------------------------------------------
+2. Lab code — MIT
+--------------------------------------------------------------------------
+
+Applies to: scripts, Kubernetes manifests, Vagrantfiles, Terraform,
+Dockerfiles, configuration files, and any other source code under the
+lab*/ directories.
+
+Licensed under the MIT License. The full text is in the file LICENSE-CODE.
+
+Students and readers may reuse the lab code in their own work, including
+commercial work, subject only to the MIT terms.
+
+--------------------------------------------------------------------------
+3. Third-party software
+--------------------------------------------------------------------------
+
+Software that the labs install or reference (Kubernetes, Kubespray, Istio,
+Argo CD, Zipkin, OpenFaaS, Docker, VirtualBox, Vagrant, Terraform, and
+others) and any bundled third-party files remain under their own
+licenses. Nothing in this file relicenses them.
+
+--------------------------------------------------------------------------
+Commercial licensing
+--------------------------------------------------------------------------
+
+To use the course material commercially (for example, to teach a paid
+course from it), contact: finfra@gmail.com
+
+--------------------------------------------------------------------------
+한국어 요약 (참고용 — 영문이 구속력을 가진다)
+--------------------------------------------------------------------------
+
+  * 강의 자료(README·실습 안내·설명·그림·슬라이드): CC BY-NC-SA 4.0 —
+    출처 표시 · 비영리 · 동일조건변경허락. 이 자료로 유료 강의를 여는
+    것은 허용되지 않는다.
+  * 실습 코드(lab*/ 아래 스크립트·매니페스트·설정): MIT — LICENSE-CODE
+    참조. 수강생이 업무에 그대로 쓰는 것을 막지 않는다.
+  * 실습이 설치·참조하는 외부 소프트웨어는 각자의 라이선스를 따른다.
+  * 상업적 이용 문의: finfra@gmail.com
