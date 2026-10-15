@@ -44,3 +44,6 @@ __pycache__
 **/.ipynb_checkpoints
 **/.ipynb_checkpoints/*.ipynb
 
+# prj3#Issue1096 — 업무 접수대장은 제품 git 이력 밖 (request-rules)
+/Request.md
+/_doc_work/request_OLD.md
