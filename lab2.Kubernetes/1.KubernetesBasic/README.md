@@ -147,7 +147,7 @@ kubectl get pods
 kubectl logs nginx
 kubectl exec nginx -- pwd
 kubectl exec nginx -- ls
-kubectl exec -it nginx bash
+kubectl exec -it nginx -- bash
   exit
 ```
 
