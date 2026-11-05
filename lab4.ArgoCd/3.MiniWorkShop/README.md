@@ -1,6 +1,6 @@
 # ArgoCd Mini Workshop
 * Git Repository생성부터 Docker Container생성과 ArgoCd배포까지 일련의 작업들을 진행해 봅니다.
-* http://github.com 과 http://dockerhub.com 계정이 필요합니다.
+* https://github.com 과 https://hub.docker.com 계정이 필요합니다.
 
 ## 1. GitRepository생성.
 * cf) git clone https://github.com/xxxxxx/MyMSA
