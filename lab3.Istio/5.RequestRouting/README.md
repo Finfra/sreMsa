@@ -21,7 +21,7 @@ kubectl delete ns istio-system
 ## Install istio system and istio Example
 ```
 cd
-curl -L https://git.io/getLatestIstio | sh -
+curl -L https://istio.io/downloadIstio | sh -
 cd ~/istio-*
 export PATH=$PWD/bin:$PATH
 x=$(cat /etc/bash.bashrc|grep istio|grep bin)
