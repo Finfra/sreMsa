@@ -90,7 +90,7 @@ java -Dloader.path='./aws-java-sdk-1.12.42/lib/aws-java-sdk-1.12.42.jar,./aws-ja
 -DES_USERNAME=admin \
 -DES_PASSWORD=\!1FinfraGkn  \
 -Dspring.profiles.active=aws \
--cp zipkin.jar org.springframework.boot.loader.PropertiesLauncher
+-cp zipkin.jar org.springframework.boot.loader.launch.PropertiesLauncher
 
 ```
 
