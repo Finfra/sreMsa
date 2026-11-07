@@ -1,7 +1,7 @@
 # Argo CD Get Started
 * GitOps 툴 중의 하나인 ArgoCd를 설치하고 간단한 테스트를 진행합니다.
-* ArgoCd Home : https://argoproj.github.io/argo-cd/
-* ArgoCd Get Started :  https://argoproj.github.io/argo-cd/getting_started/
+* ArgoCd Home : https://argo-cd.readthedocs.io/en/stable/
+* ArgoCd Get Started :  https://argo-cd.readthedocs.io/en/stable/getting_started/
 ##  설치전 셋팅
 * 메모리가 부족할 수 있습니다. 인스턴스 중 한개(vm03추천)를 t2.small이 아닌 t2.medium으로 수정합니다. 
 1. 인스턴스를 stop합니다.
@@ -84,4 +84,4 @@ argocd login vm01:30360
 ```
 argocd cluster add $(kubectl config get-contexts -o name) --in-cluster
 ```
-  - cf) https://argoproj.github.io/argo-cd/user-guide/commands/argocd_cluster_add/
+  - cf) https://argo-cd.readthedocs.io/en/stable/user-guide/commands/argocd_cluster_add/
