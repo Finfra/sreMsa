@@ -14,7 +14,7 @@
 ```
 kubectl config set-context --current --namespace=default
 cd
-curl -L https://git.io/getLatestIstio | sh -
+curl -L https://istio.io/downloadIstio | sh -
 cd istio-1.*
 export PATH=$PWD/bin:$PATH
 x=$(cat /etc/bash.bashrc|grep istio|grep istio)

@@ -21,12 +21,12 @@ kubectl delete ns istio-system
 ## Install istio system and istio Example
 ```
 cd
-curl -L https://git.io/getLatestIstio | sh -
+curl -L https://istio.io/downloadIstio | sh -
 cd ~/istio-*
 export PATH=$PWD/bin:$PATH
 x=$(cat /etc/bash.bashrc|grep istio|grep bin)
 [ ${#x} -eq 0 ]&& echo export PATH=$PWD/bin:$PATH >>/etc/bash.bashrc
-istioctl profile list
+# obsolete : istioctl profile list  (Istio 1.24 에서 명령 제거)
 
 istioctl install --set profile=demo -y
 kubectl label namespace default istio-injection=enabled

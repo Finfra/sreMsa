@@ -147,7 +147,7 @@ kubectl get pods
 kubectl logs nginx
 kubectl exec nginx -- pwd
 kubectl exec nginx -- ls
-kubectl exec -it nginx bash
+kubectl exec -it nginx -- bash
   exit
 ```
 
@@ -280,21 +280,23 @@ iptables -t nat -L KUBE-SERVICES
 | svc           |services                   |
 | ns            |namespaces                 |
 | no            |nodes                      |
-| ep            |endpoints                  |
+| ep            |endpoints (v1.33 부터 deprecated — EndpointSlice 사용) |
 | ds            |daemonsets                 |
 | deploy        |deployments                |
 | -             | -                         |
 | cm            |configmaps                 |
-| cs            |componentstatuses          |
+| cs            |componentstatuses (v1.19 부터 deprecated) |
 | csr           |certificatesigningrequests |
 | ev            |events                     |
 | hpa           |horizontalpodautoscalers   |
 | ing           |ingresses                  |
 | limits        |limitranges                |
 | pdb           |poddisruptionbudgets       |
-| psp           |podsecuritypolicies        |
 | pv            |persistentvolumes          |
 | pvc           |persistentvolumeclaims     |
 | quota         |resourcequotas             |
 | rc            |replicationcontrollers     |
 | sa            |serviceaccounts            |
+
+* `psp`(podsecuritypolicies) 는 Kubernetes v1.25 에서 API 가 제거되어 목록에서 뺐다. 대체는 Pod Security Admission 이다.
+* 현재 클러스터가 지원하는 short name 은 `kubectl api-resources` 로 확인한다.

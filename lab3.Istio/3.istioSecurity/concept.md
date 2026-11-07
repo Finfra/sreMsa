@@ -2,6 +2,13 @@
 [**번역자 원문: https://github.com/mrha99/istio-security/edit/master/concept.md)
 <br>
 
+> ⚠️ **이 문서는 Istio 1.5 이전 구조를 번역한 개념 자료다. 아래 YAML 예시는 현행 Istio 에 적용되지 않는다.**
+> * `authentication.istio.io/v1alpha1` (`Policy`·`MeshPolicy`) 와 `rbac.istio.io/v1alpha1` (`ServiceRole`·`ServiceRoleBinding`·`ClusterRbacConfig`) 는 Istio 1.6 부터 무시된다.
+>   현행 API 는 `security.istio.io` 의 `PeerAuthentication`·`RequestAuthentication`·`AuthorizationPolicy` 다.
+> * Citadel·Mixer 는 Istio 1.5~1.6 에서 istiod 로 통합되거나 deprecated 되었다.
+> * 근거 : [Istio 1.6 Upgrade Notes](https://istio.io/latest/news/releases/1.6.x/announcing-1.6/upgrade-notes/) · [Istio 1.5 Upgrade Notes](https://istio.io/latest/news/releases/1.5.x/announcing-1.5/upgrade-notes/)
+> * 실습은 [README.md](README.md) 의 `PeerAuthentication` 예시를 따른다.
+
 Monolithic 애플리케이션을 원자 서비스로 세분화하면 대응력 향상, 확장성 향상, 서비스 재사용 능력 향상 등 다양한 이점을 얻을 수 있다. 그러나 **마이크로 서비스에는 다음과 같은 특정 보안 요구 사항**도 있다.
 
 - man-in-the-middle attack를 방어하기 위해서는 Traffic 암호화가 필요
