@@ -1,14 +1,18 @@
 # Zipkin log를 Amazon Elasticsearch Storage에 저장
+
 * zipkin이 받은 로그들은 DB나 각종 저장소에 저장할 수 있는데 이번 예제에서는 Amazon Elasticsearch Storage에 zipkin로그를 저장하는 방법을 실습합니다.
 * 참고 : https://github.com/openzipkin/zipkin-aws/tree/master/module#elasticsearch-storage
 
 ## zipkin Server 셋팅
+
 1. 기존 zipkin 서비스 종료
+
 ```
 docker rm  -f zipkin
 ```
 
 2. 아래 스크립트를 실행하여 zipkin을 구동합니다.
+
 ```
 cd
 curl -sSL https://zipkin.io/quickstart.sh | bash -s
@@ -24,14 +28,18 @@ java -jar zipkin.jar
 ![](img/s4.png)
 
 5. 아래 스크립트를 통해 aws 관련 라이브러리를 받고 압축을 풉니다.
+
 ```
 wget https://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip
 unzip aws-java-sdk.zip
 ```
 
 ## Amazon Elasticsearch Service 셋팅
+
 1. Amazon Elasticsearch Service 접속
-  - https://ap-northeast-2.console.aws.amazon.com/esv3/home?region=ap-northeast-2#opensearch/dashboard 에 접속
+
+- https://ap-northeast-2.console.aws.amazon.com/esv3/home?region=ap-northeast-2#opensearch/dashboard 에 접속
+
 2. "Create a new domain" 버튼 클릭
 
 ![](img/a2.png)
@@ -49,6 +57,7 @@ unzip aws-java-sdk.zip
 ![](img/a5.png)
 
 6. Newwork configuration에 Public access 클릭 후 "Create master user"에 Master username과 Master password등을 입력
+    - Master password 는 **각자 새로 정한 강한 비밀번호**를 쓴다. 문서·스크립트·git 에 적어 두지 말 것 — 아래 실행 단계에서 프롬프트로 입력받는다
 
 ![](img/a6.png)
 
@@ -72,15 +81,18 @@ unzip aws-java-sdk.zip
 
 ![](img/a11.png)
 
-
-
 ## Amazon Elasticsearch Service 와 연동된 Zipkin 작동 테스트
+
 1. 아래 스크립트로 zipkin서버 시작
+
 ```
 export adomain=zipkin-domain
 export ahost=https://$(aws es describe-elasticsearch-domain --domain-name $adomain|jq .DomainStatus.Endpoint|sed 's/"//'|sed 's/"//')
+# aws cli 를 쓸 수 없으면 위 11번에서 복사한 Endpoint 를 직접 넣는다
+# export ahost=https://search-zipkin-domain-<도메인ID>.ap-northeast-2.es.amazonaws.com
 
-export ahost=https://search-zipkin-domain-<DOMAIN_ID>.ap-northeast-2.es.amazonaws.com
+# Master password 는 화면·셸 히스토리에 남지 않게 프롬프트로 받는다
+read -s -p "ES master password: " ES_PASSWORD; echo
 
 java -Dloader.path='./aws-java-sdk-1.12.42/lib/aws-java-sdk-1.12.42.jar,./aws-java-sdk-1.12.42/lib/aws-java-sdk-1.12.42.jar!/lib' \
 -DSTORAGE_TYPE=elasticsearch \
@@ -88,17 +100,17 @@ java -Dloader.path='./aws-java-sdk-1.12.42/lib/aws-java-sdk-1.12.42.jar,./aws-ja
 -DES_SSL_NO_VERIFY=true  \
 -DES_HTTP_LOGGING=BASIC \
 -DES_USERNAME=admin \
--DES_PASSWORD=<MASTER_PASSWORD>  \
+-DES_PASSWORD="$ES_PASSWORD"  \
 -Dspring.profiles.active=aws \
 -cp zipkin.jar org.springframework.boot.loader.PropertiesLauncher
-
 ```
 
-
 2. 실습용 Console서버에 추가로 접속해서 확인 zipkin 작동 여부 확인
+
 ```
  curl -s localhost:9411/health
 ```
+
 ![](img/2.png)
 
 3. Web App이 작동중이지 않으면 작동 시킴
@@ -117,7 +129,7 @@ mvn compile exec:java -Dexec.mainClass=brave.example.Frontend
 
 ![](img/5.png)
 
-6. 로그인( admin/<MASTER_PASSWORD> )
+6. 로그인( admin / 도메인 생성 때 정한 Master password )
 
 ![](img/6.png)
 
@@ -150,6 +162,7 @@ mvn compile exec:java -Dexec.mainClass=brave.example.Frontend
 ![](img/13.png)
 
 13. 실습용 Console서버에 접속하여 Zipkin을 종료해 줍니다.
+
 ```
 ps -ef|grep java|grep -v grep|awk '{printf $2}'
 ```
